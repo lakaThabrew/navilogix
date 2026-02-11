@@ -278,8 +278,8 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 Your Name
 
-- GitHub: [@yourusername](https://github.com/yourusername)
-- Email: your.email@example.com
+- GitHub: [Lakmana Thabrew](https://github.com/lakaThabrew)
+- Email: lakmanathabrew123@gmail.com
 
 ## 🙏 Acknowledgments
 
@@ -290,7 +290,7 @@ Your Name
 
 ## 📞 Support
 
-For support, email support@navilogix.com or open an issue in the repository.
+For support, email lakmanathabrew123@gmail.com or open an issue in the repository.
 
 ---
 
