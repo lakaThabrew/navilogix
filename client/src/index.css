@@ -1,0 +1,45 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #001F3F;
+  --color-secondary: #FF4136;
+  --color-background: #F8F9FA;
+  --color-text: #333333;
+
+  --font-sans: Inter, sans-serif;
+
+  --shadow-light: 8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
+  --shadow-inset: inset 8px 8px 16px #d1d9e6, inset -8px -8px 16px #ffffff;
+
+  --shadow-primary: 4px 4px 8px rgba(0, 31, 63, 0.3);
+  --shadow-primary-hover: 6px 6px 12px rgba(0, 31, 63, 0.4);
+  --shadow-secondary: 4px 4px 8px rgba(255, 65, 54, 0.3);
+  --shadow-secondary-hover: 6px 6px 12px rgba(255, 65, 54, 0.4);
+
+  --animate-bounce-slow: bounce 3s infinite;
+  --animate-spin-slow: spin 8s linear infinite;
+}
+
+@layer utilities {
+  .floating-card {
+    @apply bg-background rounded-[20px] shadow-light p-8 transition-transform duration-300 hover:-translate-y-1;
+  }
+
+  .input-field {
+    @apply w-full p-3 border-none rounded-[20px] bg-background shadow-inset mb-4 outline-none focus:ring-2 focus:ring-primary/20 transition-all;
+  }
+
+
+  .btn-primary {
+    @apply bg-primary text-white border-none py-3 px-6 rounded-[20px] shadow-primary cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-primary-hover;
+  }
+
+  .btn-secondary {
+    @apply bg-secondary text-white border-none py-3 px-6 rounded-[20px] shadow-secondary cursor-pointer transition-all duration-300 hover:-translate-y-0.5 hover:shadow-secondary-hover;
+  }
+}
+
+
+body {
+  @apply bg-background text-text overflow-x-hidden font-sans;
+}
