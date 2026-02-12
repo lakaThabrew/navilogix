@@ -177,6 +177,45 @@ const Dashboard = () => {
     }
   };
 
+  // Reports Logic for Regular Users
+  const [reportData, setReportData] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  useEffect(() => {
+    if (user && user.role === 'regular') {
+      if (user.paymentStatus !== 'paid') {
+        setShowPaymentModal(true);
+      } else {
+        fetchReportData();
+      }
+    }
+  }, [user]);
+
+  const fetchReportData = async () => {
+    try {
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      const { data } = await axios.get("http://localhost:5000/api/parcels/reports", config);
+      setReportData(data.stats);
+    } catch (error) {
+      console.error("Error fetching reports:", error);
+    }
+  };
+
+  const handlePayment = async () => {
+    try {
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      const { data } = await axios.put("http://localhost:5000/api/auth/pay", {}, config);
+      alert("Payment Successful! Features Unlocked.");
+      localStorage.setItem('userInfo', JSON.stringify(data));
+      setUser(data);
+      setShowPaymentModal(false);
+      fetchReportData(); // Fetch reports after unlocking
+    } catch (error) {
+      console.error("Payment failed:", error);
+      alert("Payment Failed");
+    }
+  };
+
   if (!user) return null;
 
   // Filter logic
@@ -220,7 +259,39 @@ const Dashboard = () => {
       <h1 className="text-4xl font-bold text-primary mb-8">
         Hello, <span className="text-secondary">{user.name}</span>{" "}
         <span className="text-lg font-normal text-gray-500">({user.role})</span>
+        {user.role === 'regular' && (
+          <span className={`ml-4 text-sm px-3 py-1 rounded-full ${user.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+            {user.paymentStatus === 'paid' ? 'Premium Unlocked' : 'Free Tier'}
+          </span>
+        )}
       </h1>
+
+      {/* Payment Modal */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
+          <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-md text-center">
+            <h2 className="text-2xl font-bold text-primary mb-4">🔓 Unlock Premium Features</h2>
+            <p className="text-gray-600 mb-6">
+              Upgrade to a Regular User account to access your personalized Dashboard, Detailed Reports, and Parcel History.
+            </p>
+            <div className="bg-blue-50 p-4 rounded-xl mb-6">
+              <p className="text-3xl font-bold text-blue-600">$9.99<span className="text-sm text-gray-400 font-normal">/month</span></p>
+            </div>
+            <button
+              onClick={handlePayment}
+              className="w-full bg-gradient-to-r from-secondary to-red-600 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-transform"
+            >
+              Pay Now & Unlock
+            </button>
+            <button
+              onClick={() => navigate('/')}
+              className="mt-4 text-gray-400 hover:text-gray-600 text-sm"
+            >
+              Go Back Home
+            </button>
+          </div>
+        </div>
+      )}
 
       {user.role === 'main_admin' && messages.length > 0 && (
         <div className="mb-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
@@ -241,7 +312,11 @@ const Dashboard = () => {
       )}
 
       {/* Stats Overview */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+      {/* If regular user is unpaid, blur stats or hide them? Existing stats are fine, but reports are extra. */}
+      {/* Actually, user requested "regular users... payment ekk krnn one... it psse dashboard eke pennan one" */}
+      {/* So dashboard is largely blocked until paid. */}
+
+      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 ${user.role === 'regular' && user.paymentStatus !== 'paid' ? 'opacity-20 pointer-events-none select-none filter blur-sm' : ''}`}>
         <div className="floating-card text-center p-6">
           <div className="text-4xl font-bold text-primary mb-2">
             {currentStats.total}
@@ -267,6 +342,36 @@ const Dashboard = () => {
           <div className="text-gray-500">COD Volume</div>
         </div>
       </div>
+
+      {reportData && user.role === 'regular' && (
+        <div className="mb-12">
+          <h3 className="text-2xl font-bold text-primary mb-6">📊 Your Performance Reports</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="floating-card bg-white p-6">
+              <h4 className="font-bold text-gray-700 mb-4 border-b pb-2">📦 Parcel Volume</h4>
+              <div className="flex justify-between items-center mb-2">
+                <span>Sent:</span>
+                <span className="font-bold text-primary">{reportData.totalSent}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>Received:</span>
+                <span className="font-bold text-primary">{reportData.totalReceived}</span>
+              </div>
+            </div>
+            <div className="floating-card bg-white p-6">
+              <h4 className="font-bold text-gray-700 mb-4 border-b pb-2">💰 COD Financials</h4>
+              <div className="flex justify-between items-center mb-2">
+                <span>Total Paid:</span>
+                <span className="font-bold text-red-500">Rs. {reportData.codPaid}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span>Total to Receive:</span>
+                <span className="font-bold text-green-500">Rs. {reportData.codToReceive}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Admin & Branch Head View: Add Parcel */}
       {(user.role === "main_admin" || user.role === "branch_head") && (
@@ -372,7 +477,7 @@ const Dashboard = () => {
       )}
 
       {/* General Dashboard Table */}
-      <div className="floating-card overflow-hidden">
+      <div className={`floating-card overflow-hidden ${user.role === 'regular' && user.paymentStatus !== 'paid' ? 'opacity-20 pointer-events-none filter blur-sm' : ''}`}>
         <h3 className="text-2xl font-bold text-primary mb-6">
           Parcels Overview
         </h3>

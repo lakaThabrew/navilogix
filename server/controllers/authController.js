@@ -41,6 +41,29 @@ export const registerUser = async (req, res) => {
     }
 };
 
+
+export const processPayment = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+        if (user) {
+            user.paymentStatus = 'paid';
+            await user.save();
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                paymentStatus: user.paymentStatus,
+                token: generateToken(user._id)
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
     console.log(`🔐 [LOGIN] Attempting login for: ${email}`);
@@ -56,6 +79,7 @@ export const loginUser = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 branchId: user.branchId,
+                paymentStatus: user.paymentStatus || 'unpaid',
                 token: generateToken(user._id)
             });
         } else {

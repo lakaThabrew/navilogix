@@ -143,6 +143,45 @@ export const updateParcelStatus = async (req, res) => {
 
 import { MAX_DAILY_DELIVERIES } from '../config/constants.js';
 
+
+export const getParcelReports = async (req, res) => {
+    try {
+        const { startDate, endDate, type, status } = req.query;
+        // Build query for current user
+        const query = {
+            $or: [
+                { 'senderInfo.contact': req.user.email },
+                { 'receiverInfo.contact': req.user.email }
+            ]
+        };
+
+        if (startDate && endDate) {
+            query.createdAt = {
+                $gte: new Date(startDate),
+                $lte: new Date(endDate)
+            };
+        }
+        if (type) query.type = type;
+        if (status) query.status = status;
+
+        const parcels = await Parcel.find(query);
+
+        // Aggregate stats
+        const stats = {
+            totalSent: parcels.filter(p => p.senderInfo.contact === req.user.email).length,
+            totalReceived: parcels.filter(p => p.receiverInfo.contact === req.user.email).length,
+            delivered: parcels.filter(p => p.status === 'Delivered').length,
+            returned: parcels.filter(p => p.status === 'Returned').length,
+            codPaid: parcels.filter(p => p.receiverInfo.contact === req.user.email && p.status === 'Delivered').reduce((acc, p) => acc + (p.codAmount || 0), 0),
+            codToReceive: parcels.filter(p => p.senderInfo.contact === req.user.email && p.status === 'Delivered').reduce((acc, p) => acc + (p.codAmount || 0), 0),
+        };
+
+        res.json({ stats, parcels });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const assignRider = async (req, res) => {
     console.log(`🚴 [ASSIGN RIDER] Assigning rider...`);
     const { parcelId, riderId } = req.body;
