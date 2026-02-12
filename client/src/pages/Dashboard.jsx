@@ -23,6 +23,7 @@ const Dashboard = () => {
     returned: 0,
     cod: 0,
   });
+  const [messages, setMessages] = useState([]);
 
   useEffect(() => {
     console.log("📋 [CLIENT DASHBOARD] Component mounted");
@@ -40,14 +41,20 @@ const Dashboard = () => {
         u.role,
       );
       setUser(u);
-      fetchParcels();
+      fetchParcels(u);
+      if (u.role === 'main_admin') {
+        fetchMessages(u);
+      }
     }
   }, [navigate]);
 
-  const fetchParcels = async () => {
+  const fetchParcels = async (userInfo = user) => {
     console.log("📦 [CLIENT DASHBOARD] Fetching parcels...");
     try {
-      const { data } = await axios.get("http://localhost:5000/api/parcels");
+      const config = {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      };
+      const { data } = await axios.get("http://localhost:5000/api/parcels", config);
       console.log(`✅ [CLIENT DASHBOARD] Received ${data.length} parcels`);
       setParcels(data);
     } catch (error) {
@@ -56,6 +63,31 @@ const Dashboard = () => {
         error.message,
       );
       console.error(error);
+    }
+  };
+
+  const fetchMessages = async (userInfo = user) => {
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      };
+      const { data } = await axios.get("http://localhost:5000/api/messages", config);
+      setMessages(data);
+    } catch (error) {
+      console.error("Error fetching messages:", error);
+    }
+  };
+
+  const markAsRead = async (id) => {
+    try {
+      const u = JSON.parse(localStorage.getItem("userInfo"));
+      const config = {
+        headers: { Authorization: `Bearer ${u.token}` },
+      };
+      await axios.put(`http://localhost:5000/api/messages/${id}/read`, {}, config);
+      fetchMessages();
+    } catch (error) {
+      console.error("Error marking message as read:", error);
     }
   };
 
@@ -79,9 +111,25 @@ const Dashboard = () => {
         codAmount: form.codAmount,
       };
       console.log("📤 [CLIENT DASHBOARD] Sending parcel data:", parcelData);
-      await axios.post("http://localhost:5000/api/parcels", parcelData);
-      console.log("✅ [CLIENT DASHBOARD] Parcel added successfully!");
-      alert("Parcel Added & Branch Auto-Assigned!");
+      const config = {
+        headers: { Authorization: `Bearer ${user.token}` },
+      };
+
+      if (user.role === 'branch_head') {
+        // Send Message Request instead of creating parcel
+        await axios.post("http://localhost:5000/api/messages", {
+          content: `New Parcel Request from Branch Head ${user.name}. Please review and add to system.`,
+          receiverRole: 'main_admin',
+          parcelData: parcelData
+        }, config);
+        alert("Request Sent to Main Admin!");
+      } else {
+        // Regular Admin Flow: Create Parcel directly
+        await axios.post("http://localhost:5000/api/parcels", parcelData, config);
+        alert("Parcel Added & Branch Auto-Assigned!");
+      }
+
+      console.log("✅ [CLIENT DASHBOARD] Action completed successfully!");
       fetchParcels();
       setForm({
         senderName: "",
@@ -110,10 +158,13 @@ const Dashboard = () => {
     const u = JSON.parse(localStorage.getItem("userInfo"));
     try {
       console.log("📤 [CLIENT DASHBOARD] Sending status update...");
+      const config = {
+        headers: { Authorization: `Bearer ${u.token}` },
+      };
       await axios.put(`http://localhost:5000/api/parcels/${id}/status`, {
         status,
         location: "Updated by " + u.name,
-      });
+      }, config);
       console.log("✅ [CLIENT DASHBOARD] Status updated successfully");
       fetchParcels();
     } catch (error) {
@@ -148,7 +199,8 @@ const Dashboard = () => {
     displayedParcels = parcels.filter(
       (p) =>
         p.branchId &&
-        (p.branchId._id === user.branchId || p.branchId === user.branchId),
+        (p.branchId._id === user.branchId || p.branchId === user.branchId) ||
+        (p.createdBy === user._id),
     );
   }
 
@@ -168,6 +220,24 @@ const Dashboard = () => {
         Hello, <span className="text-secondary">{user.name}</span>{" "}
         <span className="text-lg font-normal text-gray-500">({user.role})</span>
       </h1>
+
+      {user.role === 'main_admin' && messages.length > 0 && (
+        <div className="mb-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
+          <h3 className="text-xl font-bold text-yellow-800 mb-4">🔔 Notifications</h3>
+          <div className="space-y-3">
+            {messages.map(msg => (
+              <div
+                key={msg._id}
+                onClick={() => markAsRead(msg._id)}
+                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-colors ${msg.isRead ? 'border-gray-300' : 'border-blue-500'}`}
+              >
+                <p className="font-medium text-gray-800">{msg.content}</p>
+                <p className="text-xs text-gray-500 mt-1">{new Date(msg.createdAt).toLocaleString()}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Stats Overview */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
@@ -197,11 +267,11 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Admin View: Add Parcel */}
-      {user.role === "main_admin" && (
+      {/* Admin & Branch Head View: Add Parcel */}
+      {(user.role === "main_admin" || user.role === "branch_head") && (
         <div className="floating-card mb-12">
           <h3 className="text-2xl font-bold text-primary mb-6 border-b pb-2">
-            Add New Parcel (Main Office)
+            {user.role === 'branch_head' ? 'Dispatch New Parcel (From Branch)' : 'Add New Parcel (Main Office)'}
           </h3>
           <form
             onSubmit={handleAddParcel}
@@ -294,7 +364,7 @@ const Dashboard = () => {
               type="submit"
               className="btn-primary md:col-span-2 text-lg font-bold"
             >
-              Add Parcel to System
+              {user.role === 'branch_head' ? 'Send Request to Main Admin' : 'Add Parcel to System'}
             </button>
           </form>
         </div>
@@ -343,13 +413,12 @@ const Dashboard = () => {
                     <td className="p-4">
                       <span
                         className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm
-                                                ${
-                                                  p.status === "Delivered"
-                                                    ? "bg-green-100 text-green-800"
-                                                    : p.status === "Returned"
-                                                      ? "bg-red-100 text-red-800"
-                                                      : "bg-blue-100 text-blue-800"
-                                                }`}
+                                                ${p.status === "Delivered"
+                            ? "bg-green-100 text-green-800"
+                            : p.status === "Returned"
+                              ? "bg-red-100 text-red-800"
+                              : "bg-blue-100 text-blue-800"
+                          }`}
                       >
                         {p.status}
                       </span>

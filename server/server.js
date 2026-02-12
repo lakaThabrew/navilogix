@@ -4,6 +4,7 @@ import cors from 'cors';
 import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import parcelRoutes from './routes/parcelRoutes.js';
+import messageRoutes from './routes/messageRoutes.js';
 import Branch from './models/Branch.js';
 
 console.log('🚀 Starting NaviLogix Server...');
@@ -32,6 +33,9 @@ console.log('✓ Auth routes registered at /api/auth');
 
 app.use('/api/parcels', parcelRoutes);
 console.log('✓ Parcel routes registered at /api/parcels');
+
+app.use('/api/messages', messageRoutes);
+console.log('✓ Message routes registered at /api/messages');
 
 // Seed Branches if empty
 const seedBranches = async () => {
@@ -67,10 +71,10 @@ seedBranches();
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log('========================================');
+    console.log('====================================================================');
     console.log(`✓ Server running on port ${PORT}`);
     console.log(`✓ API Base URL: http://localhost:${PORT}`);
     console.log(`✓ Auth Routes: http://localhost:${PORT}/api/auth`);
     console.log(`✓ Parcel Routes: http://localhost:${PORT}/api/parcels`);
-    console.log('========================================');
+    console.log('====================================================================');
 });

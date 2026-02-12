@@ -14,6 +14,7 @@ const parcelSchema = new mongoose.Schema({
     },
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch' },
     riderId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     status: {
         type: String,
         enum: ['Pending', 'In Main Branch', 'Transmitting', 'In Sub Branch', 'Out for Delivery', 'Delivered', 'Returned'],

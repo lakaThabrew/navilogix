@@ -1,5 +1,6 @@
 import Parcel from '../models/Parcel.js';
 import Branch from '../models/Branch.js';
+import Message from '../models/Message.js';
 
 // Helper to determine branch based on address
 const determineBranch = async (address) => {
@@ -23,14 +24,33 @@ const determineBranch = async (address) => {
     return null;
 };
 
+
 export const createParcel = async (req, res) => {
     const { senderInfo, receiverInfo, weight, type, codAmount } = req.body;
     console.log(`📦 [CREATE PARCEL] Creating new parcel for: ${receiverInfo.name}`);
+
+    // Check if user is authenticated (should be if protected route)
+    if (!req.user) {
+        return res.status(401).json({ message: 'User not authenticated' });
+    }
+
     try {
         const branchId = await determineBranch(receiverInfo.address);
         const trackingId = 'NV-' + Date.now() + Math.floor(Math.random() * 1000);
         console.log(`🔖 [CREATE PARCEL] Generated tracking ID: ${trackingId}`);
         console.log(`🏢 [CREATE PARCEL] Assigned branch ID: ${branchId}`);
+
+        let initialStatus = 'In Main Branch';
+        let initialHistory = { status: 'In Main Branch', location: 'Main Office', timestamp: new Date() };
+
+        if (req.user.role === 'branch_head') {
+            initialStatus = 'In Sub Branch'; // Or 'Dispatched to Main'
+            initialHistory = {
+                status: 'In Sub Branch',
+                location: `Branch: ${req.user.branchId || 'Unknown'}`,
+                timestamp: new Date()
+            };
+        }
 
         const parcel = await Parcel.create({
             trackingId,
@@ -40,9 +60,21 @@ export const createParcel = async (req, res) => {
             weight,
             type,
             codAmount,
-            status: 'In Main Branch',
-            history: [{ status: 'In Main Branch', location: 'Main Office', timestamp: new Date() }]
+            status: initialStatus,
+            history: [initialHistory],
+            createdBy: req.user._id // Optional, track who created it
         });
+
+        // Notify Main Admin if created by Branch Head
+        if (req.user.role === 'branch_head') {
+            await Message.create({
+                senderId: req.user._id,
+                content: `Branch Head ${req.user.name} has dispatched a new parcel (${trackingId}) from their branch.`,
+                receiverRole: 'main_admin'
+            });
+            console.log(`📨 [CREATE PARCEL] Notification sent to Main Admin`);
+        }
+
         console.log(`✅ [CREATE PARCEL] Parcel created successfully: ${trackingId}`);
         res.status(201).json(parcel);
     } catch (error) {

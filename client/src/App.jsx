@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Track from "./pages/Track";
 import About from "./pages/About";
 import Services from "./pages/Services";
+import Inbox from "./pages/Inbox";
 import ChatBot from "./components/ChatBot";
 import Footer from "./components/Footer";
 import "./index.css";
@@ -28,6 +29,7 @@ function App() {
             <Route path="/track/:id" element={<Track />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/inbox" element={<Inbox />} />
           </Routes>
         </main>
         <ChatBot />
