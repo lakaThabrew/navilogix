@@ -23,6 +23,7 @@ const Navbar = () => {
         navLinks.push({ name: 'Dashboard', path: '/dashboard' });
         if (user.role === 'main_admin') {
             navLinks.push({ name: 'Inbox', path: '/inbox' });
+            navLinks.push({ name: 'Reports', path: '/reports' });
         }
     }
 

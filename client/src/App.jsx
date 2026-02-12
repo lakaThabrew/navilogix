@@ -7,6 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import Track from "./pages/Track";
 import About from "./pages/About";
 import Services from "./pages/Services";
+import AdminReports from "./pages/AdminReports";
 import Inbox from "./pages/Inbox";
 import ChatBot from "./components/ChatBot";
 import Footer from "./components/Footer";
@@ -30,6 +31,7 @@ function App() {
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/inbox" element={<Inbox />} />
+            <Route path="/reports" element={<AdminReports />} />
           </Routes>
         </main>
         <ChatBot />
