@@ -147,34 +147,77 @@ import { MAX_DAILY_DELIVERIES } from '../config/constants.js';
 export const getParcelReports = async (req, res) => {
     try {
         const { startDate, endDate, type, status } = req.query;
-        // Build query for current user
-        const query = {
-            $or: [
-                { 'senderInfo.contact': req.user.email },
-                { 'receiverInfo.contact': req.user.email }
-            ]
-        };
+        let query = {};
 
-        if (startDate && endDate) {
-            query.createdAt = {
-                $gte: new Date(startDate),
-                $lte: new Date(endDate)
+        // Admin View: All parcels (optionally filtered by dates/status)
+        if (req.user.role === 'main_admin') {
+            if (startDate && endDate) {
+                query.createdAt = {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                };
+            }
+            if (type) query.type = type;
+            if (status) query.status = status;
+        } else {
+            // Regular User View
+            query = {
+                $or: [
+                    { 'senderInfo.contact': req.user.email },
+                    { 'receiverInfo.contact': req.user.email }
+                ]
+            };
+            if (startDate && endDate) {
+                query.createdAt = {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                };
+            }
+        }
+
+        const parcels = await Parcel.find(query).populate('branchId').populate('riderId');
+
+        let stats = {};
+
+        if (req.user.role === 'main_admin') {
+            // Admin Stats: System Wide
+            stats = {
+                totalParcels: parcels.length,
+                totalDelivered: parcels.filter(p => p.status === 'Delivered').length,
+                totalReturned: parcels.filter(p => p.status === 'Returned').length,
+                totalPending: parcels.filter(p => p.status !== 'Delivered' && p.status !== 'Returned').length,
+                totalRevenue: parcels.reduce((acc, p) => acc + (p.codAmount || 0), 0),
+
+                // Branch Performance (Mock aggregation if needed, or simple counts)
+                branchBreakdown: parcels.reduce((acc, p) => {
+                    const branchName = p.branchId ? p.branchId.branchName : 'Main Office';
+                    if (!acc[branchName]) acc[branchName] = 0;
+                    acc[branchName]++;
+                    return acc;
+                }, {}),
+
+                // Rider Performance
+                riderPerformance: parcels.reduce((acc, p) => {
+                    if (p.riderId) {
+                        const riderName = p.riderId.name;
+                        if (!acc[riderName]) acc[riderName] = { delivered: 0, assigned: 0 };
+                        acc[riderName].assigned++;
+                        if (p.status === 'Delivered') acc[riderName].delivered++;
+                    }
+                    return acc;
+                }, {})
+            };
+        } else {
+            // Regular User Stats
+            stats = {
+                totalSent: parcels.filter(p => p.senderInfo.contact === req.user.email).length,
+                totalReceived: parcels.filter(p => p.receiverInfo.contact === req.user.email).length,
+                delivered: parcels.filter(p => p.status === 'Delivered').length,
+                returned: parcels.filter(p => p.status === 'Returned').length,
+                codPaid: parcels.filter(p => p.receiverInfo.contact === req.user.email && p.status === 'Delivered').reduce((acc, p) => acc + (p.codAmount || 0), 0),
+                codToReceive: parcels.filter(p => p.senderInfo.contact === req.user.email && p.status === 'Delivered').reduce((acc, p) => acc + (p.codAmount || 0), 0),
             };
         }
-        if (type) query.type = type;
-        if (status) query.status = status;
-
-        const parcels = await Parcel.find(query);
-
-        // Aggregate stats
-        const stats = {
-            totalSent: parcels.filter(p => p.senderInfo.contact === req.user.email).length,
-            totalReceived: parcels.filter(p => p.receiverInfo.contact === req.user.email).length,
-            delivered: parcels.filter(p => p.status === 'Delivered').length,
-            returned: parcels.filter(p => p.status === 'Returned').length,
-            codPaid: parcels.filter(p => p.receiverInfo.contact === req.user.email && p.status === 'Delivered').reduce((acc, p) => acc + (p.codAmount || 0), 0),
-            codToReceive: parcels.filter(p => p.senderInfo.contact === req.user.email && p.status === 'Delivered').reduce((acc, p) => acc + (p.codAmount || 0), 0),
-        };
 
         res.json({ stats, parcels });
     } catch (error) {
