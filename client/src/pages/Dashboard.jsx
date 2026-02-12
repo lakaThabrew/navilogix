@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import DeliveryMap from "../components/DeliveryMap";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -477,20 +478,7 @@ const Dashboard = () => {
       {/* Mock Map for Delivery Person */}
       {user.role === "delivery_person" && (
         <div className="floating-card mt-12 bg-gray-50 p-6">
-          <h3 className="text-2xl font-bold text-primary mb-4">
-            Your Optimized Route (Map)
-          </h3>
-          <div className="h-96 bg-gray-200 rounded-3xl flex items-center justify-center border-4 border-white shadow-inner">
-            <div className="text-center">
-              <p className="text-2xl mb-2">🗺️</p>
-              <p className="font-bold text-gray-500">
-                OpenStreetMap Area (Free & Open Source)
-              </p>
-              <p className="text-sm text-gray-400">
-                Waypoints loaded for: {user.name}
-              </p>
-            </div>
-          </div>
+          <DeliveryMap parcels={displayedParcels} />
         </div>
       )}
     </div>
