@@ -5,6 +5,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import parcelRoutes from './routes/parcelRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
+import aiRoutes from './routes/aiRoutes.js';
 import Branch from './models/Branch.js';
 
 console.log('🚀 Starting NaviLogix Server...');
@@ -36,6 +37,9 @@ console.log('✓ Parcel routes registered at /api/parcels');
 
 app.use('/api/messages', messageRoutes);
 console.log('✓ Message routes registered at /api/messages');
+
+app.use('/api/ai', aiRoutes);
+console.log('✓ AI Assistant routes registered at /api/ai');
 
 // Seed Branches if empty
 const seedBranches = async () => {

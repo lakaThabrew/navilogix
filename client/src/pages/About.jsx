@@ -106,16 +106,24 @@ const About = () => {
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.8 }}
                         viewport={{ once: true }}
-                        className="order-1 lg:order-2 relative h-[500px] bg-white rounded-[50px] shadow-2xl flex items-center justify-center overflow-hidden border border-gray-100"
+                        className="order-1 lg:order-2 relative h-[500px]"
                     >
-                        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 to-white"></div>
-                        <div className="relative z-10 w-64 h-64 bg-white rounded-full shadow-inner flex items-center justify-center animate-float">
-                            <span className="text-9xl filter drop-shadow-lg">📦</span>
-                        </div>
-                        {/* Orbiting Elements */}
-                        <div className="absolute w-[400px] h-[400px] border border-dashed border-gray-300 rounded-full animate-spin-slow"></div>
-                        <div className="absolute w-[400px] h-[400px] rounded-full animate-spin-slow">
-                            <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-8 h-8 bg-secondary rounded-full shadow-lg"></div>
+                        <div className="absolute inset-0 bg-secondary/10 rounded-[50px] transform rotate-3 scale-105 blur-lg"></div>
+                        <div className="relative h-full w-full bg-white rounded-[50px] shadow-2xl overflow-hidden border-4 border-white">
+                            <img
+                                src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
+                                alt="Global Network"
+                                className="w-full h-full object-cover"
+                            />
+                            {/* Overlay Gradient */}
+                            <div className="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
+
+                            <div className="absolute bottom-8 right-8 bg-white/90 backdrop-blur p-4 rounded-xl shadow-lg">
+                                <div className="flex items-center gap-2">
+                                    <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                                    <span className="font-bold text-primary">Live Connection</span>
+                                </div>
+                            </div>
                         </div>
                     </motion.div>
                 </div>

@@ -70,7 +70,7 @@ const Footer = () => {
                             </div>
                             <div className="flex items-center md:items-start gap-4 text-sm">
                                 <span className="text-xl shrink-0 bg-white/10 w-8 h-8 flex items-center justify-center rounded-full text-secondary">📞</span>
-                                <p className="text-blue-200">+94-713278961</p>
+                                <p className="text-blue-200">+94-713278691</p>
                             </div>
                             <div className="flex items-center md:items-start gap-4 text-sm">
                                 <span className="text-xl shrink-0 bg-white/10 w-8 h-8 flex items-center justify-center rounded-full text-secondary">✉️</span>

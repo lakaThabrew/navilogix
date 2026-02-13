@@ -11,38 +11,51 @@ L.Icon.Default.mergeOptions({
     shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
 });
 
-const CITY_COORDINATES = {
-    'Colombo': [6.9271, 79.8612],
-    'Kandy': [7.2906, 80.6337],
-    'Galle': [6.0535, 80.2210],
-    'Jaffna': [9.6615, 80.0255],
-    'Negombo': [7.2088, 79.8359]
-};
-
-const getCoordinates = (address) => {
-    // Simple mock geocoding based on city name presence
-    for (const city in CITY_COORDINATES) {
-        if (address.toLowerCase().includes(city.toLowerCase())) {
-            // Add slight random offset to separate markers in same city
-            const [lat, lng] = CITY_COORDINATES[city];
-            return [lat + (Math.random() - 0.5) * 0.05, lng + (Math.random() - 0.5) * 0.05];
-        }
-    }
-    // Default fallback (ocean near Colombo)
-    return [6.9 + (Math.random() - 0.5) * 0.1, 79.8 + (Math.random() - 0.5) * 0.1];
-};
-
 const DeliveryMap = ({ parcels }) => {
     const [route, setRoute] = useState([]);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        if (parcels && parcels.length > 0) {
-            const waypoints = parcels.map(p => ({
-                ...p,
-                coords: getCoordinates(p.receiverInfo.address)
-            }));
-            setRoute(waypoints);
-        }
+        const fetchCoordinates = async () => {
+            if (!parcels || parcels.length === 0) return;
+            setLoading(true);
+
+            const promises = parcels.map(async (p) => {
+                // Check if we already have coords (e.g. from DB) - here we assume address string
+                const address = p.receiverInfo.address;
+                try {
+                    // Use Nominatim OpenStreetMap API
+                    const response = await fetch(`https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(address + ", Sri Lanka")}`);
+                    const data = await response.json();
+
+                    if (data && data.length > 0) {
+                        return {
+                            ...p,
+                            coords: [parseFloat(data[0].lat), parseFloat(data[0].lon)]
+                        };
+                    } else {
+                        // Fallback to Colombo if not found
+                        console.warn(`Address not found: ${address}`);
+                        return {
+                            ...p,
+                            coords: [6.9271 + (Math.random() - 0.5) * 0.01, 79.8612 + (Math.random() - 0.5) * 0.01]
+                        };
+                    }
+                } catch (error) {
+                    console.error("Geocoding error:", error);
+                    return {
+                        ...p,
+                        coords: [6.9271, 79.8612] // Default fallback 
+                    };
+                }
+            });
+
+            const results = await Promise.all(promises);
+            setRoute(results);
+            setLoading(false);
+        };
+
+        fetchCoordinates();
     }, [parcels]);
 
     const optimizeRoute = () => {
@@ -52,6 +65,7 @@ const DeliveryMap = ({ parcels }) => {
         alert("Route Optimized via OpenStreetMap algo!");
     };
 
+    if (loading) return <div className="text-center p-4">Loading Map & Routes...</div>;
     if (route.length === 0) return <div className="text-center p-4">No parcels to display on map.</div>;
 
     const center = route[0].coords;
