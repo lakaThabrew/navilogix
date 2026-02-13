@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 const ChatBot = () => {
   const [open, setOpen] = useState(false);
@@ -17,15 +18,18 @@ const ChatBot = () => {
     setMessages(newMessages);
     setInput("");
 
-    // Mock AI response
-    console.log("💬 [CLIENT CHATBOT] Generating AI response...");
-    setTimeout(() => {
-      const botResponse =
-        "I am simulating a response. In a real implementation, I would query the Gemini API with your question: " +
-        input;
-      console.log("✅ [CLIENT CHATBOT] Bot response:", botResponse);
+    // Call backend API
+    try {
+      setMessages([...newMessages, { sender: "bot", text: "..." }]); // Loading state
+
+      const response = await axios.post('http://localhost:5000/api/ai/chat', { message: input });
+      const botResponse = response.data.reply;
+
       setMessages([...newMessages, { sender: "bot", text: botResponse }]);
-    }, 1000);
+    } catch (error) {
+      console.error("Error sending message to chatbot:", error);
+      setMessages([...newMessages, { sender: "bot", text: "Sorry, I'm having trouble connecting to the server." }]);
+    }
   };
 
   return (
@@ -49,11 +53,10 @@ const ChatBot = () => {
                 className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${
-                    m.sender === "user"
-                      ? "bg-primary text-white rounded-br-none"
-                      : "bg-white text-gray-800 rounded-bl-none"
-                  }`}
+                  className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${m.sender === "user"
+                    ? "bg-primary text-white rounded-br-none"
+                    : "bg-white text-gray-800 rounded-bl-none"
+                    }`}
                 >
                   {m.text}
                 </div>

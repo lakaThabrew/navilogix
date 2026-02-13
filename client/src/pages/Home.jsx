@@ -86,17 +86,17 @@ const Home = () => {
                         {/* Stats - Compact Version */}
                         <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-8 md:gap-12 text-gray-500">
                             <div className="flex items-center gap-3">
-                                <div className="text-3xl font-bold text-primary">5M+</div>
+                                <div className="text-2xl font-bold text-primary">5M+</div>
                                 <div className="text-sm leading-tight">Parcels<br />Delivered</div>
                             </div>
                             <div className="w-px h-10 bg-gray-200 hidden sm:block"></div>
                             <div className="flex items-center gap-3">
-                                <div className="text-3xl font-bold text-primary">120+</div>
+                                <div className="text-2xl font-bold text-primary">120+</div>
                                 <div className="text-sm leading-tight">Countries<br />Served</div>
                             </div>
                             <div className="w-px h-10 bg-gray-200 hidden sm:block"></div>
                             <div className="flex items-center gap-3">
-                                <div className="text-3xl font-bold text-primary">99%</div>
+                                <div className="text-2xl font-bold text-primary">99%</div>
                                 <div className="text-sm leading-tight">Customer<br />Satisfaction</div>
                             </div>
                         </motion.div>

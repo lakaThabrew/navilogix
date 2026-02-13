@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
+import DeliveryMap from "../components/DeliveryMap";
 
 const Track = () => {
   const { id } = useParams();
@@ -85,13 +86,12 @@ const Track = () => {
             <div className="mt-6 md:mt-0">
               <div
                 className={`px-6 py-2 rounded-full text-lg font-bold shadow-lg flex items-center gap-2
-                                ${
-                                  parcel.status === "Delivered"
-                                    ? "bg-green-500 text-white"
-                                    : parcel.status === "Returned"
-                                      ? "bg-red-500 text-white"
-                                      : "bg-secondary text-white"
-                                }`}
+                                ${parcel.status === "Delivered"
+                    ? "bg-green-500 text-white"
+                    : parcel.status === "Returned"
+                      ? "bg-red-500 text-white"
+                      : "bg-secondary text-white"
+                  }`}
               >
                 <span className="w-3 h-3 bg-white rounded-full animate-pulse"></span>
                 {parcel.status}
@@ -134,6 +134,11 @@ const Track = () => {
               <p className="text-gray-600">{parcel.receiverInfo?.address}</p>
             </div>
           </div>
+        </div>
+
+        {/* Map Section */}
+        <div className="h-96 w-full border-b border-gray-100">
+          <DeliveryMap parcels={[parcel]} />
         </div>
 
         {/* Timeline */}
