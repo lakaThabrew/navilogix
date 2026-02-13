@@ -37,70 +37,109 @@ const Home = () => {
             <div className="absolute top-[40%] left-[20%] w-[300px] h-[300px] bg-blue-300/10 rounded-full blur-2xl"></div>
 
             {/* Hero Section */}
-            <div className="relative pt-20 pb-32 px-4 sm:px-6 lg:px-8">
-                <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="max-w-7xl mx-auto text-center"
-                >
-                    <motion.div variants={itemVariants} className="mb-8 flex justify-center">
-                        <span className="bg-blue-100 text-primary px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide uppercase border border-blue-200">
-                            🚀 Next-Gen Logistics
-                        </span>
-                    </motion.div>
+            <div className="relative pt-24 pb-32 px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="text-center lg:text-left z-10"
+                    >
+                        <motion.div variants={itemVariants} className="mb-6 flex justify-center lg:justify-start">
+                            <span className="bg-blue-100/80 backdrop-blur-sm text-primary px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide uppercase border border-blue-200">
+                                🚀 Next-Gen Logistics
+                            </span>
+                        </motion.div>
 
-                    <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-extrabold text-primary mb-8 tracking-tight leading-tight">
-                        Shipping Made <br className="hidden md:block" />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-500">Simple & Intelligent</span>
-                    </motion.h1>
+                        <motion.h1 variants={itemVariants} className="text-5xl md:text-7xl font-extrabold text-primary mb-6 tracking-tight leading-[1.1]">
+                            Shipping Made <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-500">Simple & Intelligent</span>
+                        </motion.h1>
 
-                    <motion.p variants={itemVariants} className="text-xl text-gray-600 mb-12 max-w-2xl mx-auto leading-relaxed">
-                        Experience the future of delivery with AI-powered routing, real-time tracking, and lightning-fast dispatch. We move your world.
-                    </motion.p>
+                        <motion.p variants={itemVariants} className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto lg:mx-0 leading-relaxed">
+                            Experience the future of delivery with AI-powered routing, real-time tracking, and lightning-fast dispatch. We move your world.
+                        </motion.p>
 
-                    {/* Tracking Box */}
-                    <motion.div variants={itemVariants} className="relative max-w-2xl mx-auto">
-                        <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-[30px] blur opacity-20 transform translate-y-4 scale-95"></div>
-                        <div className="relative bg-white rounded-[30px] shadow-2xl p-2 md:p-3 border border-gray-100 flex flex-col md:flex-row items-center gap-2">
-                            <div className="flex-grow w-full md:w-auto flex items-center px-4 py-2">
-                                <span className="text-2xl mr-3">📦</span>
-                                <input
-                                    type="text"
-                                    className="w-full bg-transparent border-none outline-none text-gray-700 text-lg placeholder-gray-400"
-                                    placeholder="Enter Tracking ID (e.g. NV-8839)"
-                                    value={trackingId}
-                                    onChange={(e) => setTrackingId(e.target.value)}
-                                />
+                        {/* Tracking Box */}
+                        <motion.div variants={itemVariants} className="relative max-w-xl mx-auto lg:mx-0 mb-12">
+                            <div className="absolute inset-0 bg-gradient-to-r from-primary to-secondary rounded-[24px] blur opacity-20 transform translate-y-4 scale-95"></div>
+                            <div className="relative bg-white rounded-[24px] shadow-xl p-2 border border-gray-100 flex flex-col sm:flex-row items-center gap-2">
+                                <div className="flex-grow w-full sm:w-auto flex items-center px-4 py-3">
+                                    <span className="text-2xl mr-3">📦</span>
+                                    <input
+                                        type="text"
+                                        className="w-full bg-transparent border-none outline-none text-gray-700 text-lg placeholder-gray-400"
+                                        placeholder="Enter Tracking ID"
+                                        value={trackingId}
+                                        onChange={(e) => setTrackingId(e.target.value)}
+                                    />
+                                </div>
+                                <button
+                                    onClick={handleTrack}
+                                    className="w-full sm:w-auto bg-primary text-white px-8 py-3 rounded-[20px] font-bold text-lg shadow-lg hover:bg-gray-800 transition-all duration-300 flex items-center justify-center gap-2 group"
+                                >
+                                    Track
+                                </button>
                             </div>
-                            <button
-                                onClick={handleTrack}
-                                className="w-full md:w-auto bg-primary text-white px-8 py-4 rounded-[24px] font-bold text-lg shadow-lg hover:bg-gray-800 hover:shadow-xl transition-all duration-300 flex items-center justify-center gap-2 group"
-                            >
-                                Track
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
-                                </svg>
-                            </button>
-                        </div>
+                        </motion.div>
+
+                        {/* Stats - Compact Version */}
+                        <motion.div variants={itemVariants} className="flex flex-wrap justify-center lg:justify-start gap-8 md:gap-12 text-gray-500">
+                            <div className="flex items-center gap-3">
+                                <div className="text-3xl font-bold text-primary">5M+</div>
+                                <div className="text-sm leading-tight">Parcels<br />Delivered</div>
+                            </div>
+                            <div className="w-px h-10 bg-gray-200 hidden sm:block"></div>
+                            <div className="flex items-center gap-3">
+                                <div className="text-3xl font-bold text-primary">120+</div>
+                                <div className="text-sm leading-tight">Countries<br />Served</div>
+                            </div>
+                            <div className="w-px h-10 bg-gray-200 hidden sm:block"></div>
+                            <div className="flex items-center gap-3">
+                                <div className="text-3xl font-bold text-primary">99%</div>
+                                <div className="text-sm leading-tight">Customer<br />Satisfaction</div>
+                            </div>
+                        </motion.div>
                     </motion.div>
 
-                    {/* Stats */}
-                    <motion.div variants={itemVariants} className="mt-16 flex flex-wrap justify-center gap-8 md:gap-16 text-gray-500">
-                        <div className="flex items-center gap-2">
-                            <span className="font-bold text-2xl text-primary">5M+</span>
-                            <span className="text-sm">Parcels<br />Delivered</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="font-bold text-2xl text-primary">120+</span>
-                            <span className="text-sm">Countries<br />Served</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <span className="font-bold text-2xl text-primary">99%</span>
-                            <span className="text-sm">Customer<br />Satisfaction</span>
+                    {/* Hero Image */}
+                    <motion.div
+                        initial={{ opacity: 0, x: 50 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ duration: 1, delay: 0.2 }}
+                        className="relative hidden lg:block h-[600px] w-full"
+                    >
+                        {/* Abstract blobs behind image */}
+                        <div className="absolute top-[10%] right-[-10%] w-[500px] h-[500px] bg-secondary/10 rounded-full blur-3xl"></div>
+                        <div className="absolute bottom-[10%] left-[-10%] w-[400px] h-[400px] bg-primary/10 rounded-full blur-3xl"></div>
+
+                        <div className="relative h-full w-full rounded-[40px] overflow-hidden shadow-2xl border-4 border-white/50 backdrop-blur-xl">
+                            <img
+                                src="https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?q=80&w=2070&auto=format&fit=crop"
+                                alt="Modern Logistics Warehouse"
+                                className="w-full h-full object-cover transform hover:scale-105 transition-transform duration-700"
+                            />
+                            {/* Overlay Gradient */}
+                            <div className="absolute inset-0 bg-gradient-to-t from-primary/40 to-transparent"></div>
+
+                            {/* Floating Badge */}
+                            <motion.div
+                                initial={{ y: 20, opacity: 0 }}
+                                animate={{ y: 0, opacity: 1 }}
+                                transition={{ delay: 0.8 }}
+                                className="absolute bottom-8 left-8 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white flex items-center gap-4 max-w-xs"
+                            >
+                                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center text-green-600 font-bold text-xl">
+                                    ✓
+                                </div>
+                                <div>
+                                    <div className="text-primary font-bold text-sm">Real-time Verified</div>
+                                    <div className="text-xs text-gray-500">System operational</div>
+                                </div>
+                            </motion.div>
                         </div>
                     </motion.div>
-                </motion.div>
+                </div>
             </div>
 
             {/* Features Section */}

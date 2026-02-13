@@ -2,73 +2,82 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 
-const ServiceCard = ({ icon, title, description, benefits, delay }) => (
+const ServiceCard = ({ image, title, description, benefits, delay }) => (
     <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ delay: delay, duration: 0.5 }}
         whileHover={{ y: -10, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04)" }}
-        className="bg-white p-8 rounded-[30px] shadow-lg border border-gray-100 flex flex-col items-start group hover:border-secondary/20 transition-all duration-300 relative overflow-hidden"
+        className="bg-white rounded-[30px] shadow-lg border border-gray-100 flex flex-col group hover:border-secondary/20 transition-all duration-300 relative overflow-hidden h-full"
     >
-        {/* Hover Highlight */}
-        <div className="absolute top-0 left-0 w-2 h-0 group-hover:h-full bg-secondary transition-all duration-300"></div>
-
-        <div className="h-16 w-16 bg-blue-50 rounded-2xl flex items-center justify-center mb-6 text-3xl group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-            {icon}
+        {/* Image Header */}
+        <div className="h-48 overflow-hidden relative">
+            <div className="absolute inset-0 bg-primary/10 group-hover:bg-transparent transition-colors duration-500 z-10"></div>
+            <img
+                src={image}
+                alt={title}
+                className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700"
+            />
         </div>
-        <h3 className="text-2xl font-bold mb-4 text-primary group-hover:translate-x-2 transition-transform duration-300">{title}</h3>
-        <p className="text-gray-600 mb-8 leading-relaxed text-sm flex-grow">{description}</p>
 
-        <ul className="space-y-3 w-full">
-            {benefits.map((benefit, index) => (
-                <li key={index} className="flex items-center text-sm font-medium text-gray-700 bg-gray-50 p-2 rounded-lg">
-                    <span className="text-secondary mr-3 text-lg">•</span>
-                    {benefit}
-                </li>
-            ))}
-        </ul>
+        <div className="p-8 flex flex-col flex-grow relative z-20">
+            {/* Hover Highlight Line */}
+            <div className="absolute top-0 left-8 w-12 h-1 bg-secondary rounded-b-lg"></div>
 
-        <button className="mt-8 w-full py-3 rounded-xl border border-gray-200 text-primary font-semibold hover:bg-primary hover:text-white hover:border-transparent transition-all duration-300">
-            Learn More
-        </button>
+            <h3 className="text-2xl font-bold mb-4 text-primary mt-4">{title}</h3>
+            <p className="text-gray-600 mb-8 leading-relaxed text-sm flex-grow">{description}</p>
+
+            <ul className="space-y-3 w-full mb-8">
+                {benefits.map((benefit, index) => (
+                    <li key={index} className="flex items-center text-sm font-medium text-gray-700">
+                        <span className="w-1.5 h-1.5 bg-secondary rounded-full mr-3"></span>
+                        {benefit}
+                    </li>
+                ))}
+            </ul>
+
+            <button className="w-full py-3 rounded-xl border border-gray-200 text-primary font-semibold hover:bg-primary hover:text-white hover:border-transparent transition-all duration-300 mt-auto">
+                Learn More
+            </button>
+        </div>
     </motion.div>
 );
 
 const Services = () => {
     const services = [
         {
-            icon: "📦",
+            image: "https://images.unsplash.com/photo-1620455003848-163e73238128?q=80&w=2070&auto=format&fit=crop",
             title: "Express Parcel",
             description: "Need it there yesterday? Our flagship express service ensures your packages move faster than you can track them.",
             benefits: ["Same-Day Options", "Real-Time GPS", "Priority Handling", "Full Insurance"]
         },
         {
-            icon: "🚢",
+            image: "https://images.unsplash.com/photo-1494412574643-35d324682133?q=80&w=2074&auto=format&fit=crop",
             title: "Global Freight",
             description: "Our global network spans 120+ countries. We handle customs so you don't have to.",
             benefits: ["Customs Clearance", "Air & Sea Freight", "Door-to-Door", "Container Tracking"]
         },
         {
-            icon: "🏭",
+            image: "https://images.unsplash.com/photo-1553413077-190dd305871c?q=80&w=2070&auto=format&fit=crop",
             title: "Smart Warehousing",
             description: "Smart storage located strategically near major transit hubs. Scale your inventory without the overhead.",
             benefits: ["Climate-Controlled", "Inventory System", "Pick & Pack", "24/7 Security"]
         },
         {
-            icon: "🚚",
+            image: "https://images.unsplash.com/photo-1580674285054-bed31e145f59?q=80&w=2070&auto=format&fit=crop",
             title: "Reverse Logistics",
             description: "Returns happen. Make them painless for your customers and profitable for your business.",
             benefits: ["Automated Portals", "Quality Inspection", "Refurbishment", "Efficient Restocking"]
         },
         {
-            icon: "🤖",
+            image: "https://images.unsplash.com/photo-1485827404703-89b55fcc595e?q=80&w=2070&auto=format&fit=crop",
             title: "AI Optimization",
             description: "Our proprietary AI engine calculates the most efficient path for every single package, saving time and fuel.",
             benefits: ["Carbon Tracking", "Lower Costs", "Dynamic Rerouting", "Predictive Analytics"]
         },
         {
-            icon: "💼",
+            image: "https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2032&auto=format&fit=crop",
             title: "Enterprise Solutions",
             description: "Tailored solutions for enterprises. We integrate directly with your supply chain.",
             benefits: ["API Integration", "Dedicated Manager", "Volume Discounts", "Custom Reporting"]
