@@ -1,8 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const ChatBot = () => {
   const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    const handleOpenChatBot = () => {
+      setOpen(true);
+    };
+
+    window.addEventListener("openChatBot", handleOpenChatBot);
+
+    return () => {
+      window.removeEventListener("openChatBot", handleOpenChatBot);
+    };
+  }, []);
   const [messages, setMessages] = useState([
     {
       sender: "bot",
@@ -22,13 +34,21 @@ const ChatBot = () => {
     try {
       setMessages([...newMessages, { sender: "bot", text: "..." }]); // Loading state
 
-      const response = await axios.post('http://localhost:5000/api/ai/chat', { message: input });
+      const response = await axios.post("http://localhost:5000/api/ai/chat", {
+        message: input,
+      });
       const botResponse = response.data.reply;
 
       setMessages([...newMessages, { sender: "bot", text: botResponse }]);
     } catch (error) {
       console.error("Error sending message to chatbot:", error);
-      setMessages([...newMessages, { sender: "bot", text: "Sorry, I'm having trouble connecting to the server." }]);
+      setMessages([
+        ...newMessages,
+        {
+          sender: "bot",
+          text: "Sorry, I'm having trouble connecting to the server.",
+        },
+      ]);
     }
   };
 
@@ -53,10 +73,11 @@ const ChatBot = () => {
                 className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${m.sender === "user"
-                    ? "bg-primary text-white rounded-br-none"
-                    : "bg-white text-gray-800 rounded-bl-none"
-                    }`}
+                  className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${
+                    m.sender === "user"
+                      ? "bg-primary text-white rounded-br-none"
+                      : "bg-white text-gray-800 rounded-bl-none"
+                  }`}
                 >
                   {m.text}
                 </div>
