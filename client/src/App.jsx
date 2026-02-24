@@ -11,6 +11,7 @@ import AdminReports from "./pages/AdminReports";
 import Inbox from "./pages/Inbox";
 import ChatBot from "./components/ChatBot";
 import Footer from "./components/Footer";
+import Contact from "./pages/Contact";
 import "./index.css";
 
 console.log("🚀 NaviLogix Client App Starting...");
@@ -30,6 +31,7 @@ function App() {
             <Route path="/track/:id" element={<Track />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
+            <Route path="/contact" element={<Contact />} />
             <Route path="/inbox" element={<Inbox />} />
             <Route path="/reports" element={<AdminReports />} />
           </Routes>

@@ -72,17 +72,17 @@ const DeliveryMap = ({ parcels }) => {
 
     return (
         <div className="space-y-4">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 md:gap-0">
                 <h3 className="text-xl font-bold text-gray-700">🗺️ Delivery Route</h3>
                 <button
                     onClick={optimizeRoute}
-                    className="bg-secondary text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-red-600 transition-colors"
+                    className="bg-secondary text-white px-4 py-2 rounded-lg font-bold shadow-md hover:bg-red-600 transition-colors w-full md:w-auto"
                 >
                     ⚡ AI Optimize Route
                 </button>
             </div>
 
-            <div className="h-96 rounded-xl overflow-hidden shadow-inner border-2 border-gray-200 z-0 relative">
+            <div className="h-64 md:h-96 rounded-xl overflow-hidden shadow-inner border-2 border-gray-200 z-0 relative">
                 <MapContainer center={center} zoom={9} scrollWheelZoom={false} style={{ height: '100%', width: '100%' }}>
                     <TileLayer
                         attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
