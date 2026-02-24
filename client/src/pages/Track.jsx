@@ -56,7 +56,7 @@ const Track = () => {
         <div className="relative">
           <div className="w-16 h-16 border-4 border-gray-200 border-t-primary rounded-full animate-spin"></div>
           <div className="absolute inset-0 flex items-center justify-center font-bold text-xs text-primary">
-            NL
+            Loading
           </div>
         </div>
       </div>
@@ -86,12 +86,9 @@ const Track = () => {
             <div className="mt-2 md:mt-0">
               <div
                 className={`px-4 py-2 md:px-6 md:py-2 rounded-full text-sm md:text-lg font-bold shadow-lg flex items-center gap-2
-                                ${parcel.status === "Delivered"
-                    ? "bg-green-500 text-white"
-                    : parcel.status === "Returned"
-                      ? "bg-red-500 text-white"
-                      : "bg-secondary text-white"
-                  }`}
+                                ${parcel.status === "Delivered"? "bg-green-500 text-white"
+                                : parcel.status === "Returned" ? "bg-red-500 text-white"
+                                                                :"bg-secondary text-white" }`}
               >
                 <span className="w-2 h-2 md:w-3 md:h-3 bg-white rounded-full animate-pulse"></span>
                 {parcel.status}
