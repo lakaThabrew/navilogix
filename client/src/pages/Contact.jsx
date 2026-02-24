@@ -1,29 +1,33 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import RadialShareMenu from "../components/RadialShareMenu";
+import { useForm, ValidationError } from "@formspree/react";
 
 const Contact = () => {
+  const [state, handleSubmitFormspree] = useForm(
+    import.meta.env.VITE_FORMSPREE_FORM_ID,
+  );
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     subject: "",
     message: "",
   });
-  const [submitted, setSubmitted] = useState(false);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Form submitted:", formData);
-    setSubmitted(true);
-    // Reset form after 3 seconds
-    setTimeout(() => {
-      setSubmitted(false);
-      setFormData({ name: "", email: "", subject: "", message: "" });
-    }, 3000);
+    await handleSubmitFormspree(e);
+
+    if (state.succeeded) {
+      // Reset form after successful submission
+      setTimeout(() => {
+        setFormData({ name: "", email: "", subject: "", message: "" });
+      }, 3000);
+    }
   };
 
   const containerVariants = {
@@ -87,7 +91,6 @@ const Contact = () => {
 
         {/* 2-Column Grid: Form Left, Info Right */}
         <div className="grid grid-cols-1 lg:grid-cols-[1.1fr_0.9fr] gap-x-12 gap-y-16 items-start">
-
           {/* Action Center (Form) */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
@@ -98,7 +101,7 @@ const Contact = () => {
             <div className="bg-[#F8F9FA] p-10 md:p-12 rounded-[50px] shadow-2xl border border-white w-full max-w-[600px] relative overflow-hidden group">
               <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
 
-              {submitted ? (
+              {state.succeeded ? (
                 <motion.div
                   initial={{ scale: 0.8, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -110,9 +113,13 @@ const Contact = () => {
                   <h2 className="text-3xl font-black text-[#001F3F] mb-4">
                     Message Dispatched!
                   </h2>
+                  <p className="text-gray-600">We'll get back to you soon!</p>
                 </motion.div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-8 relative z-10"
+                >
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-3">
                       <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
@@ -127,6 +134,12 @@ const Contact = () => {
                         placeholder="John Doe"
                         className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px] font-semibold"
                       />
+                      <ValidationError
+                        prefix="Name"
+                        field="name"
+                        errors={state.errors}
+                        className="text-red-500 text-xs mt-1"
+                      />
                     </div>
                     <div className="space-y-3">
                       <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
@@ -140,6 +153,12 @@ const Contact = () => {
                         onChange={handleChange}
                         placeholder="john@example.com"
                         className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px] font-semibold"
+                      />
+                      <ValidationError
+                        prefix="Email"
+                        field="email"
+                        errors={state.errors}
+                        className="text-red-500 text-xs mt-1"
                       />
                     </div>
                   </div>
@@ -156,6 +175,12 @@ const Contact = () => {
                       placeholder="What can we help you solve?"
                       className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px) font-semibold"
                     />
+                    <ValidationError
+                      prefix="Subject"
+                      field="subject"
+                      errors={state.errors}
+                      className="text-red-500 text-xs mt-1"
+                    />
                   </div>
                   <div className="space-y-3">
                     <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
@@ -170,16 +195,39 @@ const Contact = () => {
                       placeholder="Tell us about your global logistics requirements..."
                       className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px] font-semibold resize-none"
                     ></textarea>
+                    <ValidationError
+                      prefix="Message"
+                      field="message"
+                      errors={state.errors}
+                      className="text-red-500 text-xs mt-1"
+                    />
                   </div>
                   <motion.button
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     type="submit"
-                    className="w-full bg-[#001F3F] text-white py-5 rounded-2xl font-black text-[13px] shadow-2xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.2em]"
+                    disabled={state.submitting}
+                    className="w-full bg-[#001F3F] text-white py-5 rounded-2xl font-black text-2xl shadow-2xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.2em] disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    Send Message
-                    <span className="text-2xl animate-pulse">➡️</span>
+                    {state.submitting ? (
+                      <>
+                        Sending
+                        <span className="text-2xl animate-spin">⏳</span>
+                      </>
+                    ) : (
+                      <>
+                        Send
+                        <span className="text-2xl animate-pulse">Message</span>
+                      </>
+                    )}
                   </motion.button>
+
+                  {state.errors && state.errors.length > 0 && (
+                    <p className="text-red-500 text-sm text-center mt-4">
+                      Oops! There was an error submitting your form. Please try
+                      again.
+                    </p>
+                  )}
                 </form>
               )}
             </div>
@@ -257,20 +305,15 @@ const Contact = () => {
                 <span className="text-blue-100/40">Our Experts are Ready.</span>
               </h3>
               <p className="text-blue-100/60 text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
-                Experience the next generation of logistics support. Whether it's an urgent
-                tracking request or a complex supply chain inquiry, we're here to help instantly.
+                Experience the next generation of logistics support. Whether
+                it's an urgent tracking request or a complex supply chain
+                inquiry, we're here to help instantly.
               </p>
               <div className="flex flex-wrap justify-center lg:justify-start gap-6 pt-4">
                 <motion.button
                   whileHover={{ scale: 1.05, y: -5 }}
                   whileTap={{ scale: 0.95 }}
-                  className="bg-white text-primary px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-[0_20px_40px_-5px_rgba(255,255,255,0.2)] hover:bg-gray-50 transition-all font-sans"
-                >
-                  Knowledge Base
-                </motion.button>
-                <motion.button
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  whileTap={{ scale: 0.95 }}
+                  onClick={() => window.dispatchEvent(new Event("openChatBot"))}
                   className="bg-[#FF4136] text-white px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.3em] shadow-[0_20px_40px_-5px_rgba(255,65,54,0.3)] hover:brightness-110 transition-all border-none font-sans"
                 >
                   Consult with AI
@@ -280,7 +323,9 @@ const Contact = () => {
 
             <div className="flex flex-col items-center gap-12 lg:pl-20">
               <div className="text-center">
-                <h4 className="text-[10px] font-black text-blue-100/30 uppercase tracking-[0.5em] mb-4">Social Ecosystem</h4>
+                <h4 className="text-[10px] font-black text-blue-100/30 uppercase tracking-[0.5em] mb-4">
+                  Social Ecosystem
+                </h4>
                 <div className="w-20 h-1 bg-gradient-to-r from-transparent via-[#FF4136]/50 to-transparent mx-auto"></div>
               </div>
               <div className="scale-[1.3] md:scale-[1.5] drop-shadow-[0_0_50px_rgba(255,65,54,0.5)] transition-all hover:scale-[1.6] duration-700">
