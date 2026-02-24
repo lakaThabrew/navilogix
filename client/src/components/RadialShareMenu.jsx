@@ -153,7 +153,7 @@ export default function RadialShareMenu() {
           aria-label="Share"
         >
           <motion.div
-            animate={{ rotate: open ? 45 : 0 }}
+            animate={{ rotate: open ? 360 : 0 }}
             transition={{ type: "spring", stiffness: 260, damping: 20 }}
           >
             <Share2 size={28} className={open ? "text-secondary" : "text-primary"} />
