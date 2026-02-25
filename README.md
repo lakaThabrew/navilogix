@@ -10,7 +10,7 @@ NaviLogix is a comprehensive parcel tracking and delivery management system desi
 - 🔐 **Role-Based Access Control**: 5 user levels with customized dashboards
   - Guest Users: Track parcels without login
   - Regular Users: Personalized dashboard and reporting
-  - Delivery Personnel: Daily task lists and route optimization
+  - Delivery Persons: Daily task lists and route optimization
   - Branch Heads: Parcel management and notifications
   - Main Admin: Full system control and analytics
 - 📍 **Smart Branch Assignment**: Automatic routing based on delivery address
@@ -19,6 +19,9 @@ NaviLogix is a comprehensive parcel tracking and delivery management system desi
 - 🗺️ **Route Optimization**: OpenStreetMap integration for shortest delivery paths
 - 💰 **COD Management**: Cash-on-delivery tracking and income reporting
 - 📈 **Analytics & Reports**: Time-based, type-based, and status-based reporting
+- 📧 **Contact Form**: Formspree integration for seamless customer inquiries
+- 🔗 **Social Sharing**: Radial share menu with multiple social platforms
+- 💫 **Interactive Animations**: Framer Motion powered smooth transitions
 
 ## 🛠️ Tech Stack
 
@@ -27,8 +30,12 @@ NaviLogix is a comprehensive parcel tracking and delivery management system desi
 - React 18 with Vite
 - Tailwind CSS for styling
 - Framer Motion for animations
+- Lucide React for icons
 - Axios for API calls
 - React Router for navigation
+- Formspree for contact form handling
+- React Leaflet for maps
+- Chart.js for data visualization
 
 **Backend:**
 
@@ -57,7 +64,7 @@ Before you begin, ensure you have the following installed:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/yourusername/navilogix.git
+git clone https://github.com/lakaThabreew/navilogix.git
 cd navilogix
 ```
 
@@ -90,7 +97,38 @@ cd ../client
 npm install
 ```
 
-### 4. Database Setup
+Create a `.env` file in the `client` folder:
+
+```env
+# Formspree Configuration
+VITE_FORMSPREE_FORM_ID=your_formspree_form_id_here
+```
+
+To get your Formspree Form ID:
+
+1. Sign up at [Formspree.io](https://formspree.io)
+2. Create a new form
+3. Copy your form ID (e.g., `xkovkrob`)
+4. Add it to the `.env` file
+
+**Note:** After updating `.env` files, restart the development server for changes to take effect.
+
+### 4. Environment Variables Summary
+
+**Server (.env):**
+
+- `PORT` - Server port (default: 5000)
+- `MONGO_URI` - MongoDB connection string
+- `JWT_SECRET` - Secret key for JWT tokens
+- `NOMINATIM_URL` - OpenStreetMap geocoding service
+- `OSRM_URL` - Route optimization service
+- `GEMINI_API_KEY` - Google Gemini API key for chatbot
+
+**Client (.env):**
+
+- `VITE_FORMSPREE_FORM_ID` - Formspree form ID for contact form
+
+### 5. Database Setup
 
 **Option A: Local MongoDB**
 
@@ -110,7 +148,7 @@ sudo systemctl start mongod
 2. Create a cluster and get connection string
 3. Update `MONGO_URI` in `.env` with your Atlas connection string
 
-### 5. Seed Sample Data
+### 6. Seed Sample Data
 
 Populate the database with sample data (3 branches, 8 users, 5 parcels):
 
@@ -126,7 +164,7 @@ npm run seed
 - Delivery Person: `sunil@example.com`
 - Regular User: `chamara@example.com`
 
-### 6. Run the Application
+### 7. Run the Application
 
 **Start Backend Server:**
 
@@ -145,6 +183,42 @@ npm run dev
 ```
 
 Client runs on: `http://localhost:5173`
+
+## 🎯 Key Components
+
+### RadialShareMenu
+
+An interactive social sharing component with animated icons:
+
+- Circular radial menu with 8 social platforms
+- Smooth spring animations
+- Hover effects and responsive design
+- Integrated on Contact page
+
+### Contact Form
+
+Formspree-powered contact form with:
+
+- Real-time validation using ValidationError components
+- Field-specific error messages
+- Loading states during submission
+- Success confirmation messages
+- Environment-based configuration
+
+### AI Chatbot Integration
+
+- Accessible from any page via floating button
+- Can be triggered from Contact page's "Consult with AI" button
+- Natural language processing via Google Gemini API
+- Real-time parcel tracking queries
+- Persistent chat history during session
+
+### Navigation Features
+
+- Services page "Get Started Now" button → Login page
+- Services page "Contact Sales" button → Contact page
+- Contact page "Consult with AI" button → Opens AI Chatbot
+- Smooth route transitions with Framer Motion
 
 ## 📱 Usage
 
@@ -165,6 +239,14 @@ Client runs on: `http://localhost:5173`
 1. Navigate to `/register`
 2. Fill in details and select role
 3. Regular users will be prompted for payment setup
+
+### Contact & Support
+
+1. Navigate to `/contact` or click "Contact Sales" on the Services page
+2. Fill out the contact form with your inquiry
+3. Click "Consult with AI" to open the AI chatbot for instant help
+4. Use the radial share menu to connect on social platforms
+5. Form submissions are handled via Formspree and sent to your configured email
 
 ## 📚 API Endpoints
 
@@ -191,8 +273,10 @@ NaviLogix/
 │   │   ├── assets/
 │   │   ├── components/    # Reusable components
 │   │   │   ├── ChatBot.jsx
+│   │   │   ├── DeliveryMap.jsx
 │   │   │   ├── Footer.jsx
-│   │   │   └── Navbar.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   └── RadialShareMenu.jsx  # Social share menu
 │   │   ├── pages/         # Route pages
 │   │   │   ├── Home.jsx
 │   │   │   ├── Login.jsx
@@ -200,25 +284,39 @@ NaviLogix/
 │   │   │   ├── Dashboard.jsx
 │   │   │   ├── Track.jsx
 │   │   │   ├── About.jsx
-│   │   │   └── Services.jsx
+│   │   │   ├── Services.jsx
+│   │   │   ├── Contact.jsx        # Contact form with Formspree
+│   │   │   ├── Inbox.jsx
+│   │   │   └── AdminReports.jsx
 │   │   ├── App.jsx
 │   │   └── main.jsx
+│   ├── .env              # Environment variables
+│   ├── .env.example      # Environment template
 │   ├── package.json
+│   ├── tailwind.config.js
 │   └── vite.config.js
 │
 ├── server/                # Node.js backend
 │   ├── config/
-│   │   └── db.js         # MongoDB connection
+│   │   ├── db.js         # MongoDB connection
+│   │   └── constants.js
 │   ├── controllers/
 │   │   ├── authController.js
-│   │   └── parcelController.js
+│   │   ├── parcelController.js
+│   │   ├── messageController.js
+│   │   └── aiController.js  # AI chatbot logic
 │   ├── models/
 │   │   ├── User.js
 │   │   ├── Parcel.js
-│   │   └── Branch.js
+│   │   ├── Branch.js
+│   │   └── Message.js
 │   ├── routes/
 │   │   ├── authRoutes.js
-│   │   └── parcelRoutes.js
+│   │   ├── parcelRoutes.js
+│   │   ├── messageRoutes.js
+│   │   └── aiRoutes.js
+│   ├── middleware/
+│   │   └── authMiddleware.js
 │   ├── .env
 │   ├── server.js
 │   ├── seedData.js
@@ -262,6 +360,17 @@ NaviLogix/
 - Ensure backend CORS is configured correctly
 - Check that both servers are running
 
+**Contact Form Not Working:**
+
+- Verify `VITE_FORMSPREE_FORM_ID` is set in `client/.env`
+- Restart the development server after adding environment variables
+- Ensure you have a valid Formspree account and form ID
+
+**Icons Not Displaying:**
+
+- Ensure `lucide-react` is installed: `npm install lucide-react`
+- Clear browser cache and restart dev server
+
 ## 🤝 Contributing
 
 1. Fork the repository
@@ -287,6 +396,9 @@ Your Name
 - MongoDB for database solutions
 - React and Node.js communities
 - Google Gemini AI for chatbot capabilities
+- Formspree for contact form handling
+- Lucide for beautiful icon library
+- Framer Motion for animation framework
 
 ## 📞 Support
 
