@@ -93,12 +93,12 @@ const Inbox = () => {
                             >
                                 <div className={`w-3 h-3 rounded-full mt-2 flex-shrink-0 ${msg.isRead ? 'bg-gray-300' : 'bg-blue-500 shadow-glow'}`}></div>
                                 <div className="flex-1">
-                                    <div className="flex justify-between items-start mb-1">
+                                    <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-2 gap-2">
                                         <h4 className="font-bold text-gray-800 text-lg">
                                             {msg.senderId?.name || 'Unknown Sender'}
-                                            <span className="text-sm font-normal text-gray-500 ml-2">&lt;{msg.senderId?.email}&gt;</span>
+                                            <span className="text-xs sm:text-sm font-normal text-gray-500 ml-2">&lt;{msg.senderId?.email}&gt;</span>
                                         </h4>
-                                        <span className="text-xs text-gray-400 font-mono whitespace-nowrap">
+                                        <span className="text-[10px] sm:text-xs text-gray-400 font-mono bg-gray-50 px-2 py-1 rounded-md">
                                             {new Date(msg.createdAt).toLocaleString()}
                                         </span>
                                     </div>
