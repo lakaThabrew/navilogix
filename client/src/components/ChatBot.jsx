@@ -73,11 +73,10 @@ const ChatBot = () => {
                 className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${
-                    m.sender === "user"
+                  className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${m.sender === "user"
                       ? "bg-primary text-white rounded-br-none"
                       : "bg-white text-gray-800 rounded-bl-none"
-                  }`}
+                    }`}
                 >
                   {m.text}
                 </div>
@@ -103,10 +102,14 @@ const ChatBot = () => {
         </div>
       )}
       <button
-        className="w-16 h-16 bg-primary text-white rounded-full shadow-lg flex items-center justify-center text-3xl hover:bg-secondary hover:scale-110 transition-all duration-300"
+        className="w-16 h-16 bg-primary text-white rounded-full shadow-lg flex items-center justify-center text-3xl hover:bg-secondary hover:scale-110 transition-all duration-300 overflow-hidden group"
         onClick={() => setOpen(!open)}
       >
-        💬
+        <img
+          src="/ai_icon.png"
+          alt="AI Chat"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+        />
       </button>
     </div>
   );
