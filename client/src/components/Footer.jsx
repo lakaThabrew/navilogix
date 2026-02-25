@@ -12,9 +12,13 @@ const Footer = () => {
             <div className="max-w-7xl mx-auto px-6 sm:px-8 lg:px-12 relative z-10">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8 mb-16 text-center md:text-left">
                     {/* Brand Section */}
-                    <div className="flex flex-col items-center md:items-start">
-                        <div className="text-3xl font-bold flex items-center gap-2 mb-6 tracking-tight">
-                            <span className="text-secondary">NAVI</span>LOGIX
+                    <div className="flex flex-col items-center md:items-start text-left">
+                        <div className="bg-white p-3 rounded-2xl mb-8 shadow-2xl inline-block">
+                            <img
+                                src="/logo_bg_removed.png"
+                                alt="NaviLogix Logo"
+                                className="h-10 md:h-12 w-auto object-contain"
+                            />
                         </div>
                         <p className="text-blue-200 mb-8 leading-relaxed text-sm md:text-base max-w-xs mx-auto md:mx-0">
                             Transforming the logistics industry with AI-driven solutions. Delivering more than just parcels; we deliver promises.

@@ -13,8 +13,24 @@ export default function RadialShareMenu() {
     return () => clearTimeout(timer);
   }, []);
 
-  // circle geometry - adjusted for better fit
-  const radius = 95;
+  // circle geometry - adjusted for mobile responsiveness
+  const [radius, setRadius] = useState(95);
+  const [containerSize, setContainerSize] = useState(450);
+
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 640) {
+        setRadius(75);
+        setContainerSize(320);
+      } else {
+        setRadius(95);
+        setContainerSize(450);
+      }
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const items = useMemo(
     () => [
@@ -90,7 +106,10 @@ export default function RadialShareMenu() {
 
   return (
     <div className="w-full flex items-center justify-center lg:justify-start">
-      <div className="relative w-[450px] h-[450px] grid place-items-center overflow-visible">
+      <div
+        style={{ width: containerSize, height: containerSize }}
+        className="relative grid place-items-center overflow-visible"
+      >
         {/* Items */}
         <AnimatePresence>
           {open &&

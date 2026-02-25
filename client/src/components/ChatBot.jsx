@@ -55,14 +55,14 @@ const ChatBot = () => {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {open && (
-        <div className="floating-card w-80 h-96 flex flex-col mb-4 p-0 overflow-hidden shadow-2xl animate-fade-in-up">
+        <div className="floating-card w-[calc(100vw-3rem)] sm:w-80 h-96 flex flex-col mb-4 p-0 overflow-hidden shadow-2xl animate-fade-in-up">
           <div className="bg-primary p-4 text-white font-bold flex justify-between items-center rounded-t-[20px]">
             <span>AI Assistant</span>
             <button
               onClick={() => setOpen(false)}
-              className="text-white hover:text-secondary"
+              className="text-white hover:text-secondary text-xl"
             >
-              ✖
+              &times;
             </button>
           </div>
 
@@ -73,11 +73,10 @@ const ChatBot = () => {
                 className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${
-                    m.sender === "user"
-                      ? "bg-primary text-white rounded-br-none"
-                      : "bg-white text-gray-800 rounded-bl-none"
-                  }`}
+                  className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${m.sender === "user"
+                    ? "bg-primary text-white rounded-br-none"
+                    : "bg-white text-gray-800 rounded-bl-none"
+                    }`}
                 >
                   {m.text}
                 </div>
@@ -103,10 +102,14 @@ const ChatBot = () => {
         </div>
       )}
       <button
-        className="w-16 h-16 bg-primary text-white rounded-full shadow-lg flex items-center justify-center text-3xl hover:bg-secondary hover:scale-110 transition-all duration-300"
+        className="w-16 h-16 bg-primary text-white rounded-full shadow-lg flex items-center justify-center text-3xl hover:bg-secondary hover:scale-110 transition-all duration-300 overflow-hidden group"
         onClick={() => setOpen(!open)}
       >
-        💬
+        <img
+          src="/ai_icon.png"
+          alt="AI Chat"
+          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+        />
       </button>
     </div>
   );
