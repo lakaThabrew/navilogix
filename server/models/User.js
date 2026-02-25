@@ -11,6 +11,8 @@ const userSchema = new mongoose.Schema({
     },
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch', default: null }, // For branch_head and delivery_person
     paymentStatus: { type: String, enum: ['paid', 'unpaid'], default: 'unpaid' }, // For regular users
+    resetPasswordToken: { type: String },
+    resetPasswordExpire: { type: Date },
     createdAt: { type: Date, default: Date.now }
 });
 
