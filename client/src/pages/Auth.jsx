@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
+import { Eye, EyeOff } from "lucide-react";
 
 const Auth = () => {
     const navigate = useNavigate();
@@ -18,6 +19,8 @@ const Auth = () => {
     const [name, setName] = useState("");
     const [role, setRole] = useState("regular");
     const [resetToken, setResetToken] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
+    const [strength, setStrength] = useState({ score: 0, label: "Empty", color: "bg-gray-200" });
 
     // Sync mode with URL
     useEffect(() => {
@@ -28,7 +31,25 @@ const Auth = () => {
         } else {
             setMode("login");
         }
+        setShowPassword(false);
     }, [location]);
+
+    const calculateStrength = (pass) => {
+        let score = 0;
+        if (pass.length > 5) score++;
+        if (pass.length > 8) score++;
+        if (/[A-Z]/.test(pass)) score++;
+        if (/[0-9]/.test(pass)) score++;
+        if (/[^A-Za-z0-9]/.test(pass)) score++;
+
+        const result = { score, label: "Weak", color: "bg-red-500" };
+        if (score > 2) { result.label = "Fair"; result.color = "bg-orange-400"; }
+        if (score > 3) { result.label = "Good"; result.color = "bg-blue-400"; }
+        if (score > 4) { result.label = "Strong"; result.color = "bg-green-500"; }
+        if (pass.length === 0) { result.label = "Empty"; result.score = 0; result.color = "bg-gray-200"; }
+
+        setStrength(result);
+    };
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -237,14 +258,23 @@ const Auth = () => {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">Password</label>
-                                            <input
-                                                type="password"
-                                                required
-                                                className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
-                                                placeholder="••••••••"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
+                                            <div className="relative">
+                                                <input
+                                                    type={showPassword ? "text" : "password"}
+                                                    required
+                                                    className="w-full bg-gray-50 border-2 border-transparent p-4 pr-12 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                                                    placeholder="••••••••"
+                                                    value={password}
+                                                    onChange={(e) => setPassword(e.target.value)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                                                >
+                                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                                </button>
+                                            </div>
                                         </div>
                                         <div className="text-right">
                                             <button
@@ -314,14 +344,42 @@ const Auth = () => {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">Password</label>
-                                            <input
-                                                type="password"
-                                                required
-                                                className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
-                                                placeholder="••••••••"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
+                                            <div className="relative">
+                                                <input
+                                                    type={showPassword ? "text" : "password"}
+                                                    required
+                                                    className="w-full bg-gray-50 border-2 border-transparent p-4 pr-12 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                                                    placeholder="••••••••"
+                                                    value={password}
+                                                    onChange={(e) => {
+                                                        setPassword(e.target.value);
+                                                        calculateStrength(e.target.value);
+                                                    }}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                                                >
+                                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                                </button>
+                                            </div>
+                                            {/* Strength Meter */}
+                                            {password.length > 0 && (
+                                                <div className="px-1 pt-1">
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">Security Strength</span>
+                                                        <span className={`text-[10px] font-black uppercase tracking-wider ${strength.label === 'Strong' ? 'text-green-500' : 'text-orange-400'}`}>{strength.label}</span>
+                                                    </div>
+                                                    <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                                                        <motion.div
+                                                            initial={{ width: 0 }}
+                                                            animate={{ width: `${(strength.score / 5) * 100}%` }}
+                                                            className={`h-full ${strength.color} transition-all duration-500`}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                         <button
                                             type="submit"
@@ -397,25 +455,43 @@ const Auth = () => {
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">New Password</label>
-                                            <input
-                                                type="password"
-                                                required
-                                                className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
-                                                placeholder="••••••••"
-                                                value={password}
-                                                onChange={(e) => setPassword(e.target.value)}
-                                            />
+                                            <div className="relative">
+                                                <input
+                                                    type={showPassword ? "text" : "password"}
+                                                    required
+                                                    className="w-full bg-gray-50 border-2 border-transparent p-4 pr-12 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                                                    placeholder="••••••••"
+                                                    value={password}
+                                                    onChange={(e) => setPassword(e.target.value)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                                                >
+                                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                                </button>
+                                            </div>
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">Confirm Password</label>
-                                            <input
-                                                type="password"
-                                                required
-                                                className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
-                                                placeholder="••••••••"
-                                                value={confirmPassword}
-                                                onChange={(e) => setConfirmPassword(e.target.value)}
-                                            />
+                                            <div className="relative">
+                                                <input
+                                                    type={showPassword ? "text" : "password"}
+                                                    required
+                                                    className="w-full bg-gray-50 border-2 border-transparent p-4 pr-12 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                                                    placeholder="••••••••"
+                                                    value={confirmPassword}
+                                                    onChange={(e) => setConfirmPassword(e.target.value)}
+                                                />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                                                >
+                                                    {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                                                </button>
+                                            </div>
                                         </div>
                                         <button
                                             type="submit"
