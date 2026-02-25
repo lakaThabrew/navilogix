@@ -305,31 +305,16 @@ const Auth = () => {
                                     transition={{ duration: 0.4 }}
                                 >
                                     <form onSubmit={handleRegister} className="space-y-5">
-                                        <div className="grid grid-cols-2 gap-4">
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">Full Name</label>
-                                                <input
-                                                    type="text"
-                                                    required
-                                                    className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
-                                                    placeholder="John Doe"
-                                                    value={name}
-                                                    onChange={(e) => setName(e.target.value)}
-                                                />
-                                            </div>
-                                            <div className="space-y-2">
-                                                <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">Account</label>
-                                                <select
-                                                    className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
-                                                    value={role}
-                                                    onChange={(e) => setRole(e.target.value)}
-                                                >
-                                                    <option value="regular">Regular</option>
-                                                    <option value="delivery_person">Delivery</option>
-                                                    <option value="branch_head">Branch</option>
-                                                    <option value="main_admin">Admin</option>
-                                                </select>
-                                            </div>
+                                        <div className="space-y-2">
+                                            <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">Full Name</label>
+                                            <input
+                                                type="text"
+                                                required
+                                                className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                                                placeholder="John Doe"
+                                                value={name}
+                                                onChange={(e) => setName(e.target.value)}
+                                            />
                                         </div>
                                         <div className="space-y-2">
                                             <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">Email Address</label>

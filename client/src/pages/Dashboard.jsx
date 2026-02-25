@@ -25,6 +25,13 @@ const Dashboard = () => {
     cod: 0,
   });
   const [messages, setMessages] = useState([]);
+  const [branches, setBranches] = useState([]);
+  const [branchForm, setBranchForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    branchId: ""
+  });
 
   useEffect(() => {
     console.log("📋 [CLIENT DASHBOARD] Component mounted");
@@ -45,9 +52,19 @@ const Dashboard = () => {
       fetchParcels(u);
       if (u.role === 'main_admin') {
         fetchMessages(u);
+        fetchBranches();
       }
     }
   }, [navigate]);
+
+  const fetchBranches = async () => {
+    try {
+      const { data } = await axios.get("http://localhost:5000/api/auth/branches");
+      setBranches(data);
+    } catch (error) {
+      console.error("Error fetching branches:", error);
+    }
+  };
 
   const fetchParcels = async (userInfo = user) => {
     console.log("📦 [CLIENT DASHBOARD] Fetching parcels...");
@@ -89,6 +106,23 @@ const Dashboard = () => {
       fetchMessages();
     } catch (error) {
       console.error("Error marking message as read:", error);
+    }
+  };
+
+  const handleCreateBranchAdmin = async (e) => {
+    e.preventDefault();
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${user.token}` },
+      };
+      await axios.post("http://localhost:5000/api/auth/register", {
+        ...branchForm,
+        role: "branch_head"
+      }, config);
+      alert("Branch Admin Created!");
+      setBranchForm({ name: "", email: "", password: "", branchId: "" });
+    } catch (error) {
+      alert("Failed: " + (error.response?.data?.message || error.message));
     }
   };
 
@@ -370,6 +404,55 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+        </div>
+      )}
+
+      {/* User Management Section (Main Admin Only) */}
+      {user.role === "main_admin" && (
+        <div className="floating-card mb-12">
+          <h3 className="text-2xl font-bold text-primary mb-6 border-b pb-2">
+            👤 User Management: Add Branch Head
+          </h3>
+          <form onSubmit={handleCreateBranchAdmin} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <input
+              type="text"
+              className="input-field"
+              placeholder="Full Name"
+              value={branchForm.name}
+              onChange={(e) => setBranchForm({ ...branchForm, name: e.target.value })}
+              required
+            />
+            <input
+              type="email"
+              className="input-field"
+              placeholder="Email Address"
+              value={branchForm.email}
+              onChange={(e) => setBranchForm({ ...branchForm, email: e.target.value })}
+              required
+            />
+            <input
+              type="password"
+              className="input-field"
+              placeholder="Password"
+              value={branchForm.password}
+              onChange={(e) => setBranchForm({ ...branchForm, password: e.target.value })}
+              required
+            />
+            <select
+              className="input-field"
+              value={branchForm.branchId}
+              onChange={(e) => setBranchForm({ ...branchForm, branchId: e.target.value })}
+              required
+            >
+              <option value="">Select Branch</option>
+              {branches.map(b => (
+                <option key={b._id} value={b._id}>{b.branchName}</option>
+              ))}
+            </select>
+            <button type="submit" className="btn-primary md:col-span-2 lg:col-span-4 font-bold">
+              Register Branch Admin
+            </button>
+          </form>
         </div>
       )}
 
