@@ -260,8 +260,7 @@ const Auth = () => {
                                             disabled={isLoading}
                                             className="w-full bg-[#001F3F] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-black transition-all flex justify-center items-center gap-3"
                                         >
-                                            {isLoading ? "Signing in..." : "Sign In"}
-                                            {!isLoading && <span>➡️</span>}
+                                            {isLoading ? "Signing in..." : "SIGN IN"}
                                         </button>
                                     </form>
                                 </motion.div>
@@ -330,7 +329,6 @@ const Auth = () => {
                                             className="w-full bg-[#001F3F] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-black transition-all flex justify-center items-center gap-3"
                                         >
                                             {isLoading ? "Creating..." : "Create Account"}
-                                            {!isLoading && <span>🚀</span>}
                                         </button>
                                     </form>
                                 </motion.div>
