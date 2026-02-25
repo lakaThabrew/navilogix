@@ -33,9 +33,14 @@ const Navbar = () => {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="flex justify-between items-center h-20">
                     {/* Logo */}
-                    <Link to="/" className="text-3xl font-bold flex items-center gap-2 tracking-tighter group">
-                        <span className="text-secondary group-hover:scale-110 transition-transform duration-300 inline-block">NAVI</span>
-                        <span className="text-primary group-hover:text-primary/80 transition-colors">LOGIX</span>
+                    <Link to="/" className="flex items-center gap-3 group">
+                        <motion.img
+                            src="/logo_bg_removed.png"
+                            alt="NaviLogix Logo"
+                            className="h-14 w-auto object-contain"
+                            whileHover={{ scale: 1.05, rotate: -2 }}
+                            transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                        />
                     </Link>
 
                     {/* Desktop Menu */}
