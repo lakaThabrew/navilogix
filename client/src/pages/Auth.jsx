@@ -103,7 +103,7 @@ const Auth = () => {
 
             <div className="flex w-full max-w-5xl bg-white rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.05)] overflow-hidden border border-gray-100">
                 {/* Visual Panel */}
-                <div className={`hidden md:flex flex-col justify-center items-center w-5/12 p-12 text-white relative transition-all duration-700 ${isLogin ? 'bg-[#001F3F]' : 'bg-[#FF4136]'}`}>
+                <div className="hidden md:flex flex-col justify-center items-center w-5/12 p-12 text-white relative transition-all duration-700 bg-[#001F3F]">
                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
 
                     <AnimatePresence mode="wait">
@@ -134,8 +134,8 @@ const Auth = () => {
                 {/* Content Panel */}
                 <div className="w-full md:w-7/12 p-8 md:p-14 flex flex-col justify-center bg-white">
                     {/* LOGO */}
-                    <div className="flex justify-center mb-16 transition-transform hover:scale-105 duration-500">
-                        <img src="/logo_bg_removed.png" alt="Logo" className="h-32 w-auto object-contain" />
+                    <div className="flex justify-center mb-2 transition-transform hover:scale-105 duration-500">
+                        <img src="/logo_bg_removed.png" alt="Logo" className="h-48 w-auto object-contain" />
                     </div>
 
                     {/* MODE TOGGLE (PILL) */}
@@ -161,7 +161,7 @@ const Auth = () => {
                             </button>
                             <button
                                 onClick={() => toggleMode('register')}
-                                className={`flex-1 relative z-10 text-sm font-black transition-colors duration-300 ${!isLogin ? 'text-[#FF4136]' : 'text-gray-400'}`}
+                                className={`flex-1 relative z-10 text-sm font-black transition-colors duration-300 ${!isLogin ? 'text-[#001F3F]' : 'text-gray-400'}`}
                             >
                                 REGISTER
                             </button>
@@ -230,7 +230,7 @@ const Auth = () => {
                                                 <input
                                                     type="text"
                                                     required
-                                                    className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-secondary/10 transition-all font-semibold"
+                                                    className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
                                                     placeholder="John Doe"
                                                     value={name}
                                                     onChange={(e) => setName(e.target.value)}
@@ -239,7 +239,7 @@ const Auth = () => {
                                             <div className="space-y-2">
                                                 <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">Account</label>
                                                 <select
-                                                    className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-secondary/10 transition-all font-semibold"
+                                                    className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
                                                     value={role}
                                                     onChange={(e) => setRole(e.target.value)}
                                                 >
@@ -255,7 +255,7 @@ const Auth = () => {
                                             <input
                                                 type="email"
                                                 required
-                                                className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-secondary/10 transition-all font-semibold"
+                                                className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
                                                 placeholder="your@email.com"
                                                 value={email}
                                                 onChange={(e) => setEmail(e.target.value)}
@@ -266,7 +266,7 @@ const Auth = () => {
                                             <input
                                                 type="password"
                                                 required
-                                                className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-secondary/10 transition-all font-semibold"
+                                                className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
                                                 placeholder="••••••••"
                                                 value={password}
                                                 onChange={(e) => setPassword(e.target.value)}
@@ -275,7 +275,7 @@ const Auth = () => {
                                         <button
                                             type="submit"
                                             disabled={isLoading}
-                                            className="w-full bg-[#FF4136] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-red-600 transition-all flex justify-center items-center gap-3"
+                                            className="w-full bg-[#001F3F] text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl hover:bg-black transition-all flex justify-center items-center gap-3"
                                         >
                                             {isLoading ? "Creating..." : "Create Account"}
                                             {!isLoading && <span>🚀</span>}
