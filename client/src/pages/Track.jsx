@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams } from "react-router-dom";
 import { motion } from "framer-motion";
 import DeliveryMap from "../components/DeliveryMap";
+import logger from "../utils/logger";
 
 const Track = () => {
   const { id } = useParams();
@@ -10,24 +11,20 @@ const Track = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    console.log("🔍 [CLIENT TRACK] Tracking parcel:", id);
+    logger.info("🔍 [CLIENT TRACK] Tracking parcel: " + id);
     const fetchParcel = async () => {
       try {
-        console.log("📤 [CLIENT TRACK] Fetching parcel data...");
+        logger.info("📤 [CLIENT TRACK] Fetching parcel data...");
         const { data } = await axios.get(
           `http://localhost:5000/api/parcels/track/${id}`,
         );
-        console.log(
-          "✅ [CLIENT TRACK] Parcel found:",
-          data.trackingId,
-          "Status:",
-          data.status,
+        logger.info(
+          "✅ [CLIENT TRACK] Parcel found: " + data.trackingId + " Status: " + data.status,
         );
         setParcel(data);
       } catch (err) {
-        console.error(
-          "❌ [CLIENT TRACK] Error:",
-          err.response?.data?.message || err.message,
+        logger.error(
+          "❌ [CLIENT TRACK] Error: " + (err.response?.data?.message || err.message),
         );
         setError("Parcel not found");
       }
@@ -86,9 +83,9 @@ const Track = () => {
             <div className="mt-2 md:mt-0">
               <div
                 className={`px-4 py-2 md:px-6 md:py-2 rounded-full text-sm md:text-lg font-bold shadow-lg flex items-center gap-2
-                                ${parcel.status === "Delivered"? "bg-green-500 text-white"
-                                : parcel.status === "Returned" ? "bg-red-500 text-white"
-                                                                :"bg-secondary text-white" }`}
+                                ${parcel.status === "Delivered" ? "bg-green-500 text-white"
+                    : parcel.status === "Returned" ? "bg-red-500 text-white"
+                      : "bg-secondary text-white"}`}
               >
                 <span className="w-2 h-2 md:w-3 md:h-3 bg-white rounded-full animate-pulse"></span>
                 {parcel.status}

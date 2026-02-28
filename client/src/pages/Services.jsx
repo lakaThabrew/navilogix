@@ -215,6 +215,53 @@ const Services = () => {
             </div>
           </div>
         </div>
+
+        {/* Story Section */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-0 mt-16">
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="order-2 lg:order-1"
+          >
+            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-8 leading-tight">From Idea to <br /><span className="text-secondary">Global Impact</span></h2>
+            <div className="space-y-6 text-lg text-gray-600 leading-relaxed">
+              <p>
+                Founded in 2024, NaviLogix emerged from a simple question: "Why is shipping so complex?" Traditional logistics were bogged down by paperwork, opacity, and inefficiency.
+              </p>
+              <p>
+                We built NaviLogix on a foundation of AI-driven route optimization and a customer-centric philosophy. We wanted to create a system that feels effortless to the user — where you simply click 'Send', and the rest is taken care of by our digital ecosystem.
+              </p>
+            </div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="order-1 lg:order-2 relative h-[500px]"
+          >
+            <div className="absolute inset-0 bg-secondary/10 rounded-[50px] transform rotate-3 scale-105 blur-lg"></div>
+            <div className="relative h-full w-full bg-white rounded-[50px] shadow-2xl overflow-hidden border-4 border-white">
+              <img
+                src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
+                alt="Global Network"
+                className="w-full h-full object-cover"
+              />
+              {/* Overlay Gradient */}
+              <div className="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
+
+              <div className="absolute bottom-8 right-8 bg-white/90 backdrop-blur p-4 rounded-xl shadow-lg">
+                <div className="flex items-center gap-2">
+                  <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
+                  <span className="font-bold text-primary">Live Connection</span>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

@@ -11,12 +11,14 @@ import Inbox from "./pages/Inbox";
 import ChatBot from "./components/ChatBot";
 import Footer from "./components/Footer";
 import Contact from "./pages/Contact";
+import Profile from "./pages/Profile";
 import "./index.css";
+import logger from "./utils/logger";
 
-console.log("🚀 NaviLogix Client App Starting...");
+logger.info("🚀 NaviLogix Client App Starting...");
 
 function App() {
-  console.log("✓ App component rendered");
+  logger.info("✓ App component rendered");
   return (
     <Router>
       <div className="App flex flex-col min-h-screen">
@@ -34,6 +36,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/inbox" element={<Inbox />} />
             <Route path="/reports" element={<AdminReports />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>
         <ChatBot />

@@ -1,17 +1,18 @@
 import mongoose from 'mongoose';
+import logger from '../utils/logger.js';
 
 const connectDB = async () => {
     try {
-        console.log('🔌 Attempting to connect to MongoDB...');
-        console.log(`📍 Connection URI: ${process.env.MONGO_URI || 'mongodb://localhost:27017/navilogix'}`);
+        logger.info('🔌 Attempting to connect to MongoDB...');
+        logger.info(`📍 Connection URI: ${process.env.MONGO_URI || 'mongodb://localhost:27017/navilogix'}`);
         const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/navilogix', {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-        console.log(`✅ MongoDB Connected: ${conn.connection.host}`);
-        console.log(`📊 Database: ${conn.connection.name}`);
+        logger.info(`✅ MongoDB Connected: ${conn.connection.host}`);
+        logger.info(`📊 Database: ${conn.connection.name}`);
     } catch (error) {
-        console.error(`❌ MongoDB Connection Error: ${error.message}`);
+        logger.error(`❌ MongoDB Connection Error: ${error.message}`);
         process.exit(1);
     }
 };

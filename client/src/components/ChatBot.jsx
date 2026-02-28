@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import logger from "../utils/logger";
 
 const ChatBot = () => {
   const [open, setOpen] = useState(false);
@@ -25,7 +26,7 @@ const ChatBot = () => {
 
   const send = async () => {
     if (!input.trim()) return;
-    console.log("🤖 [CLIENT CHATBOT] User message:", input);
+    logger.info("🤖 [CLIENT CHATBOT] User message: " + input);
     const newMessages = [...messages, { sender: "user", text: input }];
     setMessages(newMessages);
     setInput("");
@@ -41,7 +42,7 @@ const ChatBot = () => {
 
       setMessages([...newMessages, { sender: "bot", text: botResponse }]);
     } catch (error) {
-      console.error("Error sending message to chatbot:", error);
+      logger.error("Error sending message to chatbot: " + error.message, { error });
       setMessages([
         ...newMessages,
         {
