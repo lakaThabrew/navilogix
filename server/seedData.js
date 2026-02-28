@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import User from './models/User.js';
 import Parcel from './models/Parcel.js';
 import Branch from './models/Branch.js';
+import logger from './utils/logger.js';
 
 dotenv.config();
 
@@ -13,9 +14,9 @@ const connectDB = async () => {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
-        console.log('MongoDB Connected');
+        logger.info('MongoDB Connected');
     } catch (error) {
-        console.error(`Error: ${error.message}`);
+        logger.error(`Error: ${error.message}`);
         process.exit(1);
     }
 };
@@ -28,7 +29,7 @@ const seedDatabase = async () => {
         await User.deleteMany({});
         await Parcel.deleteMany({});
         await Branch.deleteMany({});
-        console.log('Cleared existing data');
+        logger.info('Cleared existing data');
 
         // Seed Branches
         const branches = await Branch.create([
@@ -48,7 +49,7 @@ const seedDatabase = async () => {
                 assignedAreas: ['Galle', 'Hikkaduwa', 'Unawatuna']
             }
         ]);
-        console.log('✓ Branches seeded');
+        logger.info('✓ Branches seeded');
 
         // Hash password for users
         const hashedPassword = await bcrypt.hash('password123', 10);
@@ -111,7 +112,7 @@ const seedDatabase = async () => {
                 paymentStatus: 'unpaid'
             }
         ]);
-        console.log('✓ Users seeded (password for all: password123)');
+        logger.info('✓ Users seeded (password for all: password123)');
 
         // Seed Parcels
         const parcels = await Parcel.create([
@@ -245,31 +246,31 @@ const seedDatabase = async () => {
                 ]
             }
         ]);
-        console.log('✓ Parcels seeded');
+        logger.info('✓ Parcels seeded');
 
-        console.log('\n========================================');
-        console.log('✓ Database seeded successfully!');
-        console.log('========================================');
-        console.log('\n📦 Sample Data Summary:');
-        console.log(`- ${branches.length} Branches`);
-        console.log(`- ${users.length} Users`);
-        console.log(`- ${parcels.length} Parcels`);
-        console.log('\n👤 Login Credentials:');
-        console.log('  Admin: admin@navilogix.com / password123');
-        console.log('  Branch Head: kamal@example.com / password123');
-        console.log('  Delivery Person: sunil@example.com / password123');
-        console.log('  Regular User: chamara@example.com / password123');
-        console.log('\n📍 Track Sample Parcels:');
-        console.log('  NL2026001 - Out for Delivery');
-        console.log('  NL2026002 - In Sub Branch');
-        console.log('  NL2026003 - Delivered');
-        console.log('  NL2026004 - In Main Branch');
-        console.log('  NL2026005 - Out for Delivery');
-        console.log('========================================\n');
+        logger.info('\n========================================');
+        logger.info('✓ Database seeded successfully!');
+        logger.info('========================================');
+        logger.info('\n📦 Sample Data Summary:');
+        logger.info(`- ${branches.length} Branches`);
+        logger.info(`- ${users.length} Users`);
+        logger.info(`- ${parcels.length} Parcels`);
+        logger.info('\n👤 Login Credentials:');
+        logger.info('  Admin: admin@navilogix.com / password123');
+        logger.info('  Branch Head: kamal@example.com / password123');
+        logger.info('  Delivery Person: sunil@example.com / password123');
+        logger.info('  Regular User: chamara@example.com / password123');
+        logger.info('\n📍 Track Sample Parcels:');
+        logger.info('  NL2026001 - Out for Delivery');
+        logger.info('  NL2026002 - In Sub Branch');
+        logger.info('  NL2026003 - Delivered');
+        logger.info('  NL2026004 - In Main Branch');
+        logger.info('  NL2026005 - Out for Delivery');
+        logger.info('========================================\n');
 
         process.exit(0);
     } catch (error) {
-        console.error('Error seeding database:', error);
+        logger.error('Error seeding database: ' + error.message, { error });
         process.exit(1);
     }
 };

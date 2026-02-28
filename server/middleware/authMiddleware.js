@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
+import logger from '../utils/logger.js';
 
 export const protect = async (req, res, next) => {
     let token;
@@ -14,7 +15,7 @@ export const protect = async (req, res, next) => {
             req.user = await User.findById(decoded.id).select('-password');
             next();
         } catch (error) {
-            console.error(error);
+            logger.error(`Auth Middleware Error: ${error.message}`);
             res.status(401);
             throw new Error('Not authorized, token failed');
         }
