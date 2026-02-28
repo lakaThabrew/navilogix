@@ -146,3 +146,82 @@ export const resetPassword = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// Admin User Management Endpoints
+export const getUsers = async (req, res) => {
+    try {
+        const users = await User.find({}).populate('branchId', 'branchName');
+        res.json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const updateUserRole = async (req, res) => {
+    const { id } = req.params;
+    const { role, branchId } = req.body;
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        user.role = role || user.role;
+        user.branchId = branchId || user.branchId;
+
+        await user.save();
+
+        // Return populated user for frontend
+        const updatedUser = await User.findById(id).populate('branchId', 'branchName');
+        res.json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+export const deleteUser = async (req, res) => {
+    const { id } = req.params;
+    try {
+        const user = await User.findById(id);
+        if (!user) return res.status(404).json({ message: 'User not found' });
+
+        await user.deleteOne();
+        res.json({ message: 'User removed completely' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// User Profile Management Endpoint
+export const updateUserProfile = async (req, res) => {
+    try {
+        const user = await User.findById(req.user._id);
+
+        if (user) {
+            user.name = req.body.name || user.name;
+            user.email = req.body.email || user.email; // Usually good to check if new email exists, but keeping simple
+
+            if (req.body.password) {
+                const salt = await bcrypt.genSalt(10);
+                user.password = await bcrypt.hash(req.body.password, salt);
+            }
+
+            const updatedUser = await user.save();
+
+            logger.info(`✅ [PROFILE] User profile updated: ${updatedUser.email}`);
+
+            res.json({
+                _id: updatedUser._id,
+                name: updatedUser.name,
+                email: updatedUser.email,
+                role: updatedUser.role,
+                branchId: updatedUser.branchId,
+                paymentStatus: updatedUser.paymentStatus,
+                token: generateToken(updatedUser._id) // Refreshing token could be optional
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        logger.error(`❌ [PROFILE] Update error: ${error.message}`);
+        res.status(500).json({ message: error.message });
+    }
+};
