@@ -11,6 +11,7 @@ import Inbox from "./pages/Inbox";
 import ChatBot from "./components/ChatBot";
 import Footer from "./components/Footer";
 import Contact from "./pages/Contact";
+import Profile from "./pages/Profile";
 import "./index.css";
 import logger from "./utils/logger";
 
@@ -35,6 +36,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/inbox" element={<Inbox />} />
             <Route path="/reports" element={<AdminReports />} />
+            <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>
         <ChatBot />

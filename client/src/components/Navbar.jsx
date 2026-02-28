@@ -14,15 +14,22 @@ const Navbar = () => {
         navigate('/login');
     };
 
-    const navLinks = [
-        { name: 'Home', path: '/' },
-        { name: 'About', path: '/about' },
-        { name: 'Services', path: '/services' },
-        { name: 'Contact', path: '/contact' },
+    let navLinks = [
+        { name: 'Home', path: '/' }
     ];
+
+    // Show marketing pages only to guests and regular users
+    if (!user || !['main_admin', 'branch_head', 'delivery_person'].includes(user.role)) {
+        navLinks.push(
+            { name: 'About', path: '/about' },
+            { name: 'Services', path: '/services' },
+            { name: 'Contact', path: '/contact' }
+        );
+    }
 
     if (user) {
         navLinks.push({ name: 'Dashboard', path: '/dashboard' });
+        navLinks.push({ name: 'Profile', path: '/profile' });
         if (user.role === 'main_admin') {
             navLinks.push({ name: 'Inbox', path: '/inbox' });
             navLinks.push({ name: 'Reports', path: '/reports' });
