@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polyline } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import logger from '../utils/logger';
 
 // Fix Leaflet marker icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -35,14 +36,14 @@ const DeliveryMap = ({ parcels }) => {
                         };
                     } else {
                         // Fallback to Colombo if not found
-                        console.warn(`Address not found: ${address}`);
+                        logger.warn(`Address not found: ${address}`);
                         return {
                             ...p,
                             coords: [6.9271 + (Math.random() - 0.5) * 0.01, 79.8612 + (Math.random() - 0.5) * 0.01]
                         };
                     }
                 } catch (error) {
-                    console.error("Geocoding error:", error);
+                    logger.error("Geocoding error: " + error.message, { error });
                     return {
                         ...p,
                         coords: [6.9271, 79.8612] // Default fallback 
