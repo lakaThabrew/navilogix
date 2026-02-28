@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import logger from "../utils/logger";
 
 const Inbox = () => {
     const navigate = useNavigate();
@@ -25,7 +26,7 @@ const Inbox = () => {
             const { data } = await axios.get("http://localhost:5000/api/messages", config);
             setMessages(data);
         } catch (error) {
-            console.error("Error fetching messages:", error);
+            logger.error("Error fetching messages: " + error.message, { error });
         }
     };
 
@@ -37,7 +38,7 @@ const Inbox = () => {
             await axios.put(`http://localhost:5000/api/messages/${id}/read`, {}, config);
             fetchMessages(user);
         } catch (error) {
-            console.error("Error marking message as read:", error);
+            logger.error("Error marking message as read: " + error.message, { error });
         }
     };
 
@@ -57,7 +58,7 @@ const Inbox = () => {
             // Mark message as read
             await markAsRead(msg._id);
         } catch (error) {
-            console.error("Error creating parcel:", error);
+            logger.error("Error creating parcel: " + error.message, { error });
             alert("Failed to create parcel: " + (error.response?.data?.message || error.message));
         }
     };

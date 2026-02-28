@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import logger from "../utils/logger";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -11,28 +12,24 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("🔐 [CLIENT LOGIN] Attempting login for:", email);
+    logger.info("🔐 [CLIENT LOGIN] Attempting login for: " + email);
     setIsLoading(true);
     try {
-      console.log("📤 [CLIENT LOGIN] Sending login request...");
+      logger.info("📤 [CLIENT LOGIN] Sending login request...");
       const { data } = await axios.post(
         "http://localhost:5000/api/auth/login",
         { email, password },
       );
-      console.log(
-        "✅ [CLIENT LOGIN] Login successful! User:",
-        data.name,
-        "Role:",
-        data.role,
+      logger.info(
+        "✅ [CLIENT LOGIN] Login successful! User: " + data.name + " Role: " + data.role,
       );
       localStorage.setItem("userInfo", JSON.stringify(data));
-      console.log("💾 [CLIENT LOGIN] User info saved to localStorage");
-      console.log("➡️ [CLIENT LOGIN] Navigating to dashboard...");
+      logger.info("💾 [CLIENT LOGIN] User info saved to localStorage");
+      logger.info("➡️ [CLIENT LOGIN] Navigating to dashboard...");
       navigate("/dashboard");
     } catch (error) {
-      console.error(
-        "❌ [CLIENT LOGIN] Login failed:",
-        error.response?.data?.message || error.message,
+      logger.error(
+        "❌ [CLIENT LOGIN] Login failed: " + (error.response?.data?.message || error.message),
       );
       alert(error.response?.data?.message || "Login Failed");
     } finally {

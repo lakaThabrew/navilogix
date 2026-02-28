@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import logger from "../utils/logger";
 
 const Register = () => {
   const [name, setName] = useState("");
@@ -13,54 +14,49 @@ const Register = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(
-      "📝 [CLIENT REGISTER] Attempting registration for:",
-      email,
-      "Role:",
-      role,
+    logger.info(
+      "📝 [CLIENT REGISTER] Attempting registration for: " + email + " Role: " + role
     );
     setIsLoading(true);
 
     try {
       if (role === "regular") {
-        console.log(
+        logger.info(
           "💳 [CLIENT REGISTER] Regular user - prompting for payment...",
         );
         const pay = window.confirm(
           "Regular accounts come with premium features. Proceed to setup payment?",
         );
         if (!pay) {
-          console.log("❌ [CLIENT REGISTER] User cancelled payment");
+          logger.info("❌ [CLIENT REGISTER] User cancelled payment");
           setIsLoading(false);
           return;
         }
-        console.log("✓ [CLIENT REGISTER] User accepted payment");
+        logger.info("✓ [CLIENT REGISTER] User accepted payment");
       }
 
-      console.log("📤 [CLIENT REGISTER] Sending registration request...");
+      logger.info("📤 [CLIENT REGISTER] Sending registration request...");
       const { data } = await axios.post(
         "http://localhost:5000/api/auth/register",
         { name, email, password, role },
       );
-      console.log(
-        "✅ [CLIENT REGISTER] Registration successful! User:",
-        data.name,
+      logger.info(
+        "✅ [CLIENT REGISTER] Registration successful! User: " + data.name,
       );
       localStorage.setItem("userInfo", JSON.stringify(data));
-      console.log("💾 [CLIENT REGISTER] User info saved to localStorage");
+      logger.info("💾 [CLIENT REGISTER] User info saved to localStorage");
       // Simulate a brief loading state for better UX
       setTimeout(() => {
-        console.log("➡️ [CLIENT REGISTER] Navigating to dashboard...");
+        logger.info("➡️ [CLIENT REGISTER] Navigating to dashboard...");
         navigate("/dashboard");
       }, 1000);
     } catch (error) {
-      console.error(
-        "❌ [CLIENT REGISTER] Registration failed:",
-        error.response?.data?.message || error.message,
+      logger.error(
+        "❌ [CLIENT REGISTER] Registration failed: " + (error.response?.data?.message || error.message),
       );
       alert(
         error.response?.data?.message ||
-          "Registration failed. Please try again.",
+        "Registration failed. Please try again.",
       );
     } finally {
       setIsLoading(false);

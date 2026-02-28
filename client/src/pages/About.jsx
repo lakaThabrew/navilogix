@@ -5,6 +5,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import axios from 'axios';
+import logger from '../utils/logger';
 
 // Fix Leaflet marker icon issue
 delete L.Icon.Default.prototype._getIconUrl;
@@ -23,7 +24,7 @@ const About = () => {
                 const response = await axios.get('http://localhost:5000/api/branches');
                 setBranches(response.data);
             } catch (error) {
-                console.error("Error fetching branches:", error);
+                logger.error("Error fetching branches:", { error: error.message });
             }
         };
         fetchBranches();

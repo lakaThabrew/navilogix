@@ -12,11 +12,12 @@ import ChatBot from "./components/ChatBot";
 import Footer from "./components/Footer";
 import Contact from "./pages/Contact";
 import "./index.css";
+import logger from "./utils/logger";
 
-console.log("🚀 NaviLogix Client App Starting...");
+logger.info("🚀 NaviLogix Client App Starting...");
 
 function App() {
-  console.log("✓ App component rendered");
+  logger.info("✓ App component rendered");
   return (
     <Router>
       <div className="App flex flex-col min-h-screen">

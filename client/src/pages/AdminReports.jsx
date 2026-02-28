@@ -10,6 +10,7 @@ import {
     Tooltip,
     Legend,
 } from "chart.js";
+import logger from "../utils/logger";
 
 ChartJS.register(
     CategoryScale,
@@ -36,7 +37,7 @@ const AdminReports = () => {
             setStats(data.stats);
             setLoading(false);
         } catch (error) {
-            console.error("Error fetching stats:", error);
+            logger.error("Error fetching stats: " + error.message, { error });
             setLoading(false);
         }
     };

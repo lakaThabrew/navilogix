@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import DeliveryMap from "../components/DeliveryMap";
+import logger from "../utils/logger";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -34,19 +35,16 @@ const Dashboard = () => {
   });
 
   useEffect(() => {
-    console.log("📋 [CLIENT DASHBOARD] Component mounted");
+    logger.info("📋 [CLIENT DASHBOARD] Component mounted");
     const u = JSON.parse(localStorage.getItem("userInfo"));
     if (!u) {
-      console.log(
+      logger.info(
         "❌ [CLIENT DASHBOARD] No user info found, redirecting to login",
       );
       navigate("/login");
     } else {
-      console.log(
-        "✅ [CLIENT DASHBOARD] User loaded:",
-        u.name,
-        "Role:",
-        u.role,
+      logger.info(
+        "✅ [CLIENT DASHBOARD] User loaded: " + u.name + " Role: " + u.role,
       );
       setUser(u);
       fetchParcels(u);
@@ -62,25 +60,23 @@ const Dashboard = () => {
       const { data } = await axios.get("http://localhost:5000/api/auth/branches");
       setBranches(data);
     } catch (error) {
-      console.error("Error fetching branches:", error);
+      logger.error("Error fetching branches: " + error.message, { error });
     }
   };
 
   const fetchParcels = async (userInfo = user) => {
-    console.log("📦 [CLIENT DASHBOARD] Fetching parcels...");
+    logger.info("📦 [CLIENT DASHBOARD] Fetching parcels...");
     try {
       const config = {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       };
       const { data } = await axios.get("http://localhost:5000/api/parcels", config);
-      console.log(`✅ [CLIENT DASHBOARD] Received ${data.length} parcels`);
+      logger.info(`✅ [CLIENT DASHBOARD] Received ${data.length} parcels`);
       setParcels(data);
     } catch (error) {
-      console.error(
-        "❌ [CLIENT DASHBOARD] Error fetching parcels:",
-        error.message,
+      logger.error(
+        "❌ [CLIENT DASHBOARD] Error fetching parcels: " + error.message,
       );
-      console.error(error);
     }
   };
 
@@ -92,7 +88,7 @@ const Dashboard = () => {
       const { data } = await axios.get("http://localhost:5000/api/messages", config);
       setMessages(data);
     } catch (error) {
-      console.error("Error fetching messages:", error);
+      logger.error("Error fetching messages: " + error.message, { error });
     }
   };
 
@@ -105,7 +101,7 @@ const Dashboard = () => {
       await axios.put(`http://localhost:5000/api/messages/${id}/read`, {}, config);
       fetchMessages();
     } catch (error) {
-      console.error("Error marking message as read:", error);
+      logger.error("Error marking message as read: " + error.message, { error });
     }
   };
 
@@ -128,7 +124,7 @@ const Dashboard = () => {
 
   const handleAddParcel = async (e) => {
     e.preventDefault();
-    console.log("➕ [CLIENT DASHBOARD] Adding new parcel:", form.receiverName);
+    logger.info("➕ [CLIENT DASHBOARD] Adding new parcel: " + form.receiverName);
     try {
       const parcelData = {
         senderInfo: {
@@ -145,7 +141,7 @@ const Dashboard = () => {
         type: form.type,
         codAmount: form.codAmount,
       };
-      console.log("📤 [CLIENT DASHBOARD] Sending parcel data:", parcelData);
+      logger.info("📤 [CLIENT DASHBOARD] Sending parcel data:", parcelData);
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
       };
@@ -164,7 +160,7 @@ const Dashboard = () => {
         alert("Parcel Added & Branch Auto-Assigned!");
       }
 
-      console.log("✅ [CLIENT DASHBOARD] Action completed successfully!");
+      logger.info("✅ [CLIENT DASHBOARD] Action completed successfully!");
       fetchParcels();
       setForm({
         senderName: "",
@@ -178,21 +174,20 @@ const Dashboard = () => {
         codAmount: 0,
       });
     } catch (error) {
-      console.error(
-        "❌ [CLIENT DASHBOARD] Error adding parcel:",
-        error.message,
+      logger.error(
+        "❌ [CLIENT DASHBOARD] Error adding parcel: " + error.message,
       );
       alert("Failed to add parcel");
     }
   };
 
   const updateStatus = async (id, status) => {
-    console.log(
+    logger.info(
       `🔄 [CLIENT DASHBOARD] Updating parcel ${id} status to: ${status}`,
     );
     const u = JSON.parse(localStorage.getItem("userInfo"));
     try {
-      console.log("📤 [CLIENT DASHBOARD] Sending status update...");
+      logger.info("📤 [CLIENT DASHBOARD] Sending status update...");
       const config = {
         headers: { Authorization: `Bearer ${u.token}` },
       };
@@ -200,14 +195,12 @@ const Dashboard = () => {
         status,
         location: "Updated by " + u.name,
       }, config);
-      console.log("✅ [CLIENT DASHBOARD] Status updated successfully");
+      logger.info("✅ [CLIENT DASHBOARD] Status updated successfully");
       fetchParcels();
     } catch (error) {
-      console.error(
-        "❌ [CLIENT DASHBOARD] Error updating status:",
-        error.message,
+      logger.error(
+        "❌ [CLIENT DASHBOARD] Error updating status: " + error.message,
       );
-      console.error(error);
     }
   };
 
@@ -231,7 +224,7 @@ const Dashboard = () => {
       const { data } = await axios.get("http://localhost:5000/api/parcels/reports", config);
       setReportData(data.stats);
     } catch (error) {
-      console.error("Error fetching reports:", error);
+      logger.error("Error fetching reports: " + error.message, { error });
     }
   };
 
@@ -245,7 +238,7 @@ const Dashboard = () => {
       setShowPaymentModal(false);
       fetchReportData(); // Fetch reports after unlocking
     } catch (error) {
-      console.error("Payment failed:", error);
+      logger.error("Payment failed: " + error.message, { error });
       alert("Payment Failed");
     }
   };
