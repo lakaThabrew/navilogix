@@ -126,6 +126,18 @@ export const updateParcelStatus = async (req, res) => {
             return res.status(404).json({ message: 'Parcel not found' });
         }
 
+        // Role-based status validation based on user requirements
+        const userRole = req.user.role;
+        if (userRole === 'main_admin' && (status === 'Delivered' || status === 'Out for Delivery')) {
+            return res.status(403).json({ message: 'Main Admin cannot change status to Delivered or Out for Delivery' });
+        }
+        if (userRole === 'branch_head' && status === 'Delivered') {
+            return res.status(403).json({ message: 'Branch Head cannot change status to Delivered' });
+        }
+        if (userRole === 'delivery_person' && status !== 'Delivered' && status !== 'Returned') {
+            return res.status(403).json({ message: 'Delivery Person can only change status to Delivered or Returned' });
+        }
+
         parcel.status = status;
         parcel.history.push({
             status,
@@ -205,6 +217,21 @@ export const getParcelReports = async (req, res) => {
                         acc[riderName].assigned++;
                         if (p.status === 'Delivered') acc[riderName].delivered++;
                     }
+                    return acc;
+                }, {}),
+
+                // Status Breakdown
+                statusBreakdown: parcels.reduce((acc, p) => {
+                    if (!acc[p.status]) acc[p.status] = 0;
+                    acc[p.status]++;
+                    return acc;
+                }, {}),
+
+                // Type Breakdown
+                typeBreakdown: parcels.reduce((acc, p) => {
+                    const t = p.type || 'Standard';
+                    if (!acc[t]) acc[t] = 0;
+                    acc[t]++;
                     return acc;
                 }, {})
             };
