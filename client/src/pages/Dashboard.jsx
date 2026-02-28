@@ -593,59 +593,83 @@ const Dashboard = () => {
                       {p.branchId?.branchName || "Unassigned"}
                     </td>
                     <td className="p-4">
-                      <span
-                        className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm
-                                                ${p.status === "Delivered"
-                            ? "bg-green-100 text-green-800"
-                            : p.status === "Returned"
-                              ? "bg-red-100 text-red-800"
-                              : "bg-blue-100 text-blue-800"
-                          }`}
-                      >
-                        {p.status}
-                      </span>
+                      {user.role === 'main_admin' || user.role === 'branch_head' ? (
+                        <select
+                          value={p.status}
+                          onChange={(e) => updateStatus(p._id, e.target.value)}
+                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm outline-none cursor-pointer border-none
+                            ${p.status === "Delivered"
+                              ? "bg-green-100 text-green-800"
+                              : p.status === "Returned"
+                                ? "bg-red-100 text-red-800"
+                                : p.status === "Out for Delivery"
+                                  ? "bg-orange-100 text-orange-800"
+                                  : "bg-blue-100 text-blue-800"
+                            }`}
+                        >
+                          <option value="Pending">Pending</option>
+                          <option value="In Main Branch">In Main Branch</option>
+                          <option value="Transmitting">Transmitting</option>
+                          <option value="In Sub Branch">In Sub Branch</option>
+
+                          {/* Restricting Options Based on Role */}
+                          {user.role !== 'main_admin' && <option value="Out for Delivery">Out for Delivery</option>}
+
+                          {/* Delivered is theoretically restricted from both admin and branch head, but if it was already delivered by a rider, it should display it */}
+                          <option value="Delivered" disabled>Delivered</option>
+
+                          <option value="Returned">Returned</option>
+                        </select>
+                      ) : (
+                        <span
+                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm
+                                                  ${p.status === "Delivered"
+                              ? "bg-green-100 text-green-800"
+                              : p.status === "Returned"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-blue-100 text-blue-800"
+                            }`}
+                        >
+                          {p.status}
+                        </span>
+                      )}
                     </td>
                     {user.role !== "regular" && (
                       <td className="p-4 flex gap-2">
                         {user.role === "delivery_person" && (
-                          <>
+                          <div className="flex gap-2">
                             <button
                               onClick={() => updateStatus(p._id, "Delivered")}
                               className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 shadow-md"
+                              disabled={p.status === "Delivered"}
                             >
-                              Deliver
+                              {p.status === "Delivered" ? "Delivered ✔" : "Mark Delivered"}
                             </button>
                             <button
                               onClick={() => updateStatus(p._id, "Returned")}
                               className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-700 shadow-md"
                             >
-                              Return
+                              Mark Returned
                             </button>
-                          </>
+                          </div>
                         )}
-                        {user.role === "branch_head" &&
-                          p.status === "Transmitting" && (
-                            <button
-                              onClick={() =>
-                                updateStatus(p._id, "In Sub Branch")
-                              }
-                              className="btn-primary py-1 px-3 text-sm"
-                            >
-                              Receive at Branch
-                            </button>
-                          )}
-                        {user.role === "main_admin" &&
-                          !p.riderId &&
-                          p.branchId && (
-                            <button
-                              onClick={() =>
-                                updateStatus(p._id, "Transmitting")
-                              }
-                              className="btn-secondary py-1 px-3 text-sm"
-                            >
-                              Transmit to Branch
-                            </button>
-                          )}
+                        {/* Status updates for admin/branch head is now in the dropdown, but we can keep standard quick action buttons for Transmitting etc if needed */}
+                        {user.role === "branch_head" && p.status === "Transmitting" && (
+                          <button
+                            onClick={() => updateStatus(p._id, "In Sub Branch")}
+                            className="bg-blue-100 text-blue-700 border border-blue-200 py-1 px-3 text-sm rounded-lg hover:bg-blue-200 transition-colors"
+                          >
+                            Receive at Branch
+                          </button>
+                        )}
+                        {user.role === "main_admin" && !p.riderId && p.branchId && p.status === "In Main Branch" && (
+                          <button
+                            onClick={() => updateStatus(p._id, "Transmitting")}
+                            className="bg-indigo-100 text-indigo-700 border border-indigo-200 py-1 px-3 text-sm rounded-lg hover:bg-indigo-200 transition-colors"
+                          >
+                            Transmit to Branch
+                          </button>
+                        )}
                       </td>
                     )}
                   </tr>
