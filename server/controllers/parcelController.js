@@ -1,6 +1,7 @@
 import Parcel from '../models/Parcel.js';
 import Branch from '../models/Branch.js';
 import Message from '../models/Message.js';
+import logger from '../utils/logger.js';
 
 // Helper to determine branch based on address
 const determineBranch = async (address) => {
@@ -27,7 +28,7 @@ const determineBranch = async (address) => {
 
 export const createParcel = async (req, res) => {
     const { senderInfo, receiverInfo, weight, type, codAmount } = req.body;
-    console.log(`📦 [CREATE PARCEL] Creating new parcel for: ${receiverInfo.name}`);
+    logger.info(`📦 [CREATE PARCEL] Creating new parcel for: ${receiverInfo.name}`);
 
     // Check if user is authenticated (should be if protected route)
     if (!req.user) {
@@ -37,8 +38,8 @@ export const createParcel = async (req, res) => {
     try {
         const branchId = await determineBranch(receiverInfo.address);
         const trackingId = 'NV-' + Date.now() + Math.floor(Math.random() * 1000);
-        console.log(`🔖 [CREATE PARCEL] Generated tracking ID: ${trackingId}`);
-        console.log(`🏢 [CREATE PARCEL] Assigned branch ID: ${branchId}`);
+        logger.info(`🔖 [CREATE PARCEL] Generated tracking ID: ${trackingId}`);
+        logger.info(`🏢 [CREATE PARCEL] Assigned branch ID: ${branchId}`);
 
         let initialStatus = 'In Main Branch';
         let initialHistory = { status: 'In Main Branch', location: 'Main Office', timestamp: new Date() };
@@ -72,44 +73,44 @@ export const createParcel = async (req, res) => {
                 content: `Branch Head ${req.user.name} has dispatched a new parcel (${trackingId}) from their branch.`,
                 receiverRole: 'main_admin'
             });
-            console.log(`📨 [CREATE PARCEL] Notification sent to Main Admin`);
+            logger.info(`📨 [CREATE PARCEL] Notification sent to Main Admin`);
         }
 
-        console.log(`✅ [CREATE PARCEL] Parcel created successfully: ${trackingId}`);
+        logger.info(`✅ [CREATE PARCEL] Parcel created successfully: ${trackingId}`);
         res.status(201).json(parcel);
     } catch (error) {
-        console.error(`❌ [CREATE PARCEL] Error:`, error.message);
+        logger.error(`❌ [CREATE PARCEL] Error: ${error.message}`);
         res.status(500).json({ message: error.message });
     }
 };
 
 export const getParcels = async (req, res) => {
-    console.log(`📋 [GET PARCELS] Fetching all parcels...`);
+    logger.info(`📋 [GET PARCELS] Fetching all parcels...`);
     try {
         // Filter based on user role (assumed processed by middleware)
         // For now, return all for admin
         const parcels = await Parcel.find().populate('branchId').populate('riderId');
-        console.log(`✅ [GET PARCELS] Found ${parcels.length} parcels`);
+        logger.info(`✅ [GET PARCELS] Found ${parcels.length} parcels`);
         res.json(parcels);
     } catch (error) {
-        console.error(`❌ [GET PARCELS] Error:`, error.message);
+        logger.error(`❌ [GET PARCELS] Error: ${error.message}`);
         res.status(500).json({ message: error.message });
     }
 };
 
 export const trackParcel = async (req, res) => {
     const { trackingId } = req.params;
-    console.log(`🔍 [TRACK PARCEL] Tracking parcel: ${trackingId}`);
+    logger.info(`🔍 [TRACK PARCEL] Tracking parcel: ${trackingId}`);
     try {
         const parcel = await Parcel.findOne({ trackingId }).populate('branchId');
         if (!parcel) {
-            console.log(`❌ [TRACK PARCEL] Parcel not found: ${trackingId}`);
+            logger.info(`❌ [TRACK PARCEL] Parcel not found: ${trackingId}`);
             return res.status(404).json({ message: 'Parcel not found' });
         }
-        console.log(`✅ [TRACK PARCEL] Parcel found: ${trackingId} (Status: ${parcel.status})`);
+        logger.info(`✅ [TRACK PARCEL] Parcel found: ${trackingId} (Status: ${parcel.status})`);
         res.json(parcel);
     } catch (error) {
-        console.error(`❌ [TRACK PARCEL] Error:`, error.message);
+        logger.error(`❌ [TRACK PARCEL] Error: ${error.message}`);
         res.status(500).json({ message: error.message });
     }
 };
@@ -117,11 +118,11 @@ export const trackParcel = async (req, res) => {
 export const updateParcelStatus = async (req, res) => {
     const { id } = req.params;
     const { status, location } = req.body;
-    console.log(`🔄 [UPDATE STATUS] Updating parcel ${id} to status: ${status}`);
+    logger.info(`🔄 [UPDATE STATUS] Updating parcel ${id} to status: ${status}`);
     try {
         const parcel = await Parcel.findById(id);
         if (!parcel) {
-            console.log(`❌ [UPDATE STATUS] Parcel not found: ${id}`);
+            logger.info(`❌ [UPDATE STATUS] Parcel not found: ${id}`);
             return res.status(404).json({ message: 'Parcel not found' });
         }
 
@@ -133,10 +134,10 @@ export const updateParcelStatus = async (req, res) => {
         });
 
         await parcel.save();
-        console.log(`✅ [UPDATE STATUS] Status updated successfully for parcel: ${parcel.trackingId}`);
+        logger.info(`✅ [UPDATE STATUS] Status updated successfully for parcel: ${parcel.trackingId}`);
         res.json(parcel);
     } catch (error) {
-        console.error(`❌ [UPDATE STATUS] Error:`, error.message);
+        logger.error(`❌ [UPDATE STATUS] Error: ${error.message}`);
         res.status(500).json({ message: error.message });
     }
 };
@@ -226,13 +227,13 @@ export const getParcelReports = async (req, res) => {
 };
 
 export const assignRider = async (req, res) => {
-    console.log(`🚴 [ASSIGN RIDER] Assigning rider...`);
+    logger.info(`🚴 [ASSIGN RIDER] Assigning rider...`);
     const { parcelId, riderId } = req.body;
-    console.log(`🚴 [ASSIGN RIDER] Parcel: ${parcelId}, Rider: ${riderId}`);
+    logger.info(`🚴 [ASSIGN RIDER] Parcel: ${parcelId}, Rider: ${riderId}`);
     try {
         const parcel = await Parcel.findById(parcelId);
         if (!parcel) {
-            console.log(`❌ [ASSIGN RIDER] Parcel not found: ${parcelId}`);
+            logger.info(`❌ [ASSIGN RIDER] Parcel not found: ${parcelId}`);
             return res.status(404).json({ message: 'Parcel not found' });
         }
 
@@ -251,7 +252,7 @@ export const assignRider = async (req, res) => {
         let statusMessage = "Out for Delivery";
 
         if (riderParcelsCount >= MAX_DAILY_DELIVERIES) {
-            console.log(`⚠️ [ASSIGN RIDER] Rider limit reached (${riderParcelsCount}). Assigning to next day.`);
+            logger.info(`⚠️ [ASSIGN RIDER] Rider limit reached (${riderParcelsCount}). Assigning to next day.`);
             assignedDate = tomorrow;
             statusMessage = "Scheduled for Next Day";
             // Logic: Status can stay 'In Sub Branch' or be 'Scheduled'
@@ -275,10 +276,10 @@ export const assignRider = async (req, res) => {
         });
 
         await parcel.save();
-        console.log(`✅ [ASSIGN RIDER] Rider assigned successfully to parcel: ${parcel.trackingId}`);
+        logger.info(`✅ [ASSIGN RIDER] Rider assigned successfully to parcel: ${parcel.trackingId}`);
         res.json({ ...parcel.toObject(), note: statusMessage });
     } catch (error) {
-        console.error(`❌ [ASSIGN RIDER] Error:`, error.message);
+        logger.error(`❌ [ASSIGN RIDER] Error: ${error.message}`);
         res.status(500).json({ message: error.message });
     }
 };

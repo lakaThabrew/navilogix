@@ -1,6 +1,6 @@
-
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from 'dotenv';
+import logger from '../utils/logger.js';
 dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -25,7 +25,7 @@ export const chatWithAI = async (req, res) => {
 
         res.json({ reply: text });
     } catch (error) {
-        console.error("Error communicating with Gemini API:", error);
+        logger.error(`Error communicating with Gemini API: ${error.message}`, { error });
         res.status(500).json({ error: "Failed to communicate with AI service" });
     }
 };
