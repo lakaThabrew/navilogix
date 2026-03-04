@@ -35,43 +35,57 @@ const seedDatabase = async () => {
         const branches = await Branch.create([
             {
                 branchName: 'Main Office',
+                contactNumber: '011-2345678',
                 coordinates: { lat: 6.9271, lng: 79.8612 },
                 assignedAreas: ['Colombo 1', 'Colombo 2', 'Fort', 'Pettah']
             },
             {
                 branchName: 'Kandy Branch',
+                contactNumber: '081-2234567',
                 coordinates: { lat: 7.2906, lng: 80.6337 },
                 assignedAreas: ['Kandy', 'Peradeniya', 'Katugastota']
             },
             {
                 branchName: 'Galle Branch',
+                contactNumber: '091-2245678',
                 coordinates: { lat: 6.0535, lng: 80.2210 },
                 assignedAreas: ['Galle', 'Hikkaduwa', 'Unawatuna']
             },
             {
                 branchName: 'Kurunegala Branch',
+                contactNumber: '037-2211223',
                 coordinates: { lat: 7.4818, lng: 80.3609 },
                 assignedAreas: ['Kurunegala', 'Kuliyapitiya', 'Narammala']
             },
             {
                 branchName: 'Matara Branch',
+                contactNumber: '041-2233445',
                 coordinates: { lat: 5.9549, lng: 80.5469 },
                 assignedAreas: ['Matara', 'Weligama', 'Dikwella']
             },
             {
                 branchName: 'Anuradhapura Branch',
+                contactNumber: '025-2244556',
                 coordinates: { lat: 8.3114, lng: 80.4037 },
                 assignedAreas: ['Anuradhapura', 'Mihintale', 'Thambuttegama']
             },
             {
                 branchName: 'Jaffna Branch',
+                contactNumber: '021-2212345',
                 coordinates: { lat: 9.6615, lng: 80.0255 },
                 assignedAreas: ['Jaffna', 'Chavakachcheri', 'Point Pedro']
             },
             {
                 branchName: 'Trincomalee Branch',
+                contactNumber: '026-2245678',
                 coordinates: { lat: 8.5811, lng: 81.2330 },
                 assignedAreas: ['Trincomalee', 'Kinniya', 'Muttur']
+            },
+            {
+                branchName: 'Badulla Branch',
+                contactNumber: '055-2223344',
+                coordinates: { lat: 6.9934, lng: 81.0550 },
+                assignedAreas: ['Badulla', 'Bandarawela', 'Ella']
             }
         ]);
         logger.info('✓ Branches seeded');
@@ -212,6 +226,20 @@ const seedDatabase = async () => {
                 password: hashedPassword,
                 role: 'delivery_person',
                 branchId: branches[7]._id // Trincomalee
+            },
+            {
+                name: 'Kusal Perera',
+                email: 'kusal@example.com',
+                password: hashedPassword,
+                role: 'branch_head',
+                branchId: branches[8]._id // Badulla
+            },
+            {
+                name: 'Nuwan Pradeep',
+                email: 'nuwan@example.com',
+                password: hashedPassword,
+                role: 'delivery_person',
+                branchId: branches[8]._id // Badulla
             }
         ]);
         logger.info('✓ Users seeded (password for all: password123)');
