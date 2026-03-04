@@ -68,35 +68,7 @@ app.post('/api/logs/frontend', (req, res) => {
 });
 logger.info('✓ Frontend logging route registered at /api/logs/frontend');
 
-// Seed Branches if empty
-const seedBranches = async () => {
-    logger.info('🔍 Checking for existing branches...');
-    await Branch.deleteMany({}); // Temporarily clear branches to ensure seeded contact numbers
 
-    logger.info('🌱 Seeding initial branches...');
-    await Branch.create([
-        {
-            branchName: 'Main Office',
-            contactNumber: '011-2345678',
-            coordinates: { lat: 6.9271, lng: 79.8612 },
-            assignedAreas: ['Colombo 1', 'Colombo 2', 'Fort']
-        },
-        {
-            branchName: 'Kandy Branch',
-            contactNumber: '081-2234567',
-            coordinates: { lat: 7.2906, lng: 80.6337 },
-            assignedAreas: ['Kandy', 'Peradeniya']
-        },
-        {
-            branchName: 'Galle Branch',
-            contactNumber: '091-2245678',
-            coordinates: { lat: 6.0535, lng: 80.2210 },
-            assignedAreas: ['Galle', 'Hikkaduwa']
-        }
-    ]);
-    logger.info('✓ Branches seeded successfully with contact numbers');
-};
-seedBranches();
 
 const PORT = process.env.PORT || 5000;
 
