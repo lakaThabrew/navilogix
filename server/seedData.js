@@ -47,6 +47,31 @@ const seedDatabase = async () => {
                 branchName: 'Galle Branch',
                 coordinates: { lat: 6.0535, lng: 80.2210 },
                 assignedAreas: ['Galle', 'Hikkaduwa', 'Unawatuna']
+            },
+            {
+                branchName: 'Kurunegala Branch',
+                coordinates: { lat: 7.4818, lng: 80.3609 },
+                assignedAreas: ['Kurunegala', 'Kuliyapitiya', 'Narammala']
+            },
+            {
+                branchName: 'Matara Branch',
+                coordinates: { lat: 5.9549, lng: 80.5469 },
+                assignedAreas: ['Matara', 'Weligama', 'Dikwella']
+            },
+            {
+                branchName: 'Anuradhapura Branch',
+                coordinates: { lat: 8.3114, lng: 80.4037 },
+                assignedAreas: ['Anuradhapura', 'Mihintale', 'Thambuttegama']
+            },
+            {
+                branchName: 'Jaffna Branch',
+                coordinates: { lat: 9.6615, lng: 80.0255 },
+                assignedAreas: ['Jaffna', 'Chavakachcheri', 'Point Pedro']
+            },
+            {
+                branchName: 'Trincomalee Branch',
+                coordinates: { lat: 8.5811, lng: 81.2330 },
+                assignedAreas: ['Trincomalee', 'Kinniya', 'Muttur']
             }
         ]);
         logger.info('✓ Branches seeded');
@@ -110,6 +135,83 @@ const seedDatabase = async () => {
                 password: hashedPassword,
                 role: 'regular',
                 paymentStatus: 'unpaid'
+            },
+            {
+                name: 'Heshan Silva',
+                email: 'heshan@example.com',
+                password: hashedPassword,
+                role: 'branch_head',
+                branchId: branches[3]._id // Kurunegala Branch
+            },
+            {
+                name: 'Saman Kumara',
+                email: 'saman@example.com',
+                password: hashedPassword,
+                role: 'delivery_person',
+                branchId: branches[3]._id // Kurunegala
+            },
+            {
+                name: 'Kasun Kalhara',
+                email: 'kasun@example.com',
+                password: hashedPassword,
+                role: 'branch_head',
+                branchId: branches[4]._id // Matara Branch
+            },
+            {
+                name: 'Pathum Nissanka',
+                email: 'pathum@example.com',
+                password: hashedPassword,
+                role: 'delivery_person',
+                branchId: branches[4]._id // Matara
+            },
+            {
+                name: 'Oshada Fernando',
+                email: 'oshada@example.com',
+                password: hashedPassword,
+                role: 'regular',
+                paymentStatus: 'paid'
+            },
+            {
+                name: 'Mahela Jayawardene',
+                email: 'mahela@example.com',
+                password: hashedPassword,
+                role: 'branch_head',
+                branchId: branches[5]._id // Anuradhapura
+            },
+            {
+                name: 'Lasith Malinga',
+                email: 'lasith@example.com',
+                password: hashedPassword,
+                role: 'delivery_person',
+                branchId: branches[5]._id // Anuradhapura
+            },
+            {
+                name: 'Muttiah Muralitharan',
+                email: 'murali@example.com',
+                password: hashedPassword,
+                role: 'branch_head',
+                branchId: branches[6]._id // Jaffna
+            },
+            {
+                name: 'Rangana Herath',
+                email: 'rangana@example.com',
+                password: hashedPassword,
+                role: 'delivery_person',
+                branchId: branches[6]._id // Jaffna
+            },
+            {
+                name: 'Angelo Mathews',
+                email: 'angelo@example.com',
+                password: hashedPassword,
+                role: 'branch_head',
+                branchId: branches[7]._id // Trincomalee
+            },
+            {
+                name: 'Suranga Lakmal',
+                email: 'suranga@example.com',
+                password: hashedPassword,
+                role: 'delivery_person',
+                branchId: branches[7]._id // Trincomalee
             }
         ]);
         logger.info('✓ Users seeded (password for all: password123)');
@@ -243,6 +345,176 @@ const seedDatabase = async () => {
                     { status: 'Pending', location: 'Fort', timestamp: new Date('2026-02-11T07:00:00') },
                     { status: 'In Main Branch', location: 'Main Office', timestamp: new Date('2026-02-11T09:30:00') },
                     { status: 'Out for Delivery', location: 'Main Office', timestamp: new Date('2026-02-11T11:00:00') }
+                ]
+            },
+            {
+                trackingId: 'NL2026006',
+                senderInfo: {
+                    name: 'Ashen Bandara',
+                    address: 'Level 4, City Center, Kurunegala',
+                    contact: '0711122334'
+                },
+                receiverInfo: {
+                    name: 'Sachini Perera',
+                    address: 'Temple Road, Matara',
+                    contact: '0779988776'
+                },
+                branchId: branches[3]._id,
+                riderId: null,
+                status: 'In Sub Branch',
+                weight: 1.5,
+                type: 'Document',
+                codAmount: 500,
+                tourDate: new Date('2026-02-14'),
+                history: [
+                    { status: 'Pending', location: 'Kurunegala', timestamp: new Date('2026-02-12T09:00:00') },
+                    { status: 'In Sub Branch', location: 'Kurunegala Branch', timestamp: new Date('2026-02-12T11:30:00') }
+                ]
+            },
+            {
+                trackingId: 'NL2026007',
+                senderInfo: {
+                    name: 'Dilshan Madushanka',
+                    address: 'Weligama Beach Road, Weligama',
+                    contact: '0701122334'
+                },
+                receiverInfo: {
+                    name: 'Kusal Mendis',
+                    address: 'Reid Avenue, Colombo 7',
+                    contact: '0773344556'
+                },
+                branchId: branches[4]._id,
+                riderId: users[3]._id,
+                status: 'Out for Delivery',
+                weight: 4.0,
+                type: 'Package',
+                codAmount: 2000,
+                tourDate: new Date('2026-02-15'),
+                history: [
+                    { status: 'Pending', location: 'Weligama', timestamp: new Date('2026-02-13T08:00:00') },
+                    { status: 'In Sub Branch', location: 'Matara Branch', timestamp: new Date('2026-02-13T10:00:00') },
+                    { status: 'Transmitting', location: 'Matara Branch', timestamp: new Date('2026-02-13T13:00:00') },
+                    { status: 'In Main Branch', location: 'Main Office', timestamp: new Date('2026-02-14T09:00:00') },
+                    { status: 'Out for Delivery', location: 'Main Office', timestamp: new Date('2026-02-14T10:30:00') }
+                ]
+            },
+            {
+                trackingId: 'NL2026008',
+                senderInfo: {
+                    name: 'Charith Asalanka',
+                    address: 'High Level Road, Nugegoda',
+                    contact: '0755566778'
+                },
+                receiverInfo: {
+                    name: 'Bhanuka Rajapaksa',
+                    address: 'Lake View, Kandy',
+                    contact: '0722233445'
+                },
+                branchId: branches[0]._id,
+                riderId: null,
+                status: 'Returned',
+                weight: 2.0,
+                type: 'Package',
+                codAmount: 1200,
+                tourDate: new Date('2026-02-12'),
+                history: [
+                    { status: 'Pending', location: 'Nugegoda', timestamp: new Date('2026-02-10T09:00:00') },
+                    { status: 'In Main Branch', location: 'Main Office', timestamp: new Date('2026-02-10T12:00:00') },
+                    { status: 'Transmitting', location: 'Main Office', timestamp: new Date('2026-02-11T08:00:00') },
+                    { status: 'In Sub Branch', location: 'Kandy Branch', timestamp: new Date('2026-02-11T13:00:00') },
+                    { status: 'Out for Delivery', location: 'Kandy Branch', timestamp: new Date('2026-02-12T09:00:00') },
+                    { status: 'Returned', location: 'Kandy', timestamp: new Date('2026-02-12T14:30:00') }
+                ]
+            },
+            {
+                trackingId: 'NL2026009',
+                senderInfo: { name: 'Aravinda De Silva', address: 'Borella Cross Road, Colombo 8', contact: '0714445566' },
+                receiverInfo: { name: 'Sanath Jayasuriya', address: 'Main Street, Jaffna', contact: '0778889900' },
+                branchId: branches[0]._id,
+                riderId: null,
+                status: 'In Main Branch',
+                weight: 5.5,
+                type: 'Package',
+                codAmount: 4500,
+                tourDate: new Date('2026-02-14'),
+                history: [
+                    { status: 'Pending', location: 'Colombo 8', timestamp: new Date('2026-02-13T09:00:00') },
+                    { status: 'In Main Branch', location: 'Main Office', timestamp: new Date('2026-02-13T14:30:00') }
+                ]
+            },
+            {
+                trackingId: 'NL2026010',
+                senderInfo: { name: 'Nuwan Kulasekara', address: 'Station Road, Anuradhapura', contact: '0702223344' },
+                receiverInfo: { name: 'Dimuth Karunaratne', address: 'Temple Road, Kandy', contact: '0761112233' },
+                branchId: branches[5]._id,
+                riderId: users[4]._id,
+                status: 'Out for Delivery',
+                weight: 1.2,
+                type: 'Document',
+                codAmount: 0,
+                tourDate: new Date('2026-02-15'),
+                history: [
+                    { status: 'Pending', location: 'Anuradhapura', timestamp: new Date('2026-02-13T08:00:00') },
+                    { status: 'In Sub Branch', location: 'Anuradhapura Branch', timestamp: new Date('2026-02-13T11:00:00') },
+                    { status: 'Transmitting', location: 'Anuradhapura Branch', timestamp: new Date('2026-02-14T07:00:00') },
+                    { status: 'In Sub Branch', location: 'Kandy Branch', timestamp: new Date('2026-02-14T14:00:00') },
+                    { status: 'Out for Delivery', location: 'Kandy Branch', timestamp: new Date('2026-02-15T09:00:00') }
+                ]
+            },
+            {
+                trackingId: 'NL2026011',
+                senderInfo: { name: 'Dushmantha Chameera', address: 'Harbor Road, Trincomalee', contact: '0723344556' },
+                receiverInfo: { name: 'Thisara Perera', address: 'Market Road, Galle', contact: '0789900112' },
+                branchId: branches[7]._id,
+                riderId: null,
+                status: 'Transmitting',
+                weight: 8.0,
+                type: 'Package',
+                codAmount: 12500,
+                tourDate: new Date('2026-02-16'),
+                history: [
+                    { status: 'Pending', location: 'Trincomalee', timestamp: new Date('2026-02-14T10:00:00') },
+                    { status: 'In Sub Branch', location: 'Trincomalee Branch', timestamp: new Date('2026-02-14T15:00:00') },
+                    { status: 'Transmitting', location: 'Trincomalee Branch', timestamp: new Date('2026-02-15T08:30:00') }
+                ]
+            },
+            {
+                trackingId: 'NL2026012',
+                senderInfo: { name: 'Wanindu Hasaranga', address: 'Galle Face, Colombo 1', contact: '0751231234' },
+                receiverInfo: { name: 'Pramodya Wickramasinghe', address: 'Old Town, Anuradhapura', contact: '0714564567' },
+                branchId: branches[0]._id,
+                riderId: users[14]._id,
+                status: 'Delivered',
+                weight: 0.8,
+                type: 'Document',
+                codAmount: 0,
+                tourDate: new Date('2026-02-13'),
+                history: [
+                    { status: 'Pending', location: 'Colombo 1', timestamp: new Date('2026-02-11T09:00:00') },
+                    { status: 'In Main Branch', location: 'Main Office', timestamp: new Date('2026-02-11T13:00:00') },
+                    { status: 'Transmitting', location: 'Main Office', timestamp: new Date('2026-02-12T07:30:00') },
+                    { status: 'In Sub Branch', location: 'Anuradhapura Branch', timestamp: new Date('2026-02-12T14:00:00') },
+                    { status: 'Out for Delivery', location: 'Anuradhapura Branch', timestamp: new Date('2026-02-13T09:00:00') },
+                    { status: 'Delivered', location: 'Anuradhapura', timestamp: new Date('2026-02-13T11:45:00') }
+                ]
+            },
+            {
+                trackingId: 'NL2026013',
+                senderInfo: { name: 'Upul Tharanga', address: 'College Road, Jaffna', contact: '0776655443' },
+                receiverInfo: { name: 'Chaminda Vaas', address: 'Beach Way, Matara', contact: '0719988776' },
+                branchId: branches[6]._id,
+                riderId: users[11]._id,
+                status: 'Out for Delivery',
+                weight: 3.2,
+                type: 'Package',
+                codAmount: 8000,
+                tourDate: new Date('2026-02-16'),
+                history: [
+                    { status: 'Pending', location: 'Jaffna', timestamp: new Date('2026-02-13T10:00:00') },
+                    { status: 'In Sub Branch', location: 'Jaffna Branch', timestamp: new Date('2026-02-13T15:00:00') },
+                    { status: 'Transmitting', location: 'Jaffna Branch', timestamp: new Date('2026-02-14T06:00:00') },
+                    { status: 'In Sub Branch', location: 'Matara Branch', timestamp: new Date('2026-02-15T13:00:00') },
+                    { status: 'Out for Delivery', location: 'Matara Branch', timestamp: new Date('2026-02-16T08:30:00') }
                 ]
             }
         ]);
