@@ -29,11 +29,11 @@ const Navbar = () => {
 
     if (user) {
         navLinks.push({ name: 'Dashboard', path: '/dashboard' });
-        navLinks.push({ name: 'Profile', path: '/profile' });
         if (user.role === 'main_admin') {
             navLinks.push({ name: 'Inbox', path: '/inbox' });
             navLinks.push({ name: 'Reports', path: '/reports' });
         }
+        navLinks.push({ name: 'Profile', path: '/profile' });
     }
 
     return (
