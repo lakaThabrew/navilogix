@@ -1,8 +1,8 @@
-# 📦 Anti-Gravity Parcel Tracking System - Requirements Specification
+# 📦 NaviLogix Parcel Tracking System - Requirements Specification
 
 ## 1. Project Overview
 
-A smart, AI-powered logistics management system designed for efficient parcel routing and delivery. The system features a unique "Anti-Gravity" UI (floating components, sleek shadows) using a Red, White, and Blue color palette. It automates branch mapping and rider assignment using the Gemini API and OpenStreetMap.
+A smart, AI-powered logistics management system designed for efficient parcel routing and delivery. The system features a modern UI (floating components, sleek shadows) using a Red, White, and Blue color palette. It automates branch mapping and rider assignment using the Gemini API and OpenStreetMap.
 
 ---
 
@@ -56,7 +56,7 @@ A smart, AI-powered logistics management system designed for efficient parcel ro
 
 ### 4.1 Tech Stack
 
-- **Frontend:** React.js (with Framer Motion for the "Anti-Gravity" floating effect).
+- **Frontend:** React.js (with Framer Motion for floating effects).
 - **Backend:** Node.js & Express.js.
 - **Database:** MongoDB Atlas (preferred) or MySQL (compatible with offline/on-premise setups).
 - **AI Integration:** Google Gemini API (Logic & Chat).
@@ -71,7 +71,7 @@ A smart, AI-powered logistics management system designed for efficient parcel ro
 
 ### 4.3 UI/UX Specifications
 
-- **Theme:** Google Anti-Gravity.
+- **Theme:** Modern Floating UI.
 - **Colors:**
   - Primary: Deep Navy Blue (#001F3F)
   - Secondary: Alert Red (#FF4136)
