@@ -19,12 +19,7 @@ const Dashboard = () => {
     type: "Standard",
     codAmount: 0,
   });
-  const [stats, setStats] = useState({
-    total: 0,
-    delivered: 0,
-    returned: 0,
-    cod: 0,
-  });
+
   const [messages, setMessages] = useState([]);
   const [branches, setBranches] = useState([]);
   const [branchForm, setBranchForm] = useState({
@@ -33,6 +28,45 @@ const Dashboard = () => {
     password: "",
     branchId: ""
   });
+
+
+
+  async function fetchBranches() {
+    try {
+      const { data } = await axios.get("http://localhost:5000/api/auth/branches");
+      setBranches(data);
+    } catch (error) {
+      logger.error("Error fetching branches: " + error.message, { error });
+    }
+  };
+
+  async function fetchParcels(userInfo = user) {
+    logger.info("📦 [CLIENT DASHBOARD] Fetching parcels...");
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      };
+      const { data } = await axios.get("http://localhost:5000/api/parcels", config);
+      logger.info(`✅ [CLIENT DASHBOARD] Received ${data.length} parcels`);
+      setParcels(data);
+    } catch (error) {
+      logger.error(
+        "❌ [CLIENT DASHBOARD] Error fetching parcels: " + error.message,
+      );
+    }
+  };
+
+  async function fetchMessages(userInfo = user) {
+    try {
+      const config = {
+        headers: { Authorization: `Bearer ${userInfo.token}` },
+      };
+      const { data } = await axios.get("http://localhost:5000/api/messages", config);
+      setMessages(data);
+    } catch (error) {
+      logger.error("Error fetching messages: " + error.message, { error });
+    }
+  };
 
   useEffect(() => {
     logger.info("📋 [CLIENT DASHBOARD] Component mounted");
@@ -53,44 +87,8 @@ const Dashboard = () => {
         fetchBranches();
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [navigate]);
-
-  const fetchBranches = async () => {
-    try {
-      const { data } = await axios.get("http://localhost:5000/api/auth/branches");
-      setBranches(data);
-    } catch (error) {
-      logger.error("Error fetching branches: " + error.message, { error });
-    }
-  };
-
-  const fetchParcels = async (userInfo = user) => {
-    logger.info("📦 [CLIENT DASHBOARD] Fetching parcels...");
-    try {
-      const config = {
-        headers: { Authorization: `Bearer ${userInfo.token}` },
-      };
-      const { data } = await axios.get("http://localhost:5000/api/parcels", config);
-      logger.info(`✅ [CLIENT DASHBOARD] Received ${data.length} parcels`);
-      setParcels(data);
-    } catch (error) {
-      logger.error(
-        "❌ [CLIENT DASHBOARD] Error fetching parcels: " + error.message,
-      );
-    }
-  };
-
-  const fetchMessages = async (userInfo = user) => {
-    try {
-      const config = {
-        headers: { Authorization: `Bearer ${userInfo.token}` },
-      };
-      const { data } = await axios.get("http://localhost:5000/api/messages", config);
-      setMessages(data);
-    } catch (error) {
-      logger.error("Error fetching messages: " + error.message, { error });
-    }
-  };
 
   const markAsRead = async (id) => {
     try {
@@ -208,17 +206,9 @@ const Dashboard = () => {
   const [reportData, setReportData] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  useEffect(() => {
-    if (user && user.role === 'regular') {
-      if (user.paymentStatus !== 'paid') {
-        setShowPaymentModal(true);
-      } else {
-        fetchReportData();
-      }
-    }
-  }, [user]);
 
-  const fetchReportData = async () => {
+
+  async function fetchReportData() {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
       const { data } = await axios.get("http://localhost:5000/api/parcels/reports", config);
@@ -227,6 +217,17 @@ const Dashboard = () => {
       logger.error("Error fetching reports: " + error.message, { error });
     }
   };
+
+  useEffect(() => {
+    if (user && user.role === 'regular') {
+      if (user.paymentStatus !== 'paid') {
+        setShowPaymentModal(true);
+      } else {
+        fetchReportData();
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user]);
 
   const handlePayment = async () => {
     try {

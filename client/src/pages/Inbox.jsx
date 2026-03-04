@@ -8,17 +8,9 @@ const Inbox = () => {
     const [messages, setMessages] = useState([]);
     const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        const u = JSON.parse(localStorage.getItem("userInfo"));
-        if (!u) {
-            navigate("/login");
-        } else {
-            setUser(u);
-            fetchMessages(u);
-        }
-    }, [navigate]);
 
-    const fetchMessages = async (userInfo) => {
+
+    async function fetchMessages(userInfo) {
         try {
             const config = {
                 headers: { Authorization: `Bearer ${userInfo.token}` },
@@ -28,7 +20,18 @@ const Inbox = () => {
         } catch (error) {
             logger.error("Error fetching messages: " + error.message, { error });
         }
-    };
+    }
+
+    useEffect(() => {
+        const u = JSON.parse(localStorage.getItem("userInfo"));
+        if (!u) {
+            navigate("/login");
+        } else {
+            setUser(u);
+            fetchMessages(u);
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [navigate]);
 
     const markAsRead = async (id) => {
         try {

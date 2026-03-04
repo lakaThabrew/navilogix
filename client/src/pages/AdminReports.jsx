@@ -31,11 +31,7 @@ const AdminReports = () => {
     const [users, setUsers] = useState([]);
     const [branches, setBranches] = useState([]);
 
-    useEffect(() => {
-        fetchStats();
-        fetchUsers();
-        fetchBranches();
-    }, []);
+
 
     const fetchBranches = async () => {
         try {
@@ -77,6 +73,13 @@ const AdminReports = () => {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchStats();
+        fetchUsers();
+        fetchBranches();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     const handleUpdateRole = async (userId, newRole, branchId = null) => {
         try {
