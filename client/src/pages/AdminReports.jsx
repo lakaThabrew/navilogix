@@ -32,7 +32,6 @@ const AdminReports = () => {
     const [branches, setBranches] = useState([]);
 
 
-
     const fetchBranches = async () => {
         try {
             const { data } = await axios.get("http://localhost:5000/api/auth/branches");
@@ -109,6 +108,7 @@ const AdminReports = () => {
         }
     };
 
+
     if (loading) return <div className="text-center p-8">Loading Analytics...</div>;
     if (!stats) return <div className="text-center p-8">No data available.</div>;
 
@@ -147,8 +147,9 @@ const AdminReports = () => {
         ],
     };
 
-    const statusLabels = Object.keys(stats.statusBreakdown || {});
+    const statusLabelsRaw = Object.keys(stats.statusBreakdown || {});
     const statusData = Object.values(stats.statusBreakdown || {});
+    const statusLabels = statusLabelsRaw.map((label, index) => `${label} (${statusData[index]})`);
     const statusChartData = {
         labels: statusLabels,
         datasets: [{
@@ -173,8 +174,9 @@ const AdminReports = () => {
         }]
     };
 
-    const typeLabels = Object.keys(stats.typeBreakdown || {});
+    const typeLabelsRaw = Object.keys(stats.typeBreakdown || {});
     const typeData = Object.values(stats.typeBreakdown || {});
+    const typeLabels = typeLabelsRaw.map((label, index) => `${label} (${typeData[index]})`);
     const typeChartData = {
         labels: typeLabels,
         datasets: [{
@@ -263,24 +265,25 @@ const AdminReports = () => {
                     </div>
                 </div>
 
-                {/* Detailed Table Placeholder (Optional) */}
-                {/* Could list top branches or recent critical issues */}
-                <div className="floating-card p-6 bg-white flex flex-col items-center">
-                    <h3 className="text-xl font-bold text-gray-700 mb-4 w-full text-left">📦 Parcel Status Breakdown</h3>
-                    <div className="w-full max-w-[300px]">
-                        {statusLabels.length > 0 ? (
-                            <Doughnut options={{ responsive: true, plugins: { legend: { position: 'bottom' } } }} data={statusChartData} />
-                        ) : <p className="text-gray-500">No status data yet.</p>}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+                    <div className="floating-card p-6 bg-white flex flex-col items-center">
+                        <h3 className="text-xl font-bold text-gray-700 mb-4 w-full text-left">📦 Parcel Status Breakdown</h3>
+                        <div className="w-full max-w-[300px]">
+                            {statusLabels.length > 0 ? (
+                                <Doughnut options={{ responsive: true, plugins: { legend: { position: 'bottom' } } }} data={statusChartData} />
+                            ) : <p className="text-gray-500">No status data yet.</p>}
+                        </div>
                     </div>
-                </div>
 
-                <div className="floating-card p-6 bg-white flex flex-col items-center">
-                    <h3 className="text-xl font-bold text-gray-700 mb-4 w-full text-left">🏷️ Parcel Types</h3>
-                    <div className="w-full max-w-[300px]">
-                        {typeLabels.length > 0 ? (
-                            <Pie options={{ responsive: true, plugins: { legend: { position: 'bottom' } } }} data={typeChartData} />
-                        ) : <p className="text-gray-500">No parcel type data yet.</p>}
+                    <div className="floating-card p-6 bg-white flex flex-col items-center">
+                        <h3 className="text-xl font-bold text-gray-700 mb-4 w-full text-left">🏷️ Parcel Types</h3>
+                        <div className="w-full max-w-[300px]">
+                            {typeLabels.length > 0 ? (
+                                <Pie options={{ responsive: true, plugins: { legend: { position: 'bottom' } } }} data={typeChartData} />
+                            ) : <p className="text-gray-500">No parcel type data yet.</p>}
+                        </div>
                     </div>
+
                 </div>
             </div>
 

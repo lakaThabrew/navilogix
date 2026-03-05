@@ -53,6 +53,26 @@ export const getBranches = async (req, res) => {
     }
 };
 
+export const addBranch = async (req, res) => {
+    const { branchName, contactNumber, lat, lng, assignedAreas } = req.body;
+    try {
+        const branchExists = await Branch.findOne({ branchName });
+        if (branchExists) return res.status(400).json({ message: 'Branch already exists' });
+
+        const newBranch = await Branch.create({
+            branchName,
+            contactNumber,
+            coordinates: { lat: Number(lat), lng: Number(lng) },
+            assignedAreas: assignedAreas ? assignedAreas.split(',').map(a => a.trim()) : []
+        });
+
+        logger.info(`🏢 [BRANCH] New branch added: ${branchName}`);
+        res.status(201).json(newBranch);
+    } catch (error) {
+        logger.error(`❌ [BRANCH] Add error: ${error.message}`);
+        res.status(500).json({ message: error.message });
+    }
+};
 
 export const processPayment = async (req, res) => {
     try {

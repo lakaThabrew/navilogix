@@ -29,7 +29,13 @@ const Dashboard = () => {
     branchId: ""
   });
 
-
+  // Add Branch States
+  const [newBranchName, setNewBranchName] = useState("");
+  const [newBranchContact, setNewBranchContact] = useState("");
+  const [newBranchLat, setNewBranchLat] = useState("");
+  const [newBranchLng, setNewBranchLng] = useState("");
+  const [newBranchAreas, setNewBranchAreas] = useState("");
+  const [addingBranch, setAddingBranch] = useState(false);
 
   async function fetchBranches() {
     try {
@@ -117,6 +123,43 @@ const Dashboard = () => {
       setBranchForm({ name: "", email: "", password: "", branchId: "" });
     } catch (error) {
       alert("Failed: " + (error.response?.data?.message || error.message));
+    }
+  };
+
+  const handleAddBranch = async (e) => {
+    e.preventDefault();
+    if (!newBranchName || !newBranchLat || !newBranchLng) {
+      alert("Branch Name, Latitude, and Longitude are required.");
+      return;
+    }
+
+    try {
+      setAddingBranch(true);
+      const config = { headers: { Authorization: `Bearer ${user.token}` } };
+      const payload = {
+        branchName: newBranchName,
+        contactNumber: newBranchContact,
+        lat: newBranchLat,
+        lng: newBranchLng,
+        assignedAreas: newBranchAreas
+      };
+
+      await axios.post("http://localhost:5000/api/auth/branches", payload, config);
+      alert("Branch added successfully!");
+
+      // Clear form
+      setNewBranchName("");
+      setNewBranchContact("");
+      setNewBranchLat("");
+      setNewBranchLng("");
+      setNewBranchAreas("");
+
+      fetchBranches(); // Refresh branches drop down
+    } catch (error) {
+      logger.error("Error adding branch: " + error.message);
+      alert(error.response?.data?.message || "Failed to add branch");
+    } finally {
+      setAddingBranch(false);
     }
   };
 
@@ -329,7 +372,8 @@ const Dashboard = () => {
               <div
                 key={msg._id}
                 onClick={() => markAsRead(msg._id)}
-                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-colors ${msg.isRead ? 'border-gray-300' : 'border-blue-500'}`}
+                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-colors ${msg.isRead ?
+                  'border-gray-300' : 'border-blue-500'}`}
               >
                 <p className="font-medium text-gray-800">{msg.content}</p>
                 <p className="text-xs text-gray-500 mt-1">{new Date(msg.createdAt).toLocaleString()}</p>
@@ -344,7 +388,9 @@ const Dashboard = () => {
       {/* Actually, user requested "regular users... payment ekk krnn one... it psse dashboard eke pennan one" */}
       {/* So dashboard is largely blocked until paid. */}
 
-      <div className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 ${user.role === 'regular' && user.paymentStatus !== 'paid' ? 'opacity-20 pointer-events-none select-none filter blur-sm' : ''}`}>
+      <div
+        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 ${user.role === 'regular' && user.paymentStatus !== 'paid' ?
+          'opacity-20 pointer-events-none select-none filter blur-sm' : ''}`}>
         <div className="floating-card text-center p-6">
           <div className="text-4xl font-bold text-primary mb-2">
             {currentStats.total}
@@ -403,58 +449,151 @@ const Dashboard = () => {
 
       {/* User Management Section (Main Admin Only) */}
       {user.role === "main_admin" && (
-        <div className="floating-card mb-12">
-          <h3 className="text-2xl font-bold text-primary mb-6 border-b pb-2">
-            👤 User Management: Add Branch Head
-          </h3>
-          <form onSubmit={handleCreateBranchAdmin} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <input
-              type="text"
-              className="input-field"
-              placeholder="Full Name"
-              value={branchForm.name}
-              onChange={(e) => setBranchForm({ ...branchForm, name: e.target.value })}
-              required
-            />
-            <input
-              type="email"
-              className="input-field"
-              placeholder="Email Address"
-              value={branchForm.email}
-              onChange={(e) => setBranchForm({ ...branchForm, email: e.target.value })}
-              required
-            />
-            <input
-              type="password"
-              className="input-field"
-              placeholder="Password"
-              value={branchForm.password}
-              onChange={(e) => setBranchForm({ ...branchForm, password: e.target.value })}
-              required
-            />
-            <select
-              className="input-field"
-              value={branchForm.branchId}
-              onChange={(e) => setBranchForm({ ...branchForm, branchId: e.target.value })}
-              required
-            >
-              <option value="">Select Branch</option>
-              {branches.map(b => (
-                <option key={b._id} value={b._id}>{b.branchName}</option>
-              ))}
-            </select>
-            <button type="submit" className="btn-primary md:col-span-2 lg:col-span-4 font-bold">
-              Register Branch Admin
-            </button>
-          </form>
-        </div>
+        <>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div className="floating-card mb-12">
+              <h3 className="text-2xl font-bold text-primary mb-6 border-b pb-2">
+                👤 User Management: Add Branch Head
+              </h3>
+              <form onSubmit={handleCreateBranchAdmin} className="space-y-6">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                <input
+                  type="text"
+                  className="input-field"
+                  placeholder="e.g., John Doe"
+                  value={branchForm.name}
+                  onChange={(e) => setBranchForm({ ...branchForm, name: e.target.value })}
+                  required
+                />
+                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                <input
+                  type="email"
+                  className="input-field"
+                  placeholder="e.g., johndoe@navilogix.com"
+                  value={branchForm.email}
+                  onChange={(e) => setBranchForm({ ...branchForm, email: e.target.value })}
+                  required
+                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+                    <input
+                      type="password"
+                      className="input-field"
+                      placeholder="e.g., password123"
+                      value={branchForm.password}
+                      onChange={(e) => setBranchForm({ ...branchForm, password: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Branch *</label>
+                    <select
+                      className="input-field"
+                      value={branchForm.branchId}
+                      onChange={(e) => setBranchForm({ ...branchForm, branchId: e.target.value })}
+                      required
+                    >
+                      {branches.map(b => (
+                        <option key={b._id} value={b._id}>{b.branchName}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="submit"
+                    className="btn-primary md:col-span-2 lg:col-span-4 font-bold">
+                    Register Branch Admin
+                  </button>
+                </div>
+              </form>
+            </div>
+
+            {/* Branch Management Section */}
+            <div className="floating-card mb-12">
+              <h3 className="text-2xl font-bold text-primary mb-6 border-b pb-2">
+                🏢 Branch Management: Add New Branch
+              </h3>
+              <form onSubmit={handleAddBranch} className="space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Branch Name *</label>
+                    <input
+                      type="text"
+                      required
+                      value={newBranchName}
+                      onChange={(e) => setNewBranchName(e.target.value)}
+                      className="input-field"
+                      placeholder="e.g., Kandy Branch"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
+                    <input
+                      type="text"
+                      value={newBranchContact}
+                      onChange={(e) => setNewBranchContact(e.target.value)}
+                      className="input-field"
+                      placeholder="e.g., 081-2234567"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Latitude *</label>
+                    <input
+                      type="number"
+                      step="any"
+                      required
+                      value={newBranchLat}
+                      onChange={(e) => setNewBranchLat(e.target.value)}
+                      className="input-field"
+                      placeholder="e.g., 7.2906"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Longitude *</label>
+                    <input
+                      type="number"
+                      step="any"
+                      required
+                      value={newBranchLng}
+                      onChange={(e) => setNewBranchLng(e.target.value)}
+                      className="input-field"
+                      placeholder="e.g., 80.6337"
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Assigned Areas (comma-separated)</label>
+                  <input
+                    type="text"
+                    value={newBranchAreas}
+                    onChange={(e) => setNewBranchAreas(e.target.value)}
+                    className="input-field"
+                    placeholder="e.g., Kandy, Peradeniya, Katugastota"
+                  />
+                </div>
+                <div className="flex justify-end pt-4">
+                  <button
+                    type="submit"
+                    disabled={addingBranch}
+                    className="btn-primary font-bold px-8 disabled:opacity-50"
+                  >
+                    {addingBranch ? "Adding..." : "+ Add Branch"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </>
+
       )}
 
       {/* Admin & Branch Head View: Add Parcel */}
       {(user.role === "main_admin" || user.role === "branch_head") && (
         <div className="floating-card mb-12">
           <h3 className="text-2xl font-bold text-primary mb-6 border-b pb-2">
-            {user.role === 'branch_head' ? 'Dispatch New Parcel (From Branch)' : 'Add New Parcel (Main Office)'}
+            {user.role === 'branch_head' ? '📦 Dispatch New Parcel (From Branch)' : '📦 Add New Parcel (Main Office)'}
           </h3>
           <form
             onSubmit={handleAddParcel}
@@ -462,27 +601,30 @@ const Dashboard = () => {
           >
             <div className="space-y-4">
               <h4 className="font-bold text-gray-600">Sender Info</h4>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
               <input
                 className="input-field"
-                placeholder="Name"
+                placeholder="Joe Doe"
                 value={form.senderName}
                 onChange={(e) =>
                   setForm({ ...form, senderName: e.target.value })
                 }
                 required
               />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
               <input
                 className="input-field"
-                placeholder="Address"
+                placeholder="123 Main St"
                 value={form.senderAddress}
                 onChange={(e) =>
                   setForm({ ...form, senderAddress: e.target.value })
                 }
                 required
               />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Contact No. *</label>
               <input
                 className="input-field"
-                placeholder="Contact"
+                placeholder="077-1234567"
                 value={form.senderContact}
                 onChange={(e) =>
                   setForm({ ...form, senderContact: e.target.value })
@@ -492,27 +634,30 @@ const Dashboard = () => {
             </div>
             <div className="space-y-4">
               <h4 className="font-bold text-gray-600">Receiver Info</h4>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
               <input
                 className="input-field"
-                placeholder="Name"
+                placeholder="Jane Doe"
                 value={form.receiverName}
                 onChange={(e) =>
                   setForm({ ...form, receiverName: e.target.value })
                 }
                 required
               />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
               <input
                 className="input-field"
-                placeholder="Address (e.g. Kandy)"
+                placeholder="123 Main St"
                 value={form.receiverAddress}
                 onChange={(e) =>
                   setForm({ ...form, receiverAddress: e.target.value })
                 }
                 required
               />
+              <label className="block text-sm font-medium text-gray-700 mb-1">Contact No.*</label>
               <input
                 className="input-field"
-                placeholder="Contact"
+                placeholder="077-1234567"
                 value={form.receiverContact}
                 onChange={(e) =>
                   setForm({ ...form, receiverContact: e.target.value })
@@ -523,17 +668,34 @@ const Dashboard = () => {
             <div className="space-y-4 md:col-span-2 grid md:grid-cols-2 gap-6">
               <div>
                 <h4 className="font-bold text-gray-600 mb-2">Parcel Details</h4>
-                <input
-                  className="input-field mb-2"
-                  placeholder="Weight (kg)"
-                  value={form.weight}
-                  onChange={(e) => setForm({ ...form, weight: e.target.value })}
-                />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-2">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Weight (kg) *</label>
+                    <input
+                      className="input-field mb-2"
+                      placeholder="1"
+                      value={form.weight}
+                      onChange={(e) => setForm({ ...form, weight: e.target.value })}
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Type *</label>
+                    <select
+                      className="input-field mb-2"
+                      value={form.type}
+                      onChange={(e) => setForm({ ...form, type: e.target.value })}
+                    >
+                      <option value="document">Document</option>
+                      <option value="parcel">Parcel</option>
+                    </select>
+                  </div>
+                </div>
               </div>
               <div>
                 <h4 className="font-bold text-gray-600 mb-2">Payment</h4>
+                <label className="block text-sm font-medium text-gray-700 mb-1">COD Amount *</label>
                 <input
-                  className="input-field"
+                  className="input-field mb-2"
                   placeholder="COD Amount"
                   value={form.codAmount}
                   onChange={(e) =>
@@ -542,13 +704,14 @@ const Dashboard = () => {
                 />
               </div>
             </div>
-
-            <button
-              type="submit"
-              className="btn-primary md:col-span-2 text-lg font-bold"
-            >
-              {user.role === 'branch_head' ? 'Send Request to Main Admin' : 'Add Parcel to System'}
-            </button>
+            <div className="flex justify-end pt-0 md:col-span-2 w-full">
+              <button
+                type="submit"
+                className="btn-primary px-8 text-lg font-bold"
+              >
+                {user.role === 'branch_head' ? 'Send Request to Main Admin' : 'Add Parcel to System'}
+              </button>
+            </div>
           </form>
         </div>
       )}
