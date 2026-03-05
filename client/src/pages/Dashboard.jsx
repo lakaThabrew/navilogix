@@ -26,6 +26,7 @@ const Dashboard = () => {
     name: "",
     email: "",
     password: "",
+    role: "branch_head",
     branchId: ""
   });
 
@@ -116,11 +117,10 @@ const Dashboard = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       };
       await axios.post("http://localhost:5000/api/auth/register", {
-        ...branchForm,
-        role: "branch_head"
+        ...branchForm
       }, config);
-      alert("Branch Admin Created!");
-      setBranchForm({ name: "", email: "", password: "", branchId: "" });
+      alert("User Created Successfully!");
+      setBranchForm({ name: "", email: "", password: "", role: "branch_head", branchId: "" });
     } catch (error) {
       alert("Failed: " + (error.response?.data?.message || error.message));
     }
@@ -453,28 +453,32 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
             <div className="floating-card mb-12">
               <h3 className="text-2xl font-bold text-primary mb-6 border-b pb-2">
-                👤 User Management: Add Branch Head
+                👤 User Management: Add Staff User
               </h3>
               <form onSubmit={handleCreateBranchAdmin} className="space-y-6">
-                <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
-                <input
-                  type="text"
-                  className="input-field"
-                  placeholder="e.g., John Doe"
-                  value={branchForm.name}
-                  onChange={(e) => setBranchForm({ ...branchForm, name: e.target.value })}
-                  required
-                />
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
-                <input
-                  type="email"
-                  className="input-field"
-                  placeholder="e.g., johndoe@navilogix.com"
-                  value={branchForm.email}
-                  onChange={(e) => setBranchForm({ ...branchForm, email: e.target.value })}
-                  required
-                />
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                    <input
+                      type="text"
+                      className="input-field"
+                      placeholder="e.g., John Doe"
+                      value={branchForm.name}
+                      onChange={(e) => setBranchForm({ ...branchForm, name: e.target.value })}
+                      required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                    <input
+                      type="email"
+                      className="input-field"
+                      placeholder="e.g., johndoe@navilogix.com"
+                      value={branchForm.email}
+                      onChange={(e) => setBranchForm({ ...branchForm, email: e.target.value })}
+                      required
+                    />
+                  </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
                     <input
@@ -487,24 +491,39 @@ const Dashboard = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Branch *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">Role *</label>
                     <select
                       className="input-field"
-                      value={branchForm.branchId}
-                      onChange={(e) => setBranchForm({ ...branchForm, branchId: e.target.value })}
+                      value={branchForm.role}
+                      onChange={(e) => setBranchForm({ ...branchForm, role: e.target.value, branchId: "" })}
                       required
                     >
-                      {branches.map(b => (
-                        <option key={b._id} value={b._id}>{b.branchName}</option>
-                      ))}
+                      <option value="branch_head">Branch Head</option>
+                      <option value="delivery_person">Delivery Person (Driver)</option>
                     </select>
                   </div>
+                  {(branchForm.role === 'branch_head' || branchForm.role === 'delivery_person') && (
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">Branch *</label>
+                      <select
+                        className="input-field"
+                        value={branchForm.branchId}
+                        onChange={(e) => setBranchForm({ ...branchForm, branchId: e.target.value })}
+                        required
+                      >
+                        <option value="">Select a Branch</option>
+                        {branches.map(b => (
+                          <option key={b._id} value={b._id}>{b.branchName}</option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
                 <div className="flex justify-end pt-4">
                   <button
                     type="submit"
-                    className="btn-primary md:col-span-2 lg:col-span-4 font-bold">
-                    Register Branch Admin
+                    className="btn-primary font-bold px-8">
+                    Register User
                   </button>
                 </div>
               </form>
