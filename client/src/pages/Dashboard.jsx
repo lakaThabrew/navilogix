@@ -27,7 +27,7 @@ const Dashboard = () => {
     email: "",
     password: "",
     role: "branch_head",
-    branchId: ""
+    branchId: "",
   });
 
   // Add Branch States
@@ -40,20 +40,24 @@ const Dashboard = () => {
 
   async function fetchBranches() {
     try {
-      const { data } = await axios.get("http://localhost:5000/api/auth/branches");
+      const { data } = await axios.get(
+        "http://localhost:5000/api/auth/branches",
+      );
       setBranches(data);
     } catch (error) {
       logger.error("Error fetching branches: " + error.message, { error });
     }
-  };
+  }
 
   async function fetchParcels(userInfo = user) {
-    logger.info("📦 [CLIENT DASHBOARD] Fetching parcels...");
     try {
       const config = {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       };
-      const { data } = await axios.get("http://localhost:5000/api/parcels", config);
+      const { data } = await axios.get(
+        "http://localhost:5000/api/parcels",
+        config,
+      );
       logger.info(`✅ [CLIENT DASHBOARD] Received ${data.length} parcels`);
       setParcels(data);
     } catch (error) {
@@ -61,35 +65,34 @@ const Dashboard = () => {
         "❌ [CLIENT DASHBOARD] Error fetching parcels: " + error.message,
       );
     }
-  };
+  }
 
   async function fetchMessages(userInfo = user) {
     try {
       const config = {
         headers: { Authorization: `Bearer ${userInfo.token}` },
       };
-      const { data } = await axios.get("http://localhost:5000/api/messages", config);
+      const { data } = await axios.get(
+        "http://localhost:5000/api/messages",
+        config,
+      );
       setMessages(data);
     } catch (error) {
       logger.error("Error fetching messages: " + error.message, { error });
     }
-  };
+  }
 
   useEffect(() => {
-    logger.info("📋 [CLIENT DASHBOARD] Component mounted");
     const u = JSON.parse(localStorage.getItem("userInfo"));
     if (!u) {
-      logger.info(
+      logger.error(
         "❌ [CLIENT DASHBOARD] No user info found, redirecting to login",
       );
       navigate("/login");
     } else {
-      logger.info(
-        "✅ [CLIENT DASHBOARD] User loaded: " + u.name + " Role: " + u.role,
-      );
       setUser(u);
       fetchParcels(u);
-      if (u.role === 'main_admin') {
+      if (u.role === "main_admin") {
         fetchMessages(u);
         fetchBranches();
       }
@@ -103,10 +106,16 @@ const Dashboard = () => {
       const config = {
         headers: { Authorization: `Bearer ${u.token}` },
       };
-      await axios.put(`http://localhost:5000/api/messages/${id}/read`, {}, config);
+      await axios.put(
+        `http://localhost:5000/api/messages/${id}/read`,
+        {},
+        config,
+      );
       fetchMessages();
     } catch (error) {
-      logger.error("Error marking message as read: " + error.message, { error });
+      logger.error("Error marking message as read: " + error.message, {
+        error,
+      });
     }
   };
 
@@ -116,11 +125,21 @@ const Dashboard = () => {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
       };
-      await axios.post("http://localhost:5000/api/auth/register", {
-        ...branchForm
-      }, config);
+      await axios.post(
+        "http://localhost:5000/api/auth/register",
+        {
+          ...branchForm,
+        },
+        config,
+      );
       alert("User Created Successfully!");
-      setBranchForm({ name: "", email: "", password: "", role: "branch_head", branchId: "" });
+      setBranchForm({
+        name: "",
+        email: "",
+        password: "",
+        role: "branch_head",
+        branchId: "",
+      });
     } catch (error) {
       alert("Failed: " + (error.response?.data?.message || error.message));
     }
@@ -141,10 +160,14 @@ const Dashboard = () => {
         contactNumber: newBranchContact,
         lat: newBranchLat,
         lng: newBranchLng,
-        assignedAreas: newBranchAreas
+        assignedAreas: newBranchAreas,
       };
 
-      await axios.post("http://localhost:5000/api/auth/branches", payload, config);
+      await axios.post(
+        "http://localhost:5000/api/auth/branches",
+        payload,
+        config,
+      );
       alert("Branch added successfully!");
 
       // Clear form
@@ -165,7 +188,9 @@ const Dashboard = () => {
 
   const handleAddParcel = async (e) => {
     e.preventDefault();
-    logger.info("➕ [CLIENT DASHBOARD] Adding new parcel: " + form.receiverName);
+    logger.info(
+      "➕ [CLIENT DASHBOARD] Adding new parcel: " + form.receiverName,
+    );
     try {
       const parcelData = {
         senderInfo: {
@@ -187,21 +212,26 @@ const Dashboard = () => {
         headers: { Authorization: `Bearer ${user.token}` },
       };
 
-      if (user.role === 'branch_head') {
-        // Send Message Request instead of creating parcel
-        await axios.post("http://localhost:5000/api/messages", {
-          content: `New Parcel Request from Branch Head ${user.name}. Please review and add to system.`,
-          receiverRole: 'main_admin',
-          parcelData: parcelData
-        }, config);
+      if (user.role === "branch_head") {
+        await axios.post(
+          "http://localhost:5000/api/messages",
+          {
+            content: `New Parcel Request from Branch Head ${user.name}. Please review and add to system.`,
+            receiverRole: "main_admin",
+            parcelData: parcelData,
+          },
+          config,
+        );
         alert("Request Sent to Main Admin!");
       } else {
-        // Regular Admin Flow: Create Parcel directly
-        await axios.post("http://localhost:5000/api/parcels", parcelData, config);
+        await axios.post(
+          "http://localhost:5000/api/parcels",
+          parcelData,
+          config,
+        );
         alert("Parcel Added & Branch Auto-Assigned!");
       }
 
-      logger.info("✅ [CLIENT DASHBOARD] Action completed successfully!");
       fetchParcels();
       setForm({
         senderName: "",
@@ -228,14 +258,17 @@ const Dashboard = () => {
     );
     const u = JSON.parse(localStorage.getItem("userInfo"));
     try {
-      logger.info("📤 [CLIENT DASHBOARD] Sending status update...");
       const config = {
         headers: { Authorization: `Bearer ${u.token}` },
       };
-      await axios.put(`http://localhost:5000/api/parcels/${id}/status`, {
-        status,
-        location: "Updated by " + u.name,
-      }, config);
+      await axios.put(
+        `http://localhost:5000/api/parcels/${id}/status`,
+        {
+          status,
+          location: "Updated by " + u.name,
+        },
+        config,
+      );
       logger.info("✅ [CLIENT DASHBOARD] Status updated successfully");
       fetchParcels();
     } catch (error) {
@@ -245,42 +278,45 @@ const Dashboard = () => {
     }
   };
 
-  // Reports Logic for Regular Users
   const [reportData, setReportData] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-
-
 
   async function fetchReportData() {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.get("http://localhost:5000/api/parcels/reports", config);
+      const { data } = await axios.get(
+        "http://localhost:5000/api/parcels/reports",
+        config,
+      );
       setReportData(data.stats);
     } catch (error) {
       logger.error("Error fetching reports: " + error.message, { error });
     }
-  };
+  }
 
   useEffect(() => {
-    if (user && user.role === 'regular') {
-      if (user.paymentStatus !== 'paid') {
+    if (user && user.role === "regular") {
+      if (user.paymentStatus !== "paid") {
         setShowPaymentModal(true);
       } else {
         fetchReportData();
       }
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
   const handlePayment = async () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
-      const { data } = await axios.put("http://localhost:5000/api/auth/pay", {}, config);
+      const { data } = await axios.put(
+        "http://localhost:5000/api/auth/pay",
+        {},
+        config,
+      );
       alert("Payment Successful! Features Unlocked.");
-      localStorage.setItem('userInfo', JSON.stringify(data));
+      localStorage.setItem("userInfo", JSON.stringify(data));
       setUser(data);
       setShowPaymentModal(false);
-      fetchReportData(); // Fetch reports after unlocking
+      fetchReportData();
     } catch (error) {
       logger.error("Payment failed: " + error.message, { error });
       alert("Payment Failed");
@@ -309,9 +345,9 @@ const Dashboard = () => {
   } else if (user.role === "branch_head") {
     displayedParcels = parcels.filter(
       (p) =>
-        p.branchId &&
-        (p.branchId._id === user.branchId || p.branchId === user.branchId) ||
-        (p.createdBy === user._id),
+        (p.branchId &&
+          (p.branchId._id === user.branchId || p.branchId === user.branchId)) ||
+        p.createdBy === user._id,
     );
   }
 
@@ -330,23 +366,32 @@ const Dashboard = () => {
       <h1 className="text-4xl font-bold text-primary mb-8">
         Hello, <span className="text-secondary">{user.name}</span>{" "}
         <span className="text-lg font-normal text-gray-500">({user.role})</span>
-        {user.role === 'regular' && (
-          <span className={`ml-4 text-sm px-3 py-1 rounded-full ${user.paymentStatus === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
-            {user.paymentStatus === 'paid' ? 'Premium Unlocked' : 'Free Tier'}
+        {user.role === "regular" && (
+          <span
+            className={`ml-4 text-sm px-3 py-1 rounded-full ${user.paymentStatus === "paid" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+          >
+            {user.paymentStatus === "paid" ? "Premium Unlocked" : "Free Tier"}
           </span>
         )}
       </h1>
 
-      {/* Payment Modal */}
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
           <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-md text-center">
-            <h2 className="text-2xl font-bold text-primary mb-4">🔓 Unlock Premium Features</h2>
+            <h2 className="text-2xl font-bold text-primary mb-4">
+              🔓 Unlock Premium Features
+            </h2>
             <p className="text-gray-600 mb-6">
-              Upgrade to a Regular User account to access your personalized Dashboard, Detailed Reports, and Parcel History.
+              Upgrade to a Regular User account to access your personalized
+              Dashboard, Detailed Reports, and Parcel History.
             </p>
             <div className="bg-blue-50 p-4 rounded-xl mb-6">
-              <p className="text-3xl font-bold text-blue-600">$9.99<span className="text-sm text-gray-400 font-normal">/month</span></p>
+              <p className="text-3xl font-bold text-blue-600">
+                $9.99
+                <span className="text-sm text-gray-400 font-normal">
+                  /month
+                </span>
+              </p>
             </div>
             <button
               onClick={handlePayment}
@@ -355,7 +400,7 @@ const Dashboard = () => {
               Pay Now & Unlock
             </button>
             <button
-              onClick={() => navigate('/')}
+              onClick={() => navigate("/")}
               className="mt-4 text-gray-400 hover:text-gray-600 text-sm"
             >
               Go Back Home
@@ -364,33 +409,37 @@ const Dashboard = () => {
         </div>
       )}
 
-      {user.role === 'main_admin' && messages.length > 0 && (
+      {user.role === "main_admin" && messages.length > 0 && (
         <div className="mb-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
-          <h3 className="text-xl font-bold text-yellow-800 mb-4">🔔 Notifications</h3>
+          <h3 className="text-xl font-bold text-yellow-800 mb-4">
+            🔔 Notifications
+          </h3>
           <div className="space-y-3">
-            {messages.map(msg => (
+            {messages.map((msg) => (
               <div
                 key={msg._id}
                 onClick={() => markAsRead(msg._id)}
-                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-colors ${msg.isRead ?
-                  'border-gray-300' : 'border-blue-500'}`}
+                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-colors ${
+                  msg.isRead ? "border-gray-300" : "border-blue-500"
+                }`}
               >
                 <p className="font-medium text-gray-800">{msg.content}</p>
-                <p className="text-xs text-gray-500 mt-1">{new Date(msg.createdAt).toLocaleString()}</p>
+                <p className="text-xs text-gray-500 mt-1">
+                  {new Date(msg.createdAt).toLocaleString()}
+                </p>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* Stats Overview */}
-      {/* If regular user is unpaid, blur stats or hide them? Existing stats are fine, but reports are extra. */}
-      {/* Actually, user requested "regular users... payment ekk krnn one... it psse dashboard eke pennan one" */}
-      {/* So dashboard is largely blocked until paid. */}
-
       <div
-        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 ${user.role === 'regular' && user.paymentStatus !== 'paid' ?
-          'opacity-20 pointer-events-none select-none filter blur-sm' : ''}`}>
+        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 ${
+          user.role === "regular" && user.paymentStatus !== "paid"
+            ? "opacity-20 pointer-events-none select-none filter blur-sm"
+            : ""
+        }`}
+      >
         <div className="floating-card text-center p-6">
           <div className="text-4xl font-bold text-primary mb-2">
             {currentStats.total}
@@ -417,30 +466,44 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {reportData && user.role === 'regular' && (
+      {reportData && user.role === "regular" && (
         <div className="mb-12">
-          <h3 className="text-2xl font-bold text-primary mb-6">📊 Your Performance Reports</h3>
+          <h3 className="text-2xl font-bold text-primary mb-6">
+            📊 Your Performance Reports
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="floating-card bg-white p-6">
-              <h4 className="font-bold text-gray-700 mb-4 border-b pb-2">📦 Parcel Volume</h4>
+              <h4 className="font-bold text-gray-700 mb-4 border-b pb-2">
+                📦 Parcel Volume
+              </h4>
               <div className="flex justify-between items-center mb-2">
                 <span>Sent:</span>
-                <span className="font-bold text-primary">{reportData.totalSent}</span>
+                <span className="font-bold text-primary">
+                  {reportData.totalSent}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Received:</span>
-                <span className="font-bold text-primary">{reportData.totalReceived}</span>
+                <span className="font-bold text-primary">
+                  {reportData.totalReceived}
+                </span>
               </div>
             </div>
             <div className="floating-card bg-white p-6">
-              <h4 className="font-bold text-gray-700 mb-4 border-b pb-2">💰 COD Financials</h4>
+              <h4 className="font-bold text-gray-700 mb-4 border-b pb-2">
+                💰 COD Financials
+              </h4>
               <div className="flex justify-between items-center mb-2">
                 <span>Total Paid:</span>
-                <span className="font-bold text-red-500">Rs. {reportData.codPaid}</span>
+                <span className="font-bold text-red-500">
+                  Rs. {reportData.codPaid}
+                </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Total to Receive:</span>
-                <span className="font-bold text-green-500">Rs. {reportData.codToReceive}</span>
+                <span className="font-bold text-green-500">
+                  Rs. {reportData.codToReceive}
+                </span>
               </div>
             </div>
           </div>
@@ -458,71 +521,104 @@ const Dashboard = () => {
               <form onSubmit={handleCreateBranchAdmin} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Full Name *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Full Name *
+                    </label>
                     <input
                       type="text"
                       className="input-field"
                       placeholder="e.g., John Doe"
                       value={branchForm.name}
-                      onChange={(e) => setBranchForm({ ...branchForm, name: e.target.value })}
+                      onChange={(e) =>
+                        setBranchForm({ ...branchForm, name: e.target.value })
+                      }
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Email Address *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Email Address *
+                    </label>
                     <input
                       type="email"
                       className="input-field"
                       placeholder="e.g., johndoe@navilogix.com"
                       value={branchForm.email}
-                      onChange={(e) => setBranchForm({ ...branchForm, email: e.target.value })}
+                      onChange={(e) =>
+                        setBranchForm({ ...branchForm, email: e.target.value })
+                      }
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Password *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Password *
+                    </label>
                     <input
                       type="password"
                       className="input-field"
                       placeholder="e.g., password123"
                       value={branchForm.password}
-                      onChange={(e) => setBranchForm({ ...branchForm, password: e.target.value })}
+                      onChange={(e) =>
+                        setBranchForm({
+                          ...branchForm,
+                          password: e.target.value,
+                        })
+                      }
                       required
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Role *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Role *
+                    </label>
                     <select
                       className="input-field"
                       value={branchForm.role}
-                      onChange={(e) => setBranchForm({ ...branchForm, role: e.target.value, branchId: "" })}
+                      onChange={(e) =>
+                        setBranchForm({
+                          ...branchForm,
+                          role: e.target.value,
+                          branchId: "",
+                        })
+                      }
                       required
                     >
                       <option value="branch_head">Branch Head</option>
-                      <option value="delivery_person">Delivery Person (Driver)</option>
+                      <option value="delivery_person">
+                        Delivery Person (Driver)
+                      </option>
                     </select>
                   </div>
-                  {(branchForm.role === 'branch_head' || branchForm.role === 'delivery_person') && (
+                  {(branchForm.role === "branch_head" ||
+                    branchForm.role === "delivery_person") && (
                     <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">Branch *</label>
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Branch *
+                      </label>
                       <select
                         className="input-field"
                         value={branchForm.branchId}
-                        onChange={(e) => setBranchForm({ ...branchForm, branchId: e.target.value })}
+                        onChange={(e) =>
+                          setBranchForm({
+                            ...branchForm,
+                            branchId: e.target.value,
+                          })
+                        }
                         required
                       >
                         <option value="">Select a Branch</option>
-                        {branches.map(b => (
-                          <option key={b._id} value={b._id}>{b.branchName}</option>
+                        {branches.map((b) => (
+                          <option key={b._id} value={b._id}>
+                            {b.branchName}
+                          </option>
                         ))}
                       </select>
                     </div>
                   )}
                 </div>
                 <div className="flex justify-end pt-4">
-                  <button
-                    type="submit"
-                    className="btn-primary font-bold px-8">
+                  <button type="submit" className="btn-primary font-bold px-8">
                     Register User
                   </button>
                 </div>
@@ -537,7 +633,9 @@ const Dashboard = () => {
               <form onSubmit={handleAddBranch} className="space-y-6">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Branch Name *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Branch Name *
+                    </label>
                     <input
                       type="text"
                       required
@@ -548,7 +646,9 @@ const Dashboard = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Contact Number</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Contact Number
+                    </label>
                     <input
                       type="text"
                       value={newBranchContact}
@@ -558,7 +658,9 @@ const Dashboard = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Latitude *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Latitude *
+                    </label>
                     <input
                       type="number"
                       step="any"
@@ -570,7 +672,9 @@ const Dashboard = () => {
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Longitude *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Longitude *
+                    </label>
                     <input
                       type="number"
                       step="any"
@@ -583,7 +687,9 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Assigned Areas (comma-separated)</label>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Assigned Areas (comma-separated)
+                  </label>
                   <input
                     type="text"
                     value={newBranchAreas}
@@ -605,14 +711,15 @@ const Dashboard = () => {
             </div>
           </div>
         </>
-
       )}
 
       {/* Admin & Branch Head View: Add Parcel */}
       {(user.role === "main_admin" || user.role === "branch_head") && (
         <div className="floating-card mb-12">
           <h3 className="text-2xl font-bold text-primary mb-6 border-b pb-2">
-            {user.role === 'branch_head' ? '📦 Dispatch New Parcel (From Branch)' : '📦 Add New Parcel (Main Office)'}
+            {user.role === "branch_head"
+              ? "📦 Dispatch New Parcel (From Branch)"
+              : "📦 Add New Parcel (Main Office)"}
           </h3>
           <form
             onSubmit={handleAddParcel}
@@ -620,7 +727,9 @@ const Dashboard = () => {
           >
             <div className="space-y-4">
               <h4 className="font-bold text-gray-600">Sender Info</h4>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Name *
+              </label>
               <input
                 className="input-field"
                 placeholder="Joe Doe"
@@ -630,7 +739,9 @@ const Dashboard = () => {
                 }
                 required
               />
-              <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address *
+              </label>
               <input
                 className="input-field"
                 placeholder="123 Main St"
@@ -640,7 +751,9 @@ const Dashboard = () => {
                 }
                 required
               />
-              <label className="block text-sm font-medium text-gray-700 mb-1">Contact No. *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Contact No. *
+              </label>
               <input
                 className="input-field"
                 placeholder="077-1234567"
@@ -653,7 +766,9 @@ const Dashboard = () => {
             </div>
             <div className="space-y-4">
               <h4 className="font-bold text-gray-600">Receiver Info</h4>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Name *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Name *
+              </label>
               <input
                 className="input-field"
                 placeholder="Jane Doe"
@@ -663,7 +778,9 @@ const Dashboard = () => {
                 }
                 required
               />
-              <label className="block text-sm font-medium text-gray-700 mb-1">Address *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Address *
+              </label>
               <input
                 className="input-field"
                 placeholder="123 Main St"
@@ -673,7 +790,9 @@ const Dashboard = () => {
                 }
                 required
               />
-              <label className="block text-sm font-medium text-gray-700 mb-1">Contact No.*</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Contact No.*
+              </label>
               <input
                 className="input-field"
                 placeholder="077-1234567"
@@ -689,20 +808,28 @@ const Dashboard = () => {
                 <h4 className="font-bold text-gray-600 mb-2">Parcel Details</h4>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-2">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Weight (kg) *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Weight (kg) *
+                    </label>
                     <input
                       className="input-field mb-2"
                       placeholder="1"
                       value={form.weight}
-                      onChange={(e) => setForm({ ...form, weight: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, weight: e.target.value })
+                      }
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Type *</label>
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Type *
+                    </label>
                     <select
                       className="input-field mb-2"
                       value={form.type}
-                      onChange={(e) => setForm({ ...form, type: e.target.value })}
+                      onChange={(e) =>
+                        setForm({ ...form, type: e.target.value })
+                      }
                     >
                       <option value="document">Document</option>
                       <option value="parcel">Parcel</option>
@@ -712,7 +839,9 @@ const Dashboard = () => {
               </div>
               <div>
                 <h4 className="font-bold text-gray-600 mb-2">Payment</h4>
-                <label className="block text-sm font-medium text-gray-700 mb-1">COD Amount *</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  COD Amount *
+                </label>
                 <input
                   className="input-field mb-2"
                   placeholder="COD Amount"
@@ -728,7 +857,9 @@ const Dashboard = () => {
                 type="submit"
                 className="btn-primary px-8 text-lg font-bold"
               >
-                {user.role === 'branch_head' ? 'Send Request to Main Admin' : 'Add Parcel to System'}
+                {user.role === "branch_head"
+                  ? "Send Request to Main Admin"
+                  : "Add Parcel to System"}
               </button>
             </div>
           </form>
@@ -736,7 +867,9 @@ const Dashboard = () => {
       )}
 
       {/* General Dashboard Table */}
-      <div className={`floating-card overflow-hidden ${user.role === 'regular' && user.paymentStatus !== 'paid' ? 'opacity-20 pointer-events-none filter blur-sm' : ''}`}>
+      <div
+        className={`floating-card overflow-hidden ${user.role === "regular" && user.paymentStatus !== "paid" ? "opacity-20 pointer-events-none filter blur-sm" : ""}`}
+      >
         <h3 className="text-2xl font-bold text-primary mb-6">
           Parcels Overview
         </h3>
@@ -776,18 +909,20 @@ const Dashboard = () => {
                       {p.branchId?.branchName || "Unassigned"}
                     </td>
                     <td className="p-4">
-                      {user.role === 'main_admin' || user.role === 'branch_head' ? (
+                      {user.role === "main_admin" ||
+                      user.role === "branch_head" ? (
                         <select
                           value={p.status}
                           onChange={(e) => updateStatus(p._id, e.target.value)}
                           className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm outline-none cursor-pointer border-none
-                            ${p.status === "Delivered"
-                              ? "bg-green-100 text-green-800"
-                              : p.status === "Returned"
-                                ? "bg-red-100 text-red-800"
-                                : p.status === "Out for Delivery"
-                                  ? "bg-orange-100 text-orange-800"
-                                  : "bg-blue-100 text-blue-800"
+                            ${
+                              p.status === "Delivered"
+                                ? "bg-green-100 text-green-800"
+                                : p.status === "Returned"
+                                  ? "bg-red-100 text-red-800"
+                                  : p.status === "Out for Delivery"
+                                    ? "bg-orange-100 text-orange-800"
+                                    : "bg-blue-100 text-blue-800"
                             }`}
                         >
                           <option value="Pending">Pending</option>
@@ -796,22 +931,29 @@ const Dashboard = () => {
                           <option value="In Sub Branch">In Sub Branch</option>
 
                           {/* Restricting Options Based on Role */}
-                          {user.role !== 'main_admin' && <option value="Out for Delivery">Out for Delivery</option>}
+                          {user.role !== "main_admin" && (
+                            <option value="Out for Delivery">
+                              Out for Delivery
+                            </option>
+                          )}
 
                           {/* Delivered is theoretically restricted from both admin and branch head, but if it was already delivered by a rider, it should display it */}
-                          <option value="Delivered" disabled>Delivered</option>
+                          <option value="Delivered" disabled>
+                            Delivered
+                          </option>
 
                           <option value="Returned">Returned</option>
                         </select>
                       ) : (
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm
-                                                  ${p.status === "Delivered"
-                              ? "bg-green-100 text-green-800"
-                              : p.status === "Returned"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-blue-100 text-blue-800"
-                            }`}
+                                                  ${
+                                                    p.status === "Delivered"
+                                                      ? "bg-green-100 text-green-800"
+                                                      : p.status === "Returned"
+                                                        ? "bg-red-100 text-red-800"
+                                                        : "bg-blue-100 text-blue-800"
+                                                  }`}
                         >
                           {p.status}
                         </span>
@@ -826,7 +968,9 @@ const Dashboard = () => {
                               className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 shadow-md"
                               disabled={p.status === "Delivered"}
                             >
-                              {p.status === "Delivered" ? "Delivered ✔" : "Mark Delivered"}
+                              {p.status === "Delivered"
+                                ? "Delivered ✔"
+                                : "Mark Delivered"}
                             </button>
                             <button
                               onClick={() => updateStatus(p._id, "Returned")}
@@ -837,22 +981,30 @@ const Dashboard = () => {
                           </div>
                         )}
                         {/* Status updates for admin/branch head is now in the dropdown, but we can keep standard quick action buttons for Transmitting etc if needed */}
-                        {user.role === "branch_head" && p.status === "Transmitting" && (
-                          <button
-                            onClick={() => updateStatus(p._id, "In Sub Branch")}
-                            className="bg-blue-100 text-blue-700 border border-blue-200 py-1 px-3 text-sm rounded-lg hover:bg-blue-200 transition-colors"
-                          >
-                            Receive at Branch
-                          </button>
-                        )}
-                        {user.role === "main_admin" && !p.riderId && p.branchId && p.status === "In Main Branch" && (
-                          <button
-                            onClick={() => updateStatus(p._id, "Transmitting")}
-                            className="bg-indigo-100 text-indigo-700 border border-indigo-200 py-1 px-3 text-sm rounded-lg hover:bg-indigo-200 transition-colors"
-                          >
-                            Transmit to Branch
-                          </button>
-                        )}
+                        {user.role === "branch_head" &&
+                          p.status === "Transmitting" && (
+                            <button
+                              onClick={() =>
+                                updateStatus(p._id, "In Sub Branch")
+                              }
+                              className="bg-blue-100 text-blue-700 border border-blue-200 py-1 px-3 text-sm rounded-lg hover:bg-blue-200 transition-colors"
+                            >
+                              Receive at Branch
+                            </button>
+                          )}
+                        {user.role === "main_admin" &&
+                          !p.riderId &&
+                          p.branchId &&
+                          p.status === "In Main Branch" && (
+                            <button
+                              onClick={() =>
+                                updateStatus(p._id, "Transmitting")
+                              }
+                              className="bg-indigo-100 text-indigo-700 border border-indigo-200 py-1 px-3 text-sm rounded-lg hover:bg-indigo-200 transition-colors"
+                            >
+                              Transmit to Branch
+                            </button>
+                          )}
                       </td>
                     )}
                   </tr>
