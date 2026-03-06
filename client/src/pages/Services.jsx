@@ -180,6 +180,76 @@ const Services = () => {
           ))}
         </div>
 
+        {/* Packages / Pricing Section */}
+        <div className="text-center mb-16 mt-32" id="packages">
+          <motion.h2
+            initial={{ opacity: 0, y: -20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="text-4xl md:text-5xl font-extrabold text-primary mb-6"
+          >
+            Our <span className="text-secondary">Packages</span>
+          </motion.h2>
+          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+            Choose the perfect plan for your delivery needs. Upgrade anytime as your requirements grow.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32 max-w-6xl mx-auto px-4">
+          {/* Free Package */}
+          <motion.div
+            whileHover={{ y: -10 }}
+            className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 flex flex-col relative"
+          >
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Free</h3>
+            <div className="text-4xl font-extrabold text-primary mb-6">$0<span className="text-lg font-normal text-gray-500">/mo</span></div>
+            <p className="text-gray-600 mb-8">Perfect for occasional senders.</p>
+            <ul className="space-y-4 mb-8 flex-grow">
+              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Standard Delivery</li>
+              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Basic Tracking</li>
+              <li className="flex items-center text-gray-400 font-medium"><span className="mr-3 text-xl">✖</span> No Priority Support</li>
+              <li className="flex items-center text-gray-400 font-medium"><span className="mr-3 text-xl">✖</span> No Custom Dashboard</li>
+            </ul>
+            <button onClick={() => navigate("/register")} className="mt-auto w-full py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">Get Started</button>
+          </motion.div>
+
+          {/* Plus Package */}
+          <motion.div
+            whileHover={{ y: -10 }}
+            className="bg-gradient-to-b from-primary to-[#0f172a] rounded-3xl p-8 shadow-2xl border border-primary flex flex-col relative transform md:-translate-y-4"
+          >
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-secondary text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-lg tracking-wider">POPULAR</div>
+            <h3 className="text-2xl font-bold text-white mb-2 mt-2">Plus</h3>
+            <div className="text-4xl font-extrabold text-white mb-6">$9.99<span className="text-lg font-normal text-gray-400">/mo</span></div>
+            <p className="text-gray-300 mb-8">For regular users and small businesses.</p>
+            <ul className="space-y-4 mb-8 flex-grow">
+              <li className="flex items-center text-white font-medium"><span className="text-secondary mr-3 text-xl">✔</span> Express Delivery Options</li>
+              <li className="flex items-center text-white font-medium"><span className="text-secondary mr-3 text-xl">✔</span> Real-Time Live Tracking</li>
+              <li className="flex items-center text-white font-medium"><span className="text-secondary mr-3 text-xl">✔</span> Automated Dashboard & Reports</li>
+              <li className="flex items-center text-white font-medium"><span className="text-secondary mr-3 text-xl">✔</span> Priority Customer Support</li>
+            </ul>
+            <button onClick={() => navigate("/dashboard")} className="mt-auto w-full py-3 rounded-xl bg-secondary text-white font-bold hover:bg-orange-600 transition-all shadow-lg hover:shadow-secondary/30">Buy Plus</button>
+          </motion.div>
+
+          {/* Pro Package */}
+          <motion.div
+            whileHover={{ y: -10 }}
+            className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 flex flex-col relative"
+          >
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">Pro</h3>
+            <div className="text-4xl font-extrabold text-primary mb-6">$29.99<span className="text-lg font-normal text-gray-500">/mo</span></div>
+            <p className="text-gray-600 mb-8">Enterprise-level features and high volume.</p>
+            <ul className="space-y-4 mb-8 flex-grow">
+              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Custom Logistics API</li>
+              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> AI Route Optimization</li>
+              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Dedicated Account Manager</li>
+              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Automated Reverse Logistics</li>
+              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Discount on Sending & Receiving</li>
+            </ul>
+            <button onClick={() => navigate("/contact")} className="mt-auto w-full py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">Contact Sales</button>
+          </motion.div>
+        </div>
+
         {/* Interactive CTA */}
         <div className="relative rounded-[50px] overflow-hidden bg-primary shadow-2xl text-center p-12 md:p-20">
           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
@@ -214,53 +284,6 @@ const Services = () => {
               </motion.button>
             </div>
           </div>
-        </div>
-
-        {/* Story Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-0 mt-16">
-          <motion.div
-            initial={{ opacity: 0, x: -50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="order-2 lg:order-1"
-          >
-            <h2 className="text-4xl md:text-5xl font-bold text-primary mb-8 leading-tight">From Idea to <br /><span className="text-secondary">Global Impact</span></h2>
-            <div className="space-y-6 text-lg text-gray-600 leading-relaxed">
-              <p>
-                Founded in 2024, NaviLogix emerged from a simple question: "Why is shipping so complex?" Traditional logistics were bogged down by paperwork, opacity, and inefficiency.
-              </p>
-              <p>
-                We built NaviLogix on a foundation of AI-driven route optimization and a customer-centric philosophy. We wanted to create a system that feels effortless to the user — where you simply click 'Send', and the rest is taken care of by our digital ecosystem.
-              </p>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, x: 50 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            viewport={{ once: true }}
-            className="order-1 lg:order-2 relative h-[500px]"
-          >
-            <div className="absolute inset-0 bg-secondary/10 rounded-[50px] transform rotate-3 scale-105 blur-lg"></div>
-            <div className="relative h-full w-full bg-white rounded-[50px] shadow-2xl overflow-hidden border-4 border-white">
-              <img
-                src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop"
-                alt="Global Network"
-                className="w-full h-full object-cover"
-              />
-              {/* Overlay Gradient */}
-              <div className="absolute inset-0 bg-primary/20 mix-blend-multiply"></div>
-
-              <div className="absolute bottom-8 right-8 bg-white/90 backdrop-blur p-4 rounded-xl shadow-lg">
-                <div className="flex items-center gap-2">
-                  <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
-                  <span className="font-bold text-primary">Live Connection</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
         </div>
       </div>
     </div>

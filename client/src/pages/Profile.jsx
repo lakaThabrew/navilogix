@@ -48,7 +48,7 @@ const Profile = () => {
             setMessage({ text: "Profile updated successfully! ✨", type: "success" });
             setPassword("");
             setConfirmPassword("");
-            logger.info("✅ [PROFILE] Update successful");
+            logger.info(`✅ [PROFILE] Updated successful for ${email}`);
         } catch (error) {
             logger.error(`❌ [PROFILE] Update failed: ${error.message}`);
             setMessage({ text: error.response?.data?.message || "Failed to update profile.", type: "error" });

@@ -23,9 +23,13 @@ const Contact = () => {
     await handleSubmitFormspree(e);
 
     if (state.succeeded) {
-      // Reset form after successful submission
       setTimeout(() => {
-        setFormData({ name: "", email: "", subject: "", message: "" });
+        setFormData({
+          name: "",
+          email: "",
+          subject: "",
+          message: "",
+        });
       }, 3000);
     }
   };
@@ -47,7 +51,6 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-background relative overflow-hidden pt-12 pb-20">
-      {/* Background Decorative Elements */}
       <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl opacity-60 animate-pulse"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl opacity-50"></div>
 
@@ -116,119 +119,127 @@ const Contact = () => {
                   <p className="text-gray-600">We'll get back to you soon!</p>
                 </motion.div>
               ) : (
-                <form
-                  onSubmit={handleSubmit}
-                  className="space-y-8 relative z-10"
-                >
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <>
+                  <h2 className="mt-3 mb-3 text-xl md:text-3xl font-black text-[#001F3F] tracking-tight leading-tight">
+                    {" "}
+                    Contact Form
+                  </h2>
+                  <form
+                    onSubmit={handleSubmit}
+                    className="space-y-8 relative z-10"
+                  >
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="space-y-3">
+                        <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
+                          Full Identity
+                        </label>
+                        <input
+                          required
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          placeholder="John Doe"
+                          className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px] font-semibold"
+                        />
+                        <ValidationError
+                          prefix="Name"
+                          field="name"
+                          errors={state.errors}
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+                      <div className="space-y-3">
+                        <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
+                          Digital Mail
+                        </label>
+                        <input
+                          required
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          placeholder="john@example.com"
+                          className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px] font-semibold"
+                        />
+                        <ValidationError
+                          prefix="Email"
+                          field="email"
+                          errors={state.errors}
+                          className="text-red-500 text-xs mt-1"
+                        />
+                      </div>
+                    </div>
                     <div className="space-y-3">
                       <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
-                        Full Identity
+                        Inquiry Subject
                       </label>
                       <input
                         required
                         type="text"
-                        name="name"
-                        value={formData.name}
+                        name="subject"
+                        value={formData.subject}
                         onChange={handleChange}
-                        placeholder="John Doe"
-                        className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px] font-semibold"
+                        placeholder="What can we help you solve?"
+                        className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px) font-semibold"
                       />
                       <ValidationError
-                        prefix="Name"
-                        field="name"
+                        prefix="Subject"
+                        field="subject"
                         errors={state.errors}
                         className="text-red-500 text-xs mt-1"
                       />
                     </div>
                     <div className="space-y-3">
                       <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
-                        Digital Mail
+                        Your Message
                       </label>
-                      <input
+                      <textarea
                         required
-                        type="email"
-                        name="email"
-                        value={formData.email}
+                        rows="5"
+                        name="message"
+                        value={formData.message}
                         onChange={handleChange}
-                        placeholder="john@example.com"
-                        className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px] font-semibold"
-                      />
+                        placeholder="Tell us about your global logistics requirements..."
+                        className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px] font-semibold resize-none"
+                      ></textarea>
                       <ValidationError
-                        prefix="Email"
-                        field="email"
+                        prefix="Message"
+                        field="message"
                         errors={state.errors}
                         className="text-red-500 text-xs mt-1"
                       />
                     </div>
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
-                      Inquiry Subject
-                    </label>
-                    <input
-                      required
-                      type="text"
-                      name="subject"
-                      value={formData.subject}
-                      onChange={handleChange}
-                      placeholder="What can we help you solve?"
-                      className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px) font-semibold"
-                    />
-                    <ValidationError
-                      prefix="Subject"
-                      field="subject"
-                      errors={state.errors}
-                      className="text-red-500 text-xs mt-1"
-                    />
-                  </div>
-                  <div className="space-y-3">
-                    <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
-                      Your Message
-                    </label>
-                    <textarea
-                      required
-                      rows="5"
-                      name="message"
-                      value={formData.message}
-                      onChange={handleChange}
-                      placeholder="Tell us about your global logistics requirements..."
-                      className="w-full bg-white border-2 border-transparent p-5 rounded-2xl shadow-sm outline-none focus:border-primary/20 focus:ring-4 focus:ring-primary/5 transition-all text-[15px] font-semibold resize-none"
-                    ></textarea>
-                    <ValidationError
-                      prefix="Message"
-                      field="message"
-                      errors={state.errors}
-                      className="text-red-500 text-xs mt-1"
-                    />
-                  </div>
-                  <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                    type="submit"
-                    disabled={state.submitting}
-                    className="w-full bg-[#001F3F] text-white py-5 rounded-2xl font-black text-2xl shadow-2xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.2em] disabled:opacity-50 disabled:cursor-not-allowed"
-                  >
-                    {state.submitting ? (
-                      <>
-                        Sending
-                        <span className="text-2xl animate-spin">⏳</span>
-                      </>
-                    ) : (
-                      <>
-                        Send
-                        <span className="text-2xl animate-pulse">Message</span>
-                      </>
-                    )}
-                  </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                      type="submit"
+                      disabled={state.submitting}
+                      className="w-full bg-[#001F3F] text-white py-5 rounded-2xl font-black text-2xl shadow-2xl hover:bg-black transition-all flex items-center justify-center gap-4 uppercase tracking-[0.2em] disabled:opacity-50 disabled:cursor-not-allowed"
+                    >
+                      {state.submitting ? (
+                        <>
+                          Sending
+                          <span className="text-2xl animate-spin">⏳</span>
+                        </>
+                      ) : (
+                        <>
+                          Send
+                          <span className="text-2xl animate-pulse">
+                            Message
+                          </span>
+                        </>
+                      )}
+                    </motion.button>
 
-                  {state.errors && state.errors.length > 0 && (
-                    <p className="text-red-500 text-sm text-center mt-4">
-                      Oops! There was an error submitting your form. Please try
-                      again.
-                    </p>
-                  )}
-                </form>
+                    {state.errors && state.errors.length > 0 && (
+                      <p className="text-red-500 text-sm text-center mt-4">
+                        Oops! There was an error submitting your form. Please
+                        try again.
+                      </p>
+                    )}
+                  </form>
+                </>
               )}
             </div>
           </motion.div>
@@ -244,12 +255,28 @@ const Contact = () => {
               {
                 icon: "📍",
                 title: "Headquarters",
-                info: "123 Logistics Way, Suite 500, Colombo 07, Sri Lanka",
+                info: (
+                  <>
+                    123 Logistics Way,
+                    <br />
+                    Suite 500,
+                    <br />
+                    Colombo 07,
+                    <br />
+                    Sri Lanka
+                  </>
+                ),
               },
               {
                 icon: "📞",
                 title: "Phone Lines",
-                info: "+94 11 234 5678 / +94 77 123 4567",
+                info: (
+                  <>
+                    +94 11 234 5678
+                    <br />
+                    +94 77 123 4567
+                  </>
+                ),
               },
               {
                 icon: "✉️",
@@ -259,14 +286,22 @@ const Contact = () => {
               {
                 icon: "⏰",
                 title: "Business Hours",
-                info: "Mon - Fri: 9AM - 6PM, Sat: 10AM - 2PM",
+                info: (
+                  <>
+                    Mon - Fri: 9AM - 6PM
+                    <br />
+                    Sat: 10AM - 2PM
+                    <br />
+                    Sun: Closed
+                  </>
+                ),
               },
             ].map((item, index) => (
               <motion.div
                 key={index}
                 variants={itemVariants}
                 whileHover={{ scale: 1.02, x: 5 }}
-                className="bg-white/80 backdrop-blur-sm p-6 rounded-[32px] shadow-lg border border-gray-100 flex items-center gap-6 group"
+                className="bg-white/80 backdrop-blur-sm p-8 rounded-[32px] shadow-lg border border-gray-100 flex items-center gap-6 group"
               >
                 <div className="w-14 h-14 bg-[#F8F9FA] rounded-[20px] flex items-center justify-center text-2xl shadow-inner group-hover:bg-primary/5 transition-colors">
                   {item.icon}
@@ -297,12 +332,14 @@ const Contact = () => {
 
           <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-16">
             <div className="text-center lg:text-left space-y-8 max-w-3xl">
-              <div className="inline-block bg-[#FF4136] text-white px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.4em] shadow-lg">
+              <div className="inline-block bg-white text-[#FF4136] px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.4em] shadow-lg">
                 Priority Assistance
               </div>
               <h3 className="text-4xl md:text-6xl font-black text-white tracking-tight leading-tight text-balance">
                 Need Fast Help? <br />
-                <span className="text-blue-100/40">Our Experts are Ready.</span>
+                <span className="text-blue-100/40 text-3xl">
+                  Our Experts are Ready.
+                </span>
               </h3>
               <p className="text-blue-100/60 text-lg md:text-xl font-medium leading-relaxed max-w-2xl">
                 Experience the next generation of logistics support. Whether

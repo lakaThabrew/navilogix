@@ -1,8 +1,9 @@
 import Parcel from '../models/Parcel.js';
 import Branch from '../models/Branch.js';
 import Message from '../models/Message.js';
+import User from '../models/User.js';
 import logger from '../utils/logger.js';
-
+import { MAX_DAILY_DELIVERIES } from '../config/constants.js';
 // Helper to determine branch based on address
 const determineBranch = async (address) => {
     // Basic keyword matching for demo purposes
@@ -25,6 +26,83 @@ const determineBranch = async (address) => {
     return null;
 };
 
+// Auto-assign rider logic
+const autoAssignRider = async (parcelId, branchId) => {
+    try {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const tomorrow = new Date(today);
+        tomorrow.setDate(tomorrow.getDate() + 1);
+
+        // Find all delivery persons in this branch
+        const riders = await User.find({ role: 'delivery_person', branchId });
+
+        if (riders.length === 0) {
+            logger.info(`⚠️ [AUTO ASSIGN] No riders found for branch: ${branchId}`);
+            return false;
+        }
+
+        let selectedRider = null;
+        let minParcels = Infinity;
+        let assignedDate = today;
+        let statusMessage = "Out for Delivery";
+
+        // Try to find a rider for today
+        for (const rider of riders) {
+            const count = await Parcel.countDocuments({
+                riderId: rider._id,
+                tourDate: { $gte: today, $lt: tomorrow }
+            });
+
+            if (count < MAX_DAILY_DELIVERIES && count < minParcels) {
+                minParcels = count;
+                selectedRider = rider;
+            }
+        }
+
+        // If all riders have reached today's limit, assign for tomorrow
+        if (!selectedRider) {
+            minParcels = Infinity;
+            const dayAfterTomorrow = new Date(tomorrow);
+            dayAfterTomorrow.setDate(dayAfterTomorrow.getDate() + 1);
+
+            for (const rider of riders) {
+                const countTomorrow = await Parcel.countDocuments({
+                    riderId: rider._id,
+                    tourDate: { $gte: tomorrow, $lt: dayAfterTomorrow }
+                });
+
+                if (countTomorrow < minParcels) {
+                    minParcels = countTomorrow;
+                    selectedRider = rider;
+                }
+            }
+            assignedDate = tomorrow;
+            statusMessage = "Scheduled for Next Day";
+        }
+
+        if (selectedRider) {
+            const parcel = await Parcel.findById(parcelId);
+            if (!parcel) return false;
+
+            parcel.riderId = selectedRider._id;
+            parcel.tourDate = assignedDate;
+            parcel.status = 'Out for Delivery';
+            parcel.history.push({
+                status: 'Out for Delivery',
+                location: `Assigned to Rider ${selectedRider.name} ${statusMessage === "Scheduled for Next Day" ? "(Next Day)" : ""}`,
+                timestamp: new Date()
+            });
+            await parcel.save();
+            logger.info(`✅ [AUTO ASSIGN] Rider ${selectedRider.name} assigned to parcel: ${parcel.trackingId}`);
+            return true;
+        }
+    } catch (error) {
+        logger.error(`❌ [AUTO ASSIGN] Error during auto-assignment: ${error.message}`);
+    }
+    return false;
+};
+
 
 export const createParcel = async (req, res) => {
     const { senderInfo, receiverInfo, weight, type, codAmount } = req.body;
@@ -37,7 +115,12 @@ export const createParcel = async (req, res) => {
 
     try {
         const branchId = await determineBranch(receiverInfo.address);
-        const trackingId = 'NV-' + Date.now() + Math.floor(Math.random() * 1000);
+
+        const trackingId =
+            "NV-" +
+            Date.now().toString(36).toUpperCase() +"-" +
+            Math.random().toString(36).slice(3, 4).toUpperCase();
+
         logger.info(`🔖 [CREATE PARCEL] Generated tracking ID: ${trackingId}`);
         logger.info(`🏢 [CREATE PARCEL] Assigned branch ID: ${branchId}`);
 
@@ -77,6 +160,12 @@ export const createParcel = async (req, res) => {
         }
 
         logger.info(`✅ [CREATE PARCEL] Parcel created successfully: ${trackingId}`);
+
+        // Try auto-assign immediately if it started in a sub-branch
+        if (parcel.status === 'In Sub Branch') {
+            await autoAssignRider(parcel._id, branchId);
+        }
+
         res.status(201).json(parcel);
     } catch (error) {
         logger.error(`❌ [CREATE PARCEL] Error: ${error.message}`);
@@ -147,14 +236,18 @@ export const updateParcelStatus = async (req, res) => {
 
         await parcel.save();
         logger.info(`✅ [UPDATE STATUS] Status updated successfully for parcel: ${parcel.trackingId}`);
+
+        // If moving to sub branch, maybe we need to assign a rider now
+        if (status === 'In Sub Branch' && !parcel.riderId) {
+            await autoAssignRider(parcel._id, parcel.branchId);
+        }
+
         res.json(parcel);
     } catch (error) {
         logger.error(`❌ [UPDATE STATUS] Error: ${error.message}`);
         res.status(500).json({ message: error.message });
     }
 };
-
-import { MAX_DAILY_DELIVERIES } from '../config/constants.js';
 
 
 export const getParcelReports = async (req, res) => {

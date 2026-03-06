@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerUser, loginUser, processPayment, forgotPassword, resetPassword, getBranches, getUsers, updateUserRole, deleteUser, updateUserProfile } from '../controllers/authController.js';
+import { registerUser, loginUser, processPayment, forgotPassword, resetPassword, getBranches, addBranch, getUsers, updateUserRole, deleteUser, updateUserProfile } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -10,6 +10,7 @@ router.post('/forgot-password', forgotPassword);
 router.post('/reset-password', resetPassword);
 router.put('/pay', protect, processPayment);
 router.get('/branches', getBranches);
+router.post('/branches', protect, addBranch);
 router.get('/users', protect, getUsers);
 router.put('/users/:id/role', protect, updateUserRole);
 router.delete('/users/:id', protect, deleteUser);

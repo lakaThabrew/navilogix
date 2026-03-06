@@ -8,8 +8,6 @@ const Inbox = () => {
     const [messages, setMessages] = useState([]);
     const [user, setUser] = useState(null);
 
-
-
     async function fetchMessages(userInfo) {
         try {
             const config = {
@@ -46,7 +44,7 @@ const Inbox = () => {
     };
 
     const handleApprove = async (e, msg) => {
-        e.stopPropagation(); // Prevent marking as read when clicking button
+        e.stopPropagation(); 
         const confirm = window.confirm("Create this parcel in the system?");
         if (!confirm) return;
 
