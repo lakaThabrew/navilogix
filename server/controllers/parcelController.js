@@ -118,7 +118,7 @@ export const createParcel = async (req, res) => {
 
         const trackingId =
             "NV-" +
-            Date.now().toString(36).toUpperCase() +"-" +
+            Date.now().toString(36).toUpperCase() + "-" +
             Math.random().toString(36).slice(3, 4).toUpperCase();
 
         logger.info(`🔖 [CREATE PARCEL] Generated tracking ID: ${trackingId}`);
@@ -265,6 +265,17 @@ export const getParcelReports = async (req, res) => {
             }
             if (type) query.type = type;
             if (status) query.status = status;
+        } else if (req.user.role === 'branch_head') {
+            // Branch Head View: Only parcels for their branch
+            query.branchId = req.user.branchId;
+            if (startDate && endDate) {
+                query.createdAt = {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                };
+            }
+            if (type) query.type = type;
+            if (status) query.status = status;
         } else {
             // Regular User View
             query = {
@@ -285,8 +296,8 @@ export const getParcelReports = async (req, res) => {
 
         let stats = {};
 
-        if (req.user.role === 'main_admin') {
-            // Admin Stats: System Wide
+        if (req.user.role === 'main_admin' || req.user.role === 'branch_head') {
+            // Admin and Branch Head Stats
             stats = {
                 totalParcels: parcels.length,
                 totalDelivered: parcels.filter(p => p.status === 'Delivered').length,
@@ -294,7 +305,7 @@ export const getParcelReports = async (req, res) => {
                 totalPending: parcels.filter(p => p.status !== 'Delivered' && p.status !== 'Returned').length,
                 totalRevenue: parcels.reduce((acc, p) => acc + (p.codAmount || 0), 0),
 
-                // Branch Performance (Mock aggregation if needed, or simple counts)
+                // Branch Performance (For branch head this will mostly be their own branch, which is fine)
                 branchBreakdown: parcels.reduce((acc, p) => {
                     const branchName = p.branchId ? p.branchId.branchName : 'Main Office';
                     if (!acc[branchName]) acc[branchName] = 0;

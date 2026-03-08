@@ -7,6 +7,7 @@ import Track from "./pages/Track";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import AdminReports from "./pages/AdminReports";
+import BranchReports from "./pages/BranchReports";
 import Inbox from "./pages/Inbox";
 import ChatBot from "./components/ChatBot";
 import Footer from "./components/Footer";
@@ -36,6 +37,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/inbox" element={<Inbox />} />
             <Route path="/reports" element={<AdminReports />} />
+            <Route path="/branch-reports" element={<BranchReports />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>
