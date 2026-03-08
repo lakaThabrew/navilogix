@@ -55,8 +55,8 @@ const About = () => {
           >
             Our Story
           </span>
-          <h1 className="text-5xl md:text-7xl font-extrabold text-primary mb-8 tracking-tight">
-            Revolutionizing <br />
+          <h1 className="text-5xl md:text-6xl font-extrabold text-primary mb-8 tracking-tight">
+            Revolutionizing {" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-500">
               Global Logistics
             </span>
@@ -115,16 +115,16 @@ const About = () => {
               From Idea to <br />
               <span className="text-secondary">Global Impact</span>
             </h2>
-            <div className="space-y-6 text-lg text-gray-600 leading-relaxed">
+            <div className="space-y-6 text-lg text-gray-600 leading-relaxed text-justify">
               <p>
-                Founded in 2024, NaviLogix emerged from a simple question: "Why
+                Founded in 2024, NaviLogix emerged from a simple question: <br/>"Why
                 is shipping so complex?" Traditional logistics were bogged down
                 by paperwork, opacity, and inefficiency.
               </p>
               <p>
                 We built NaviLogix on a foundation of AI-driven route
                 optimization and a customer-centric philosophy. We wanted to
-                create a system that feels effortless to the user — where you
+                create a system that feels effortless to the user, where you
                 simply click 'Send', and the rest is taken care of by our
                 digital ecosystem.
               </p>

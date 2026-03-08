@@ -16,10 +16,8 @@ import Profile from "./pages/Profile";
 import "./index.css";
 import logger from "./utils/logger";
 
-logger.info("🚀 NaviLogix Client App Starting...");
-
 function App() {
-  logger.info("✓ App component rendered");
+  logger.info("🚀 NaviLogix Client App Started");
   return (
     <Router>
       <div className="App flex flex-col min-h-screen">
