@@ -4,7 +4,7 @@ import Message from '../models/Message.js';
 import User from '../models/User.js';
 import logger from '../utils/logger.js';
 import { MAX_DAILY_DELIVERIES } from '../config/constants.js';
-// Helper to determine branch based on address
+
 const determineBranch = async (address) => {
     // Basic keyword matching for demo purposes
     // In production, use Nominatim (OpenStreetMap) for geocoding + checks against branch polygons
@@ -53,6 +53,7 @@ const autoAssignRider = async (parcelId, branchId) => {
                 riderId: rider._id,
                 tourDate: { $gte: today, $lt: tomorrow }
             });
+            logger.info(`📊 [AUTO ASSIGN] Rider ${rider.name} has ${count} parcels assigned for today`);
 
             if (count < MAX_DAILY_DELIVERIES && count < minParcels) {
                 minParcels = count;
@@ -95,6 +96,7 @@ const autoAssignRider = async (parcelId, branchId) => {
             });
             await parcel.save();
             logger.info(`✅ [AUTO ASSIGN] Rider ${selectedRider.name} assigned to parcel: ${parcel.trackingId}`);
+            logger.info(`📅 [AUTO ASSIGN] Assigned date: ${assignedDate.toDateString()} (${statusMessage})`);
             return true;
         }
     } catch (error) {

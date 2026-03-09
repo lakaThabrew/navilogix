@@ -7,7 +7,7 @@ const branchSchema = new mongoose.Schema({
         lat: { type: Number, required: true },
         lng: { type: Number, required: true }
     },
-    assignedAreas: [{ type: String }], // List of area names/postcodes handled by this branch
+    assignedAreas: [{ type: String }],
 });
 
 export default mongoose.model('Branch', branchSchema);

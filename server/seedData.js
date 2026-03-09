@@ -103,7 +103,6 @@ const seedDatabase = async () => {
                 assignedAreas: ['Badulla', 'Bandarawela', 'Ella']
             }
         ]);
-        logger.info('✓ Branches seeded');
 
         // Hash password for users
         const hashedPassword = await bcrypt.hash('password123', 10);
@@ -257,7 +256,6 @@ const seedDatabase = async () => {
                 branchId: branches[8]._id // Badulla
             }
         ]);
-        logger.info('✓ Users seeded (password for all: password123)');
 
         // Seed Parcels
         const parcels = await Parcel.create([
@@ -561,27 +559,12 @@ const seedDatabase = async () => {
                 ]
             }
         ]);
-        logger.info('✓ Parcels seeded');
 
-        logger.info('\n========================================');
         logger.info('✓ Database seeded successfully!');
-        logger.info('========================================');
         logger.info('\n📦 Sample Data Summary:');
         logger.info(`- ${branches.length} Branches`);
         logger.info(`- ${users.length} Users`);
         logger.info(`- ${parcels.length} Parcels`);
-        logger.info('\n👤 Login Credentials:');
-        logger.info('  Admin: admin@navilogix.com / password123');
-        logger.info('  Branch Head: kamal@example.com / password123');
-        logger.info('  Delivery Person: sunil@example.com / password123');
-        logger.info('  Regular User: chamara@example.com / password123');
-        logger.info('\n📍 Track Sample Parcels:');
-        logger.info('  NL2026001 - Out for Delivery');
-        logger.info('  NL2026002 - In Sub Branch');
-        logger.info('  NL2026003 - Delivered');
-        logger.info('  NL2026004 - In Main Branch');
-        logger.info('  NL2026005 - Out for Delivery');
-        logger.info('========================================\n');
 
         process.exit(0);
     } catch (error) {

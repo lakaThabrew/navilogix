@@ -1,12 +1,14 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import dotenv from 'dotenv';
 import logger from '../utils/logger.js';
+
 dotenv.config();
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 export const chatWithAI = async (req, res) => {
     try {
+        logger.info('Received request to /api/ai/chat', { body: req.body });
         const { message } = req.body;
 
         if (!message) {

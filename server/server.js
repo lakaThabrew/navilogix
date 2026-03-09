@@ -9,8 +9,6 @@ import aiRoutes from './routes/aiRoutes.js';
 import Branch from './models/Branch.js';
 import logger, { frontendLogger } from './utils/logger.js';
 
-logger.info('🚀 Starting NaviLogix Server...');
-
 dotenv.config();
 logger.info('✓ Environment variables loaded');
 
@@ -66,17 +64,9 @@ app.post('/api/logs/frontend', (req, res) => {
     }
     res.status(200).send('Log received');
 });
-logger.info('✓ Frontend logging route registered at /api/logs/frontend');
-
-
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    logger.info('====================================================================');
     logger.info(`✓ Server running on port ${PORT}`);
-    logger.info(`✓ API Base URL: http://localhost:${PORT}`);
-    logger.info(`✓ Auth Routes: http://localhost:${PORT}/api/auth`);
-    logger.info(`✓ Parcel Routes: http://localhost:${PORT}/api/parcels`);
-    logger.info('====================================================================');
 });
