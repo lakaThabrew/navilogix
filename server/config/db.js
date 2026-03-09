@@ -3,9 +3,13 @@ import logger from '../utils/logger.js';
 
 const connectDB = async () => {
     try {
+        const mongoUri = process.env.MONGO_URI ;
+        const databaseName = process.env.MONGO_DB_NAME;
+
         logger.info('🔌 Attempting to connect to MongoDB...');
-        logger.info(`📍 Connection URI: ${process.env.MONGO_URI || 'mongodb://localhost:27017/navilogix'}`);
-        const conn = await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/navilogix', {
+        logger.info(`📍 Connection URI: ${mongoUri}`);
+        const conn = await mongoose.connect(mongoUri, {
+            dbName: databaseName,
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });

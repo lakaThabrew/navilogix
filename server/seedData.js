@@ -8,9 +8,23 @@ import logger from './utils/logger.js';
 
 dotenv.config();
 
+const MONGO_URI = process.env.MONGO_URI || 'mongodb://localhost:27017/navilogix';
+const DATABASE_NAME = process.env.MONGO_DB_NAME || 'navilogix';
+
+const ensureDatabaseExists = async () => {
+    const database = mongoose.connection.db;
+    const existingCollections = await database.listCollections({}, { nameOnly: true }).toArray();
+
+    if (existingCollections.length === 0) {
+        await database.createCollection('branches');
+        logger.info(`Initialized database: ${database.name}`);
+    }
+};
+
 const connectDB = async () => {
     try {
-        await mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/navilogix', {
+        await mongoose.connect(MONGO_URI, {
+            dbName: DATABASE_NAME,
             useNewUrlParser: true,
             useUnifiedTopology: true,
         });
@@ -24,6 +38,7 @@ const connectDB = async () => {
 const seedDatabase = async () => {
     try {
         await connectDB();
+        await ensureDatabaseExists();
 
         // Clear existing data (optional - comment out if you want to keep existing data)
         await User.deleteMany({});
