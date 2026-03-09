@@ -19,6 +19,7 @@ L.Icon.Default.mergeOptions({
 
 const About = () => {
   const [branches, setBranches] = useState([]);
+  const [isLoadingBranches, setIsLoadingBranches] = useState(true);
 
   useEffect(() => {
     const fetchBranches = async () => {
@@ -27,6 +28,8 @@ const About = () => {
         setBranches(response.data);
       } catch (error) {
         logger.error("Error fetching branches:", { error: error.message });
+      } finally {
+        setIsLoadingBranches(false);
       }
     };
     fetchBranches();
@@ -56,7 +59,7 @@ const About = () => {
             Our Story
           </span>
           <h1 className="text-5xl md:text-6xl font-extrabold text-primary mb-8 tracking-tight">
-            Revolutionizing {" "}
+            Revolutionizing{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-500">
               Global Logistics
             </span>
@@ -117,9 +120,10 @@ const About = () => {
             </h2>
             <div className="space-y-6 text-lg text-gray-600 leading-relaxed text-justify">
               <p>
-                Founded in 2024, NaviLogix emerged from a simple question: <br/>"Why
-                is shipping so complex?" Traditional logistics were bogged down
-                by paperwork, opacity, and inefficiency.
+                Founded in 2024, NaviLogix emerged from a simple question:{" "}
+                <br />
+                "Why is shipping so complex?" Traditional logistics were bogged
+                down by paperwork, opacity, and inefficiency.
               </p>
               <p>
                 We built NaviLogix on a foundation of AI-driven route
@@ -214,7 +218,14 @@ const About = () => {
             )}
 
             <div className="h-[500px] w-full rounded-3xl overflow-hidden border border-gray-200 relative z-0">
-              {branches.length > 0 ? (
+              {isLoadingBranches ? (
+                <div className="h-full w-full flex flex-col items-center justify-center bg-gray-50">
+                  <div className="w-12 h-12 border-4 border-blue-200 border-t-primary rounded-full animate-spin mb-4"></div>
+                  <p className="text-gray-500 font-medium tracking-wide animate-pulse">
+                    🔃 Loading branch network...
+                  </p>
+                </div>
+              ) : branches.length > 0 ? (
                 <MapContainer
                   center={[7.8731, 80.7718]}
                   zoom={7}
@@ -255,10 +266,16 @@ const About = () => {
                   ))}
                 </MapContainer>
               ) : (
-                <div className="h-full w-full flex flex-col items-center justify-center bg-gray-50">
-                  <div className="w-12 h-12 border-4 border-blue-200 border-t-primary rounded-full animate-spin mb-4"></div>
-                  <p className="text-gray-500 font-medium tracking-wide animate-pulse">
-                    🔃 Loading branch network...
+                <div className="h-full w-full flex flex-col items-center justify-center bg-gray-50 px-6 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-blue-100 text-primary flex items-center justify-center text-3xl mb-4">
+                    🏢
+                  </div>
+                  <p className="text-gray-700 font-semibold text-lg mb-2">
+                    No branches available
+                  </p>
+                  <p className="text-gray-500 max-w-md">
+                    Branch locations have not been added yet. Once branch data
+                    is available, it will appear here.
                   </p>
                 </div>
               )}
