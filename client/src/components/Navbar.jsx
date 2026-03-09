@@ -32,6 +32,8 @@ const Navbar = () => {
         if (user.role === 'main_admin') {
             navLinks.push({ name: 'Inbox', path: '/inbox' });
             navLinks.push({ name: 'Reports', path: '/reports' });
+        } else if (user.role === 'branch_head') {
+            navLinks.push({ name: 'Branch Reports', path: '/branch-reports' });
         }
         navLinks.push({ name: 'Profile', path: '/profile' });
     }

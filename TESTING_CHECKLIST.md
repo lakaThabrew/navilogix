@@ -8,23 +8,23 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 1.1 Navigation Bar (`Navbar.jsx`)
 
-- [ ] **Logo**: Clicks redirect to Home page with smooth hover animation
-- [ ] **Desktop Menu**: All navigation links work correctly
-- [ ] **Mobile Menu**:
-  - [ ] Hamburger menu icon toggles open/close properly
-  - [ ] Mobile menu slides in/out with animation
-  - [ ] Clicking any link closes the mobile menu
-- [ ] **Role-Based Navigation**:
-  - [ ] Guest users see: Home, About, Services, Contact
-  - [ ] Regular users see: Home, About, Services, Contact, Dashboard, Profile
-  - [ ] Admin/Staff see: Home, Dashboard, Inbox (admin only), Reports (admin only), Profile
-  - [ ] About, Services, Contact hidden for admin/delivery/branch head roles
-- [ ] **Login/Register Buttons** (when logged out):
-  - [ ] Login button navigates to `/login`
-  - [ ] Register button navigates to `/register` with hover animations
-- [ ] **Logout Button** (when logged in):
-  - [ ] Clears localStorage and redirects to `/login`
-  - [ ] Gradient button with proper hover effects
+- [✓] **Logo**: Clicks redirect to Home page with smooth hover animation
+- [✓] **Desktop Menu**: All navigation links work correctly
+- [✓] **Mobile Menu**:
+  - [✓] Hamburger menu icon toggles open/close properly
+  - [✓] Mobile menu slides in/out with animation
+  - [✓] Clicking any link closes the mobile menu
+- [✓] **Role-Based Navigation**:
+  - [✓] Guest users see: Home, About, Services, Contact, login, register
+  - [✓] Regular users see: Home, About, Services, Contact, Dashboard, Profile
+  - [✓] Admin/Staff see: Home, Dashboard, Inbox (admin only), Reports (admin only), Profile
+  - [✓] About, Services, Contact hidden for admin/delivery/branch head roles
+- [✓] **Login/Register Buttons** (when logged out):
+  - [✓] Login button navigates to `/login`
+  - [✓] Register button navigates to `/register` with hover animations
+- [✓] **Logout Button** (when logged in):
+  - [✓] Clears localStorage and redirects to `/login`
+  - [✓] Gradient button with proper hover effects
 
 ### 1.2 Home Page (`Home.jsx`)
 

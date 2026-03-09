@@ -1,4 +1,5 @@
 import Message from '../models/Message.js';
+import logger from '../utils/logger.js';
 
 export const createMessage = async (req, res) => {
     try {
@@ -17,24 +18,24 @@ export const createMessage = async (req, res) => {
 
 export const getMessages = async (req, res) => {
     try {
-        // Get messages for the user's role
         const { role } = req.user;
         let messages;
 
         if (role === 'main_admin') {
-            // Main admin sees messages addressed to main_admin
             messages = await Message.find({ receiverRole: 'main_admin' })
                 .populate('senderId', 'name email branchId')
                 .sort({ createdAt: -1 });
         } else {
-            // Others see messages addressed to their role (optional, for future)
             messages = await Message.find({ receiverRole: role })
                 .populate('senderId', 'name email')
                 .sort({ createdAt: -1 });
         }
         res.json(messages);
+        logger.info(`📨 Retrieved ${messages.length} messages for role: ${role}`);
+        logger.info(`📊 Message retrieval query: ${JSON.stringify({ receiverRole: role })}`);
     } catch (error) {
         res.status(500).json({ message: error.message });
+        logger.error(`❌ Error retrieving messages: ${error.message}`);
     }
 };
 

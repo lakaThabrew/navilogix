@@ -7,6 +7,7 @@ import Track from "./pages/Track";
 import About from "./pages/About";
 import Services from "./pages/Services";
 import AdminReports from "./pages/AdminReports";
+import BranchReports from "./pages/BranchReports";
 import Inbox from "./pages/Inbox";
 import ChatBot from "./components/ChatBot";
 import Footer from "./components/Footer";
@@ -15,10 +16,8 @@ import Profile from "./pages/Profile";
 import "./index.css";
 import logger from "./utils/logger";
 
-logger.info("🚀 NaviLogix Client App Starting...");
-
 function App() {
-  logger.info("✓ App component rendered");
+  logger.info("🚀 NaviLogix Client App Started");
   return (
     <Router>
       <div className="App flex flex-col min-h-screen">
@@ -36,6 +35,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/inbox" element={<Inbox />} />
             <Route path="/reports" element={<AdminReports />} />
+            <Route path="/branch-reports" element={<BranchReports />} />
             <Route path="/profile" element={<Profile />} />
           </Routes>
         </main>

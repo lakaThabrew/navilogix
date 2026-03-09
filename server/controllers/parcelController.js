@@ -4,7 +4,7 @@ import Message from '../models/Message.js';
 import User from '../models/User.js';
 import logger from '../utils/logger.js';
 import { MAX_DAILY_DELIVERIES } from '../config/constants.js';
-// Helper to determine branch based on address
+
 const determineBranch = async (address) => {
     // Basic keyword matching for demo purposes
     // In production, use Nominatim (OpenStreetMap) for geocoding + checks against branch polygons
@@ -53,6 +53,7 @@ const autoAssignRider = async (parcelId, branchId) => {
                 riderId: rider._id,
                 tourDate: { $gte: today, $lt: tomorrow }
             });
+            logger.info(`📊 [AUTO ASSIGN] Rider ${rider.name} has ${count} parcels assigned for today`);
 
             if (count < MAX_DAILY_DELIVERIES && count < minParcels) {
                 minParcels = count;
@@ -95,6 +96,7 @@ const autoAssignRider = async (parcelId, branchId) => {
             });
             await parcel.save();
             logger.info(`✅ [AUTO ASSIGN] Rider ${selectedRider.name} assigned to parcel: ${parcel.trackingId}`);
+            logger.info(`📅 [AUTO ASSIGN] Assigned date: ${assignedDate.toDateString()} (${statusMessage})`);
             return true;
         }
     } catch (error) {
@@ -118,7 +120,7 @@ export const createParcel = async (req, res) => {
 
         const trackingId =
             "NV-" +
-            Date.now().toString(36).toUpperCase() +"-" +
+            Date.now().toString(36).toUpperCase() + "-" +
             Math.random().toString(36).slice(3, 4).toUpperCase();
 
         logger.info(`🔖 [CREATE PARCEL] Generated tracking ID: ${trackingId}`);
@@ -265,6 +267,17 @@ export const getParcelReports = async (req, res) => {
             }
             if (type) query.type = type;
             if (status) query.status = status;
+        } else if (req.user.role === 'branch_head') {
+            // Branch Head View: Only parcels for their branch
+            query.branchId = req.user.branchId;
+            if (startDate && endDate) {
+                query.createdAt = {
+                    $gte: new Date(startDate),
+                    $lte: new Date(endDate)
+                };
+            }
+            if (type) query.type = type;
+            if (status) query.status = status;
         } else {
             // Regular User View
             query = {
@@ -285,8 +298,8 @@ export const getParcelReports = async (req, res) => {
 
         let stats = {};
 
-        if (req.user.role === 'main_admin') {
-            // Admin Stats: System Wide
+        if (req.user.role === 'main_admin' || req.user.role === 'branch_head') {
+            // Admin and Branch Head Stats
             stats = {
                 totalParcels: parcels.length,
                 totalDelivered: parcels.filter(p => p.status === 'Delivered').length,
@@ -294,7 +307,7 @@ export const getParcelReports = async (req, res) => {
                 totalPending: parcels.filter(p => p.status !== 'Delivered' && p.status !== 'Returned').length,
                 totalRevenue: parcels.reduce((acc, p) => acc + (p.codAmount || 0), 0),
 
-                // Branch Performance (Mock aggregation if needed, or simple counts)
+                // Branch Performance (For branch head this will mostly be their own branch, which is fine)
                 branchBreakdown: parcels.reduce((acc, p) => {
                     const branchName = p.branchId ? p.branchId.branchName : 'Main Office';
                     if (!acc[branchName]) acc[branchName] = 0;
