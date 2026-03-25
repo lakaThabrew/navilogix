@@ -4,13 +4,24 @@ import { motion } from "framer-motion";
 
 const Home = () => {
   const [trackingId, setTrackingId] = useState("");
+  const [trackingError, setTrackingError] = useState("");
   const navigate = useNavigate();
 
   const handleTrack = (e) => {
     e.preventDefault();
-    if (trackingId.trim()) {
-      navigate(`/track/${trackingId}`);
+    const trimmedTrackingId = trackingId.trim();
+    if (!trimmedTrackingId) {
+      setTrackingError("Please enter a tracking ID.");
+      return;
     }
+
+    if (!trimmedTrackingId.toUpperCase().startsWith("NL")) {
+      setTrackingError("Tracking ID must start with 'NL'.");
+      return;
+    }
+
+    setTrackingError("");
+    navigate(`/track/${trimmedTrackingId}`);
   };
 
   const containerVariants = {
@@ -74,6 +85,7 @@ const Home = () => {
 
             {/* Tracking Box */}
             <motion.div
+              id="tracking-section"
               variants={itemVariants}
               className="relative max-w-xl mx-auto lg:mx-0 mb-12"
             >
@@ -86,7 +98,10 @@ const Home = () => {
                     className="w-full bg-transparent border-none outline-none text-gray-700 text-lg placeholder-gray-400"
                     placeholder="Enter Tracking ID"
                     value={trackingId}
-                    onChange={(e) => setTrackingId(e.target.value)}
+                    onChange={(e) => {
+                      setTrackingId(e.target.value);
+                      if (trackingError) setTrackingError("");
+                    }}
                   />
                 </div>
                 <button
@@ -96,6 +111,11 @@ const Home = () => {
                   Track
                 </button>
               </div>
+              {trackingError && (
+                <p className="mt-3 text-sm text-red-500 font-medium px-2">
+                  {trackingError}
+                </p>
+              )}
             </motion.div>
 
             {/* Stats - Compact Version */}
@@ -224,7 +244,7 @@ const Home = () => {
           <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 relative z-10">
             Ready to Ship {""}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-500">
-               Smarter?
+              Smarter?
             </span>
           </h2>
 

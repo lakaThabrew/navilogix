@@ -52,19 +52,13 @@ const About = () => {
           transition={{ duration: 0.8 }}
           className="text-center mb-24"
         >
-          <span
-            className="bg-blue-100 text-primary px-4 py-1.5 rounded-full text-sm 
-          font-semibold tracking-wide uppercase border border-blue-200 mb-6 inline-block"
-          >
-            Our Story
-          </span>
-          <h1 className="text-5xl md:text-6xl font-extrabold text-primary mb-8 tracking-tight">
+          <h1 className="text-5xl md:text-6xl font-extrabold text-primary mb-8 tracking-tight mt-8">
             Revolutionizing{" "}
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-orange-500">
               Global Logistics
             </span>
           </h1>
-          <p className="text-xl md:text-2xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light">
+          <p className="text-xl md:text-xl text-gray-600 max-w-4xl mx-auto leading-relaxed font-light">
             We are not just moving boxes; we are engineering the future of
             commerce. Fast, intelligent, and borderless.
           </p>

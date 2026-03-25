@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import DeliveryMap from "../components/DeliveryMap";
 import logger from "../utils/logger";
 
 const Track = () => {
   const { id } = useParams();
+  const navigate = useNavigate();
   const [parcel, setParcel] = useState(null);
   const [error, setError] = useState("");
 
@@ -19,12 +20,16 @@ const Track = () => {
           `http://localhost:5000/api/parcels/track/${id}`,
         );
         logger.info(
-          "✅ [CLIENT TRACK] Parcel found: " + data.trackingId + " Status: " + data.status,
+          "✅ [CLIENT TRACK] Parcel found: " +
+            data.trackingId +
+            " Status: " +
+            data.status,
         );
         setParcel(data);
       } catch (err) {
         logger.error(
-          "❌ [CLIENT TRACK] Error: " + (err.response?.data?.message || err.message),
+          "❌ [CLIENT TRACK] Error: " +
+            (err.response?.data?.message || err.message),
         );
         setError("Parcel not found");
       }
@@ -42,7 +47,20 @@ const Track = () => {
         >
           <div className="text-6xl mb-4">⚠️</div>
           <h3 className="text-2xl font-bold text-red-500 mb-2">Oops!</h3>
-          <p className="text-gray-500">{error}</p>
+          <p className="text-gray-500 mb-6">{error}</p>
+          <button
+            onClick={() => {
+              navigate("/");
+              setTimeout(() => {
+                document
+                  .getElementById("tracking-section")
+                  ?.scrollIntoView({ behavior: "smooth" });
+              }, 100);
+            }}
+            className="bg-primary text-white px-6 py-3 rounded-full font-semibold hover:bg-blue-700 transition-colors inline-block"
+          >
+            Try Another ID
+          </button>
         </motion.div>
       </div>
     );
@@ -83,9 +101,13 @@ const Track = () => {
             <div className="mt-2 md:mt-0">
               <div
                 className={`px-4 py-2 md:px-6 md:py-2 rounded-full text-sm md:text-lg font-bold shadow-lg flex items-center gap-2
-                                ${parcel.status === "Delivered" ? "bg-green-500 text-white"
-                    : parcel.status === "Returned" ? "bg-red-500 text-white"
-                      : "bg-secondary text-white"}`}
+                                ${
+                                  parcel.status === "Delivered"
+                                    ? "bg-green-500 text-white"
+                                    : parcel.status === "Returned"
+                                      ? "bg-red-500 text-white"
+                                      : "bg-secondary text-white"
+                                }`}
               >
                 <span className="w-2 h-2 md:w-3 md:h-3 bg-white rounded-full animate-pulse"></span>
                 {parcel.status}
@@ -107,7 +129,9 @@ const Track = () => {
               <p className="text-lg md:text-xl font-bold text-gray-800 break-words">
                 {parcel.senderInfo?.name}
               </p>
-              <p className="text-sm md:text-base text-gray-600 break-words">{parcel.senderInfo?.address}</p>
+              <p className="text-sm md:text-base text-gray-600 break-words">
+                {parcel.senderInfo?.address}
+              </p>
               <p className="text-xs md:text-sm text-blue-500 mt-2 font-medium">
                 {parcel.branchId?.branchName || "Main Hub"} Branch
               </p>
@@ -125,7 +149,9 @@ const Track = () => {
               <p className="text-lg md:text-xl font-bold text-gray-800 break-words">
                 {parcel.receiverInfo?.name}
               </p>
-              <p className="text-sm md:text-base text-gray-600 break-words">{parcel.receiverInfo?.address}</p>
+              <p className="text-sm md:text-base text-gray-600 break-words">
+                {parcel.receiverInfo?.address}
+              </p>
             </div>
           </div>
         </div>
@@ -164,7 +190,9 @@ const Track = () => {
                       {new Date(event.timestamp).toLocaleString()}
                     </span>
                   </div>
-                  <p className="text-sm md:text-base text-gray-600 mt-2">{event.location}</p>
+                  <p className="text-sm md:text-base text-gray-600 mt-2">
+                    {event.location}
+                  </p>
                 </div>
               </motion.div>
             ))}

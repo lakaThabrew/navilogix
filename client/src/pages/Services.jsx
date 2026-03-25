@@ -45,10 +45,6 @@ const ServiceCard = ({ image, title, description, benefits, delay }) => (
           </li>
         ))}
       </ul>
-
-      <button className="w-full py-3 rounded-xl border border-gray-200 text-primary font-semibold hover:bg-primary hover:text-white hover:border-transparent transition-all duration-300 mt-auto">
-        Learn More
-      </button>
     </div>
   </motion.div>
 );
@@ -149,7 +145,7 @@ const Services = () => {
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-6xl font-extrabold text-primary mb-6"
+            className="text-5xl md:text-6xl font-extrabold text-primary mb-6 mt-8"
           >
             Our{" "}
             <span className="text-secondary relative inline-block">
@@ -166,7 +162,7 @@ const Services = () => {
               </svg>
             </span>
           </motion.h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-xl text-gray-600 max-w-5xl mx-auto leading-relaxed font-light">
             Comprehensive logistics solutions designed to exceed expectations.
             Whether it's a small parcel or a shipping container, we handle it
             with care.
@@ -191,7 +187,8 @@ const Services = () => {
             Our <span className="text-secondary">Packages</span>
           </motion.h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Choose the perfect plan for your delivery needs. Upgrade anytime as your requirements grow.
+            Choose the perfect plan for your delivery needs. Upgrade anytime as
+            your requirements grow.
           </p>
         </div>
 
@@ -202,15 +199,34 @@ const Services = () => {
             className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 flex flex-col relative"
           >
             <h3 className="text-2xl font-bold text-gray-800 mb-2">Free</h3>
-            <div className="text-4xl font-extrabold text-primary mb-6">$0<span className="text-lg font-normal text-gray-500">/mo</span></div>
-            <p className="text-gray-600 mb-8">Perfect for occasional senders.</p>
+            <div className="text-4xl font-extrabold text-primary mb-6">
+              $0<span className="text-lg font-normal text-gray-500">/mo</span>
+            </div>
+            <p className="text-gray-600 mb-8">
+              Perfect for occasional senders.
+            </p>
             <ul className="space-y-4 mb-8 flex-grow">
-              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Standard Delivery</li>
-              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Basic Tracking</li>
-              <li className="flex items-center text-gray-400 font-medium"><span className="mr-3 text-xl">✖</span> No Priority Support</li>
-              <li className="flex items-center text-gray-400 font-medium"><span className="mr-3 text-xl">✖</span> No Custom Dashboard</li>
+              <li className="flex items-center text-gray-700 font-medium">
+                <span className="text-green-500 mr-3 text-xl">✔</span> Standard
+                Delivery
+              </li>
+              <li className="flex items-center text-gray-700 font-medium">
+                <span className="text-green-500 mr-3 text-xl">✔</span> Basic
+                Tracking
+              </li>
+              <li className="flex items-center text-gray-400 font-medium">
+                <span className="mr-3 text-xl">✖</span> No Priority Support
+              </li>
+              <li className="flex items-center text-gray-400 font-medium">
+                <span className="mr-3 text-xl">✖</span> No Custom Dashboard
+              </li>
             </ul>
-            <button onClick={() => navigate("/register")} className="mt-auto w-full py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">Get Started</button>
+            <button
+              onClick={() => navigate("/register")}
+              className="mt-auto w-full py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all"
+            >
+              Get Started
+            </button>
           </motion.div>
 
           {/* Plus Package */}
@@ -218,17 +234,41 @@ const Services = () => {
             whileHover={{ y: -10 }}
             className="bg-gradient-to-b from-primary to-[#0f172a] rounded-3xl p-8 shadow-2xl border border-primary flex flex-col relative transform md:-translate-y-4"
           >
-            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-secondary text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-lg tracking-wider">POPULAR</div>
+            <div className="absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-secondary text-white px-6 py-1.5 rounded-full text-sm font-bold shadow-lg tracking-wider">
+              POPULAR
+            </div>
             <h3 className="text-2xl font-bold text-white mb-2 mt-2">Plus</h3>
-            <div className="text-4xl font-extrabold text-white mb-6">$9.99<span className="text-lg font-normal text-gray-400">/mo</span></div>
-            <p className="text-gray-300 mb-8">For regular users and small businesses.</p>
+            <div className="text-4xl font-extrabold text-white mb-6">
+              $9.99
+              <span className="text-lg font-normal text-gray-400">/mo</span>
+            </div>
+            <p className="text-gray-300 mb-8">
+              For regular users and small businesses.
+            </p>
             <ul className="space-y-4 mb-8 flex-grow">
-              <li className="flex items-center text-white font-medium"><span className="text-secondary mr-3 text-xl">✔</span> Express Delivery Options</li>
-              <li className="flex items-center text-white font-medium"><span className="text-secondary mr-3 text-xl">✔</span> Real-Time Live Tracking</li>
-              <li className="flex items-center text-white font-medium"><span className="text-secondary mr-3 text-xl">✔</span> Automated Dashboard & Reports</li>
-              <li className="flex items-center text-white font-medium"><span className="text-secondary mr-3 text-xl">✔</span> Priority Customer Support</li>
+              <li className="flex items-center text-white font-medium">
+                <span className="text-secondary mr-3 text-xl">✔</span> Express
+                Delivery Options
+              </li>
+              <li className="flex items-center text-white font-medium">
+                <span className="text-secondary mr-3 text-xl">✔</span> Real-Time
+                Live Tracking
+              </li>
+              <li className="flex items-center text-white font-medium">
+                <span className="text-secondary mr-3 text-xl">✔</span> Automated
+                Dashboard & Reports
+              </li>
+              <li className="flex items-center text-white font-medium">
+                <span className="text-secondary mr-3 text-xl">✔</span> Priority
+                Customer Support
+              </li>
             </ul>
-            <button onClick={() => navigate("/dashboard")} className="mt-auto w-full py-3 rounded-xl bg-secondary text-white font-bold hover:bg-orange-600 transition-all shadow-lg hover:shadow-secondary/30">Buy Plus</button>
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="mt-auto w-full py-3 rounded-xl bg-secondary text-white font-bold hover:bg-orange-600 transition-all shadow-lg hover:shadow-secondary/30"
+            >
+              Buy Plus
+            </button>
           </motion.div>
 
           {/* Pro Package */}
@@ -237,16 +277,41 @@ const Services = () => {
             className="bg-white rounded-3xl p-8 shadow-lg border border-gray-100 flex flex-col relative"
           >
             <h3 className="text-2xl font-bold text-gray-800 mb-2">Pro</h3>
-            <div className="text-4xl font-extrabold text-primary mb-6">$29.99<span className="text-lg font-normal text-gray-500">/mo</span></div>
-            <p className="text-gray-600 mb-8">Enterprise-level features and high volume.</p>
+            <div className="text-4xl font-extrabold text-primary mb-6">
+              $29.99
+              <span className="text-lg font-normal text-gray-500">/mo</span>
+            </div>
+            <p className="text-gray-600 mb-8">
+              Enterprise-level features and high volume.
+            </p>
             <ul className="space-y-4 mb-8 flex-grow">
-              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Custom Logistics API</li>
-              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> AI Route Optimization</li>
-              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Dedicated Account Manager</li>
-              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Automated Reverse Logistics</li>
-              <li className="flex items-center text-gray-700 font-medium"><span className="text-green-500 mr-3 text-xl">✔</span> Discount on Sending & Receiving</li>
+              <li className="flex items-center text-gray-700 font-medium">
+                <span className="text-green-500 mr-3 text-xl">✔</span> Custom
+                Logistics API
+              </li>
+              <li className="flex items-center text-gray-700 font-medium">
+                <span className="text-green-500 mr-3 text-xl">✔</span> AI Route
+                Optimization
+              </li>
+              <li className="flex items-center text-gray-700 font-medium">
+                <span className="text-green-500 mr-3 text-xl">✔</span> Dedicated
+                Account Manager
+              </li>
+              <li className="flex items-center text-gray-700 font-medium">
+                <span className="text-green-500 mr-3 text-xl">✔</span> Automated
+                Reverse Logistics
+              </li>
+              <li className="flex items-center text-gray-700 font-medium">
+                <span className="text-green-500 mr-3 text-xl">✔</span> Discount
+                on Sending & Receiving
+              </li>
             </ul>
-            <button onClick={() => navigate("/contact")} className="mt-auto w-full py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all">Contact Sales</button>
+            <button
+              onClick={() => navigate("/contact")}
+              className="mt-auto w-full py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all"
+            >
+              Contact Sales
+            </button>
           </motion.div>
         </div>
 

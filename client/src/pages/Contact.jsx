@@ -79,13 +79,13 @@ const Contact = () => {
           </motion.div>
           <motion.h1
             variants={itemVariants}
-            className="mt-3 text-5xl md:text-7xl font-black text-[#001F3F] tracking-tight leading-tight"
+            className="mt-3 text-5xl md:text-7xl font-black text-[#001F3F] tracking-tight leading-tight mt-8"
           >
             Let's Start a <span className="text-[#FF4136]">Conversation</span>
           </motion.h1>
           <motion.p
             variants={itemVariants}
-            className="mt-2 text-gray-500 max-w-2xl mx-auto font-medium text-lg leading-relaxed"
+            className="mt-2 text-gray-500 max-w-6xl mx-auto text-lg leading-relaxed text-xl font-light"
           >
             Ready to optimize your global logistics? Our experts are standing by
             to help you navigate the future of delivery.
