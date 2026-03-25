@@ -19,10 +19,21 @@ const ChatBot = () => {
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text: "Hi! I am your AI assistant. Ask me about your parcel.",
+      text: "Hi! I am your Navilogix AI assistant. Ask me about your parcel.",
     },
   ]);
   const [input, setInput] = useState("");
+  const messagesEndRef = React.useRef(null);
+
+  const scrollToBottom = () => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, open]);
 
   const send = async () => {
     if (!input.trim()) return;
@@ -42,7 +53,9 @@ const ChatBot = () => {
 
       setMessages([...newMessages, { sender: "bot", text: botResponse }]);
     } catch (error) {
-      logger.error("Error sending message to chatbot: " + error.message, { error });
+      logger.error("Error sending message to chatbot: " + error.message, {
+        error,
+      });
       setMessages([
         ...newMessages,
         {
@@ -56,9 +69,9 @@ const ChatBot = () => {
   return (
     <div className="fixed bottom-6 right-6 z-50">
       {open && (
-        <div className="floating-card w-[calc(100vw-3rem)] sm:w-80 h-96 flex flex-col mb-4 p-0 overflow-hidden shadow-2xl animate-fade-in-up">
-          <div className="bg-primary p-4 text-white font-bold flex justify-between items-center rounded-t-[20px]">
-            <span>AI Assistant</span>
+        <div className="fixed bottom-24 right-6 z-[9999] bg-white rounded-[30px] shadow-2xl w-[calc(100vw-2rem)] sm:w-[600px] h-[750px] flex flex-col overflow-hidden animate-fade-in-up border border-gray-100">
+          <div className="bg-orange-400 p-4 text-black text-center font-bold flex justify-between items-center rounded-t-[20px]">
+            <span>NaviLogix AI Assistant</span>
             <button
               onClick={() => setOpen(false)}
               className="text-white hover:text-secondary text-xl"
@@ -74,15 +87,27 @@ const ChatBot = () => {
                 className={`flex ${m.sender === "user" ? "justify-end" : "justify-start"}`}
               >
                 <div
-                  className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${m.sender === "user"
-                    ? "bg-primary text-white rounded-br-none"
-                    : "bg-white text-gray-800 rounded-bl-none"
-                    }`}
+                  className={`max-w-[80%] p-3 rounded-2xl text-sm shadow-sm ${
+                    m.sender === "user"
+                      ? "bg-white text-gray-800 rounded-br-none border border-gray-100"
+                      : "bg-blue-500 text-white rounded-bl-none"
+                  }`}
                 >
-                  {m.text}
+                  <p 
+                    className="whitespace-pre-wrap leading-relaxed"
+                    dangerouslySetInnerHTML={{ 
+                      __html: m.text
+                        .replace(/^### (.*$)/gm, '<h3 class="font-bold text-lg mt-2">$1</h3>')
+                        .replace(/^## (.*$)/gm, '<h2 class="font-bold text-xl mt-3">$2</h2>')
+                        .replace(/^# (.*$)/gm, '<h1 class="font-bold text-2xl mt-4">$1</h1>')
+                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                        .replace(/^\*\s/gm, '• ')
+                    }}
+                  />
                 </div>
               </div>
             ))}
+            <div ref={messagesEndRef} />
           </div>
 
           <div className="p-3 bg-white border-t border-gray-100 flex">

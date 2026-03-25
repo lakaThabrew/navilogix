@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import RadialShareMenu from "../components/RadialShareMenu";
 import { useForm, ValidationError } from "@formspree/react";
@@ -13,25 +13,48 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  const [formErrors, setFormErrors] = useState({});
+
+  const validateForm = () => {
+    const errors = {};
+
+    if (!formData.name.trim()) errors.name = "Name is required.";
+    if (!formData.email.trim()) {
+      errors.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      errors.email = "Please enter a valid email address.";
+    }
+    if (!formData.subject.trim()) errors.subject = "Subject is required.";
+    if (!formData.message.trim()) errors.message = "Message is required.";
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  useEffect(() => {
+    if (state.succeeded) {
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+      setFormErrors({});
+    }
+  }, [state.succeeded]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
     await handleSubmitFormspree(e);
-
-    if (state.succeeded) {
-      setTimeout(() => {
-        setFormData({
-          name: "",
-          email: "",
-          subject: "",
-          message: "",
-        });
-      }, 3000);
-    }
   };
 
   const containerVariants = {
@@ -79,13 +102,13 @@ const Contact = () => {
           </motion.div>
           <motion.h1
             variants={itemVariants}
-            className="mt-3 text-5xl md:text-7xl font-black text-[#001F3F] tracking-tight leading-tight"
+            className="mt-3 text-5xl md:text-7xl font-black text-[#001F3F] tracking-tight leading-tight mt-8"
           >
             Let's Start a <span className="text-[#FF4136]">Conversation</span>
           </motion.h1>
           <motion.p
             variants={itemVariants}
-            className="mt-2 text-gray-500 max-w-2xl mx-auto font-medium text-lg leading-relaxed"
+            className="mt-2 text-gray-500 max-w-6xl mx-auto text-lg leading-relaxed text-xl font-light"
           >
             Ready to optimize your global logistics? Our experts are standing by
             to help you navigate the future of delivery.
@@ -126,6 +149,7 @@ const Contact = () => {
                   </h2>
                   <form
                     onSubmit={handleSubmit}
+                    noValidate
                     className="space-y-8 relative z-10"
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -148,6 +172,11 @@ const Contact = () => {
                           errors={state.errors}
                           className="text-red-500 text-xs mt-1"
                         />
+                        {formErrors.name && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {formErrors.name}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-3">
                         <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
@@ -168,6 +197,11 @@ const Contact = () => {
                           errors={state.errors}
                           className="text-red-500 text-xs mt-1"
                         />
+                        {formErrors.email && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {formErrors.email}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="space-y-3">
@@ -189,6 +223,11 @@ const Contact = () => {
                         errors={state.errors}
                         className="text-red-500 text-xs mt-1"
                       />
+                      {formErrors.subject && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {formErrors.subject}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-3">
                       <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
@@ -209,6 +248,11 @@ const Contact = () => {
                         errors={state.errors}
                         className="text-red-500 text-xs mt-1"
                       />
+                      {formErrors.message && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {formErrors.message}
+                        </p>
+                      )}
                     </div>
                     <motion.button
                       whileHover={{ scale: 1.02 }}
