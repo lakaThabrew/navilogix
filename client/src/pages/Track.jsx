@@ -106,10 +106,14 @@ const Track = () => {
                                     ? "bg-green-500 text-white"
                                     : parcel.status === "Returned"
                                       ? "bg-red-500 text-white"
-                                      : "bg-secondary text-white"
+                                      : parcel.status === "Out for Delivery"
+                                        ? "bg-orange-500 text-white"
+                                        : parcel.status === "Pending"
+                                          ? "bg-yellow-400 text-black"
+                                          : "bg-blue-500 text-white"
                                 }`}
               >
-                <span className="w-2 h-2 md:w-3 md:h-3 bg-white rounded-full animate-pulse"></span>
+                <span className={`w-2 h-2 md:w-3 md:h-3 rounded-full animate-pulse ${parcel.status === "Pending" ? "bg-black" : "bg-white"}`}></span>
                 {parcel.status}
               </div>
             </div>
