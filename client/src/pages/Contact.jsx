@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import RadialShareMenu from "../components/RadialShareMenu";
 import { useForm, ValidationError } from "@formspree/react";
@@ -13,25 +13,48 @@ const Contact = () => {
     subject: "",
     message: "",
   });
+  const [formErrors, setFormErrors] = useState({});
+
+  const validateForm = () => {
+    const errors = {};
+
+    if (!formData.name.trim()) errors.name = "Name is required.";
+    if (!formData.email.trim()) {
+      errors.email = "Email is required.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+      errors.email = "Please enter a valid email address.";
+    }
+    if (!formData.subject.trim()) errors.subject = "Subject is required.";
+    if (!formData.message.trim()) errors.message = "Message is required.";
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
+
+  useEffect(() => {
+    if (state.succeeded) {
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: "",
+      });
+      setFormErrors({});
+    }
+  }, [state.succeeded]);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+    if (formErrors[name]) {
+      setFormErrors((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateForm()) return;
     await handleSubmitFormspree(e);
-
-    if (state.succeeded) {
-      setTimeout(() => {
-        setFormData({
-          name: "",
-          email: "",
-          subject: "",
-          message: "",
-        });
-      }, 3000);
-    }
   };
 
   const containerVariants = {
@@ -126,6 +149,7 @@ const Contact = () => {
                   </h2>
                   <form
                     onSubmit={handleSubmit}
+                    noValidate
                     className="space-y-8 relative z-10"
                   >
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -148,6 +172,11 @@ const Contact = () => {
                           errors={state.errors}
                           className="text-red-500 text-xs mt-1"
                         />
+                        {formErrors.name && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {formErrors.name}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-3">
                         <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
@@ -168,6 +197,11 @@ const Contact = () => {
                           errors={state.errors}
                           className="text-red-500 text-xs mt-1"
                         />
+                        {formErrors.email && (
+                          <p className="text-red-500 text-xs mt-1">
+                            {formErrors.email}
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="space-y-3">
@@ -189,6 +223,11 @@ const Contact = () => {
                         errors={state.errors}
                         className="text-red-500 text-xs mt-1"
                       />
+                      {formErrors.subject && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {formErrors.subject}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-3">
                       <label className="text-xs font-black text-[#001F3F]/60 ml-1 uppercase tracking-widest">
@@ -209,6 +248,11 @@ const Contact = () => {
                         errors={state.errors}
                         className="text-red-500 text-xs mt-1"
                       />
+                      {formErrors.message && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {formErrors.message}
+                        </p>
+                      )}
                     </div>
                     <motion.button
                       whileHover={{ scale: 1.02 }}

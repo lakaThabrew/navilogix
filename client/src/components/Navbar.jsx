@@ -5,8 +5,24 @@ import { Menu, X, LogOut } from "lucide-react";
 
 const Navbar = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const user = JSON.parse(localStorage.getItem("userInfo"));
   const [isOpen, setIsOpen] = useState(false);
+
+  const isActivePath = (path) =>
+    location.pathname === path || location.pathname.startsWith(`${path}/`);
+
+  const getDesktopLinkClass = (path) =>
+    `relative group py-2 font-bold transition-colors ${
+      isActivePath(path) ? "text-primary" : "text-gray-600 hover:text-primary"
+    }`;
+
+  const getMobileLinkClass = (path) =>
+    `w-full text-center py-4 text-xl font-bold rounded-2xl transition-all shadow-sm ${
+      isActivePath(path)
+        ? "bg-primary text-white"
+        : "text-primary bg-gray-50 hover:bg-primary hover:text-white"
+    }`;
 
   const logout = () => {
     localStorage.removeItem("userInfo");
@@ -59,10 +75,16 @@ const Navbar = () => {
               <Link
                 key={link.name}
                 to={link.path}
-                className="text-gray-600 hover:text-primary relative group py-2"
+                className={getDesktopLinkClass(link.path)}
               >
                 {link.name}
-                <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-secondary transition-all duration-300 group-hover:w-full"></span>
+                <span
+                  className={`absolute bottom-0 left-0 h-0.5 bg-secondary transition-all duration-300 ${
+                    isActivePath(link.path)
+                      ? "w-full"
+                      : "w-0 group-hover:w-full"
+                  }`}
+                ></span>
               </Link>
             ))}
 
@@ -76,21 +98,30 @@ const Navbar = () => {
                 Logout
               </motion.button>
             ) : (
-              <div className="flex items-center gap-4">
-                <Link
-                  to="/login"
-                  className="text-primary font-semibold hover:text-secondary transition-colors"
-                >
+              <div className="flex items-center gap-8">
+                <Link to="/login" className={getDesktopLinkClass("/login")}>
                   Login
+                  <span
+                    className={`absolute bottom-0 left-0 h-0.5 bg-secondary transition-all duration-300 ${
+                      isActivePath("/login")
+                        ? "w-full"
+                        : "w-0 group-hover:w-full"
+                    }`}
+                  ></span>
                 </Link>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate("/register")}
-                  className="bg-primary text-white px-6 py-2.5 rounded-full shadow-lg hover:bg-gray-800 transition-all font-semibold"
+                <Link
+                  to="/register"
+                  className={getDesktopLinkClass("/register")}
                 >
                   Register
-                </motion.button>
+                  <span
+                    className={`absolute bottom-0 left-0 h-0.5 bg-secondary transition-all duration-300 ${
+                      isActivePath("/register")
+                        ? "w-full"
+                        : "w-0 group-hover:w-full"
+                    }`}
+                  ></span>
+                </Link>
               </div>
             )}
           </div>
@@ -121,7 +152,7 @@ const Navbar = () => {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className="w-full text-center py-4 text-xl font-bold text-primary bg-gray-50 rounded-2xl hover:bg-primary hover:text-white transition-all shadow-sm"
+                  className={getMobileLinkClass(link.path)}
                   onClick={() => setIsOpen(false)}
                 >
                   {link.name}
@@ -141,17 +172,17 @@ const Navbar = () => {
                 <div className="flex flex-col gap-4 mt-4 w-full">
                   <Link
                     to="/login"
-                    className="w-full text-center py-4 bg-gray-100 text-primary rounded-2xl font-black shadow-inner"
+                    className={getMobileLinkClass("/login")}
                     onClick={() => setIsOpen(false)}
                   >
-                    LOGIN
+                    Login
                   </Link>
                   <Link
                     to="/register"
-                    className="w-full text-center py-4 bg-primary text-white rounded-2xl font-black shadow-xl"
+                    className={getMobileLinkClass("/register")}
                     onClick={() => setIsOpen(false)}
                   >
-                    REGISTER
+                    Register
                   </Link>
                 </div>
               )}
