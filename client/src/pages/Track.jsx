@@ -132,6 +132,9 @@ const Track = () => {
               <p className="text-sm md:text-base text-gray-600 break-words">
                 {parcel.senderInfo?.address}
               </p>
+              <p className="text-sm md:text-base text-gray-500 mt-1">
+                📞 {parcel.senderInfo?.contact}
+              </p>
               <p className="text-xs md:text-sm text-blue-500 mt-2 font-medium">
                 {parcel.branchId?.branchName || "Main Hub"} Branch
               </p>
@@ -152,7 +155,36 @@ const Track = () => {
               <p className="text-sm md:text-base text-gray-600 break-words">
                 {parcel.receiverInfo?.address}
               </p>
+              <p className="text-sm md:text-base text-gray-500 mt-1">
+                📞 {parcel.receiverInfo?.contact}
+              </p>
             </div>
+          </div>
+        </div>
+
+        {/* Parcel Details */}
+        <div className="p-6 md:p-12 grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 bg-white border-b border-gray-100">
+          <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+            <p className="text-xs md:text-sm text-gray-500 uppercase font-bold tracking-wider mb-1">Weight</p>
+            <p className="text-lg md:text-xl font-bold text-gray-800">{parcel.weight ? `${parcel.weight} kg` : "N/A"}</p>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+            <p className="text-xs md:text-sm text-gray-500 uppercase font-bold tracking-wider mb-1">Type</p>
+            <p className="text-lg md:text-xl font-bold text-gray-800 capitalize">{parcel.type || "N/A"}</p>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+            <p className="text-xs md:text-sm text-gray-500 uppercase font-bold tracking-wider mb-1">COD Amount</p>
+            <p className="text-lg md:text-xl font-bold text-green-600">Rs. {parcel.codAmount || 0}</p>
+          </div>
+          <div className="bg-gray-50 p-4 rounded-xl border border-gray-100">
+            <p className="text-xs md:text-sm text-gray-500 uppercase font-bold tracking-wider mb-1">Target / Date</p>
+            <p className="text-lg md:text-xl font-bold text-blue-600">
+                {parcel.status === "Delivered" && parcel.history?.length > 0
+                    ? new Date(parcel.history[parcel.history.length - 1].timestamp).toLocaleDateString()
+                    : parcel.tourDate 
+                        ? new Date(parcel.tourDate).toLocaleDateString() 
+                        : "Pending"}
+            </p>
           </div>
         </div>
 
