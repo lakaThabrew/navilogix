@@ -154,6 +154,7 @@ This checklist contains all the features, functions, and buttons you need to tes
 - [✓] Mobile responsive columns
 
 ---
+---
 
 ## 2. Authentication & Profile
 
