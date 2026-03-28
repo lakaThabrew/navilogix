@@ -22,6 +22,7 @@ const Auth = () => {
   const [role, setRole] = useState("regular");
   const [resetToken, setResetToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
   const [strength, setStrength] = useState({
     score: 0,
     label: "Empty",
@@ -46,9 +47,12 @@ const Auth = () => {
     if (pass.length > 8) score++;
     if (/[A-Z]/.test(pass)) score++;
     if (/[0-9]/.test(pass)) score++;
+    if (/[!@#$%^&*]/.test(pass)) score++;
     if (/[^A-Za-z0-9]/.test(pass)) score++;
 
-    const result = { score, label: "Weak", color: "bg-red-500" };
+    const result = {
+      score, label: "Weak", color: "bg-red-500"
+    };
     if (score > 2) {
       result.label = "Fair";
       result.color = "bg-orange-400";
@@ -59,6 +63,10 @@ const Auth = () => {
     }
     if (score > 4) {
       result.label = "Strong";
+      result.color = "bg-[#41dc8e]";
+    }
+    if (score>5){
+      result.label = "Excellent";
       result.color = "bg-green-500";
     }
     if (pass.length === 0) {
@@ -70,8 +78,19 @@ const Auth = () => {
     setStrength(result);
   };
 
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError("");
+
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { data } = await axios.post(
@@ -90,6 +109,18 @@ const Auth = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError("");
+
+    if (!isValidEmail(email)) {
+      setError("Please enter a valid email address.");
+      return;
+    }
+
+    if (strength.label !== "Strong" || strength.label !== "Excellent") {
+      setError("Please choose a stronger password to join the fleet.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
@@ -224,17 +255,37 @@ const Auth = () => {
                   </>
                 )}
               </h1>
-              <p className="text-white/70 text-lg mb-12 font-medium leading-relaxed">
-                {mode === "login"
-                  ? "Access your dashboard and manage your global logistics with NaviLogix AI."
-                  : mode === "register"
-                    ? "Start shipping smarter today. Create your account and unlock priority tracking."
-                    : mode === "forgot"
-                      ? "Enter your email to receive a recovery token for your account."
-                      : "Choose a strong new password to regain access to your dashboard."}
+              <p className="text-white/70 text-base mb-12 font-medium leading-relaxed">
+                {mode === "login" ? (
+                  <>
+                    Access your dashboard and manage your global logistics with{" "}
+                    <br />
+                    <span className="text-white font-bold ">NaviLogix AI</span>
+                  </>
+                ) : mode === "register" ? (
+                  <>
+                    Start shipping smarter today. Create your account and unlock{" "}
+                    <br />
+                    <span className="text-white font-bold"> priority tracking.</span>
+                  </>
+                ) : mode === "forgot" ? (
+                  <>
+                    Enter your email to receive a recovery token for your{" "}
+                    <br/>
+                    <span className="text-white font-bold">account.</span>
+                  </>
+                ) : (
+                  <>
+                    Choose a strong{" "}
+                    <br/>
+                    <span className="text-white font-bold">new password</span>{" "}
+                    <br/>
+                    to regain access to your dashboard.
+                  </>
+                )}
               </p>
 
-              <div className="w-48 h-48 bg-white/10 rounded-[40px] flex items-center justify-center backdrop-blur-md shadow-inner">
+              <div className="w-48 h-48 bg-white/10 mt-12 rounded-[40px] flex items-center justify-center backdrop-blur-md shadow-inner">
                 <span className="text-7xl">
                   {mode === "login"
                     ? "🔐"
@@ -310,11 +361,19 @@ const Auth = () => {
                       <input
                         type="email"
                         required
-                        className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                        className={`w-full bg-gray-50 border-2 ${error ? "border-red-500" : "border-transparent"} p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold`}
                         placeholder="your@email.com"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          if (error) setError("");
+                        }}
                       />
+                      {error && (
+                        <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-1">
+                          {error}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">
@@ -392,11 +451,19 @@ const Auth = () => {
                         <input
                           type="email"
                           required
-                          className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                          className={`w-full bg-gray-50 border-2 ${error ? "border-red-500" : "border-transparent"} p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold`}
                           placeholder="your@email.com"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (error) setError("");
+                          }}
                         />
+                        {error && (
+                          <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-1">
+                            {error}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">
@@ -412,6 +479,7 @@ const Auth = () => {
                             onChange={(e) => {
                               setPassword(e.target.value);
                               calculateStrength(e.target.value);
+                              if (error) setError("");
                             }}
                           />
                           <button
@@ -448,6 +516,11 @@ const Auth = () => {
                                 className={`h-full ${strength.color} transition-all duration-500`}
                               />
                             </div>
+                            {error && error.includes("password") && (
+                              <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-2">
+                                {error}
+                              </p>
+                            )}
                           </div>
                         )}
                       </div>
