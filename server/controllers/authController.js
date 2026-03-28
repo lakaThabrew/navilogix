@@ -12,6 +12,22 @@ const generateToken = (id) => {
 export const registerUser = async (req, res) => {
     const { name, email, password, role, branchId } = req.body;
     logger.info(`📝 [REGISTER] Attempting to register user: ${email}`);
+
+    // Type Validation & Length Limits
+    if (typeof name !== 'string' || name.length < 2 || name.length > 50) {
+        return res.status(400).json({ message: 'Invalid name format or length' });
+    }
+    if (typeof email !== 'string' || !email.includes('@')) {
+        return res.status(400).json({ message: 'Invalid email format' });
+    }
+    if (typeof password !== 'string' || password.length < 8) {
+        return res.status(400).json({ message: 'Password must be at least 8 characters' });
+    }
+
+    // Role Whitelisting
+    const allowedRoles = ['guest', 'regular', 'delivery_person', 'branch_head', 'main_admin'];
+    const finalRole = role && allowedRoles.includes(role) ? role : 'regular';
+
     try {
         const userExists = await User.findOne({ email });
         logger.info(`🔍 [REGISTER] Checking if user exists: ${!!userExists}`);
@@ -24,7 +40,7 @@ export const registerUser = async (req, res) => {
             name,
             email,
             password: hashedPassword,
-            role: role || 'regular',
+            role: finalRole,
             branchId
         });
 
@@ -99,8 +115,14 @@ export const processPayment = async (req, res) => {
 export const loginUser = async (req, res) => {
     const { email, password } = req.body;
     logger.info(`🔐 [LOGIN] Attempting login for: ${email}`);
+
+    if (typeof email !== 'string' || typeof password !== 'string') {
+        return res.status(400).json({ message: 'Email and password must be strings' });
+    }
+
     try {
-        const user = await User.findOne({ email });
+        // Select password explicitly since it's hidden by default
+        const user = await User.findOne({ email }).select('+password');
         logger.info(`🔍 [LOGIN] User found: ${!!user}`);
 
         if (user && (await bcrypt.compare(password, user.password))) {
