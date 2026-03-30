@@ -22,7 +22,7 @@ const Auth = () => {
   const [role, setRole] = useState("regular");
   const [resetToken, setResetToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState({ field: "", message: "" });
   const [strength, setStrength] = useState({
     score: 0,
     label: "Empty",
@@ -84,10 +84,10 @@ const Auth = () => {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-    setError("");
+    setError({ field: "", message: "" });
 
     if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
+      setError({ field: "email", message: "Please enter a valid email address." });
       return;
     }
 
@@ -109,15 +109,20 @@ const Auth = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
-    setError("");
+    setError({ field: "", message: "" });
 
-    if (!isValidEmail(email)) {
-      setError("Please enter a valid email address.");
+    if (name.length > 30) {
+      setError({ field: "name", message: "Full name must be 30 characters or less." });
       return;
     }
 
-    if (strength.label !== "Strong" || strength.label !== "Excellent") {
-      setError("Please choose a stronger password to join the fleet.");
+    if (!isValidEmail(email)) {
+      setError({ field: "email", message: "Please enter a valid email address." });
+      return;
+    }
+
+    if (strength.label !== "Strong" && strength.label !== "Excellent") {
+      setError({ field: "password", message: "Please choose a stronger password to join the fleet." });
       return;
     }
 
@@ -157,9 +162,9 @@ const Auth = () => {
       );
       alert("Reset token generated! Check your email for the token.");
       setMode("reset");
-    } catch (error) {
-      logger.error("Forgot password error:", error);
-      alert(error.response?.data?.message || "Failed to initiate reset");
+    } catch (err) {
+      logger.error("Forgot password error:", err);
+      alert(err.response?.data?.message || "Failed to initiate reset");
     } finally {
       setIsLoading(false);
     }
@@ -167,8 +172,13 @@ const Auth = () => {
 
   const handleReset = async (e) => {
     e.preventDefault();
+    setError({ field: "", message: "" });
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setError({ field: "confirm", message: "Passwords do not match" });
+      return;
+    }
+    if (strength.label !== "Strong" && strength.label !== "Excellent") {
+      setError({ field: "password", message: "Please choose a stronger password." });
       return;
     }
     setIsLoading(true);
@@ -179,8 +189,8 @@ const Auth = () => {
       });
       alert("Password reset successful! Please login.");
       setMode("login");
-    } catch (error) {
-      alert(error.response?.data?.message || "Reset failed");
+    } catch (err) {
+      alert(err.response?.data?.message || "Reset failed");
     } finally {
       setIsLoading(false);
     }
@@ -361,17 +371,17 @@ const Auth = () => {
                       <input
                         type="email"
                         required
-                        className={`w-full bg-gray-50 border-2 ${error ? "border-red-500" : "border-transparent"} p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold`}
+                        className={`w-full bg-gray-50 border-2 ${error.field === "email" ? "border-red-500" : "border-transparent"} p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold`}
                         placeholder="your@email.com"
                         value={email}
                         onChange={(e) => {
                           setEmail(e.target.value);
-                          if (error) setError("");
+                          if (error.field === "email") setError({ field: "", message: "" });
                         }}
                       />
-                      {error && (
+                      {error.field === "email" && (
                         <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-1">
-                          {error}
+                          {error.message}
                         </p>
                       )}
                     </div>
@@ -437,11 +447,19 @@ const Auth = () => {
                       <input
                         type="text"
                         required
-                        className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                        className={`w-full bg-gray-50 border-2 ${error.field === "name" ? "border-red-500" : "border-transparent"} p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold`}
                         placeholder="John Doe"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => {
+                          setName(e.target.value);
+                          if (error.field === "name") setError({ field: "", message: "" });
+                        }}
                       />
+                      {error.field === "name" && (
+                        <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-1">
+                          {error.message}
+                        </p>
+                      )}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                       <div className="space-y-2">
@@ -451,17 +469,17 @@ const Auth = () => {
                         <input
                           type="email"
                           required
-                          className={`w-full bg-gray-50 border-2 ${error ? "border-red-500" : "border-transparent"} p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold`}
+                          className={`w-full bg-gray-50 border-2 ${error.field === "email" ? "border-red-500" : "border-transparent"} p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold`}
                           placeholder="your@email.com"
                           value={email}
                           onChange={(e) => {
                             setEmail(e.target.value);
-                            if (error) setError("");
+                            if (error.field === "email") setError({ field: "", message: "" });
                           }}
                         />
-                        {error && (
+                        {error.field === "email" && (
                           <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-1">
-                            {error}
+                            {error.message}
                           </p>
                         )}
                       </div>
@@ -502,7 +520,7 @@ const Auth = () => {
                                 Security Strength
                               </span>
                               <span
-                                className={`text-[10px] font-black uppercase tracking-wider ${strength.label === "Strong" ? "text-green-500" : "text-orange-400"}`}
+                                className={`text-[10px] font-black uppercase tracking-wider ${strength.color.replace("bg-", "text-")}`}
                               >
                                 {strength.label}
                               </span>
@@ -511,14 +529,14 @@ const Auth = () => {
                               <motion.div
                                 initial={{ width: 0 }}
                                 animate={{
-                                  width: `${(strength.score / 5) * 100}%`,
+                                  width: `${(strength.score / 6) * 100 + 10}%`,
                                 }}
                                 className={`h-full ${strength.color} transition-all duration-500`}
                               />
                             </div>
-                            {error && error.includes("password") && (
+                            {error.field === "password" && (
                               <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-2">
-                                {error}
+                                {error.message}
                               </p>
                             )}
                           </div>
@@ -612,7 +630,10 @@ const Auth = () => {
                           className="w-full bg-gray-50 border-2 border-transparent p-4 pr-12 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
                           placeholder="••••••••"
                           value={password}
-                          onChange={(e) => setPassword(e.target.value)}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            calculateStrength(e.target.value);
+                          }}
                         />
                         <button
                           type="button"
@@ -626,6 +647,30 @@ const Auth = () => {
                           )}
                         </button>
                       </div>
+                      {/* Strength Meter */}
+                      {password.length > 0 && (
+                        <div className="px-1 pt-1">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">
+                              Security Strength
+                            </span>
+                            <span
+                              className={`text-[10px] font-black uppercase tracking-wider ${strength.color.replace("bg-", "text-")}`}
+                            >
+                              {strength.label}
+                            </span>
+                          </div>
+                          <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{
+                                width: `${(strength.score / 6) * 100 + 10}%`,
+                              }}
+                              className={`h-full ${strength.color} transition-all duration-500`}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">
