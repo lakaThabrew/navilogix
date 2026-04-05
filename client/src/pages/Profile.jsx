@@ -35,12 +35,15 @@ const Profile = () => {
         logger.info(`🔄 [PROFILE] Updating profile for ${email}`);
 
         try {
+            logger.info(`🔄 [PROFILE] Sending update request for ${email}${password ? " (with password change)" : ""}`);
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
             const { data } = await axios.put("http://localhost:5000/api/auth/profile", {
                 name,
                 email,
                 password
             }, config);
+
+            logger.info(`✅ [PROFILE] Update successful for ${email}`);
 
             // Update local storage with new info (including new token)
             localStorage.setItem("userInfo", JSON.stringify(data));

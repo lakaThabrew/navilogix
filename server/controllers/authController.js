@@ -121,9 +121,11 @@ export const processPayment = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         if (user) {
+            logger.info(`💳 [PAYMENT] Attempting payment processing for: ${user.email}`);
             user.paymentStatus = 'paid';
-            user.isPlanReserved = false; // Reset reservation if paid? Or leave it. Usually paid means they have it.
+            user.isPlanReserved = false; 
             await user.save();
+            logger.info(`✅ [PAYMENT] Payment successful and plan activated for: ${user.email}`);
             res.json({
                 _id: user._id,
                 name: user.name,
@@ -137,6 +139,7 @@ export const processPayment = async (req, res) => {
             res.status(404).json({ message: 'User not found' });
         }
     } catch (error) {
+        logger.error(`❌ [PAYMENT] Error: ${error.message}`);
         res.status(500).json({ message: error.message });
     }
 };
@@ -199,12 +202,16 @@ export const resetPassword = async (req, res) => {
     const hashedToken = crypto.createHash('sha256').update(token).digest('hex');
 
     try {
+        logger.info(`🛡️ [PASSWORD RESET] Attempting password reset with token`);
         const user = await User.findOne({
             resetPasswordToken: hashedToken,
             resetPasswordExpire: { $gt: Date.now() }
         });
 
-        if (!user) return res.status(400).json({ message: 'Invalid or expired token' });
+        if (!user) {
+            logger.info(`❌ [PASSWORD RESET] Invalid or expired token attempt`);
+            return res.status(400).json({ message: 'Invalid or expired token' });
+        }
 
         const salt = await bcrypt.genSalt(10);
         user.password = await bcrypt.hash(password, salt);
@@ -212,8 +219,10 @@ export const resetPassword = async (req, res) => {
         user.resetPasswordExpire = undefined;
 
         await user.save();
+        logger.info(`✅ [PASSWORD RESET] Password successfully updated for: ${user.email}`);
         res.json({ message: 'Password reset successful' });
     } catch (error) {
+        logger.error(`❌ [PASSWORD RESET] Error: ${error.message}`);
         res.status(500).json({ message: error.message });
     }
 };
@@ -267,10 +276,12 @@ export const updateUserProfile = async (req, res) => {
         const user = await User.findById(req.user._id);
 
         if (user) {
+            logger.info(`🔄 [PROFILE] Update request received for: ${user.email}`);
             user.name = req.body.name || user.name;
-            user.email = req.body.email || user.email; // Usually good to check if new email exists, but keeping simple
+            user.email = req.body.email || user.email; 
 
             if (req.body.password) {
+                logger.info(`🔑 [PROFILE] Password change requested for: ${user.email}`);
                 const salt = await bcrypt.genSalt(10);
                 user.password = await bcrypt.hash(req.body.password, salt);
             }

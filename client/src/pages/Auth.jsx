@@ -93,10 +93,12 @@ const Auth = () => {
 
     setIsLoading(true);
     try {
+      logger.info(`🔐 [AUTH] Attempting login for email: ${email}`);
       const { data } = await axios.post(
         "http://localhost:5000/api/auth/login",
         { email, password },
       );
+      logger.info(`✅ [AUTH] Login successful for: ${email}`);
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/dashboard");
     } catch (error) {
@@ -129,11 +131,13 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
+      logger.info(`📝 [AUTH] Attempting registration for: ${email} as ${role}`);
       if (role === "regular") {
         const pay = window.confirm(
           "Regular accounts come with premium features. Proceed to setup payment?",
         );
         if (!pay) {
+          logger.info(`🚫 [AUTH] User cancelled payment prompt for regular account: ${email}`);
           setIsLoading(false);
           return;
         }
@@ -143,6 +147,7 @@ const Auth = () => {
         "http://localhost:5000/api/auth/register",
         { name, email, password, role },
       );
+      logger.info(`✅ [AUTH] Registration successful: ${email}`);
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/dashboard");
     } catch (error) {
@@ -156,10 +161,12 @@ const Auth = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
+      logger.info(`📧 [AUTH] Requesting password reset token for: ${email}`);
       const { data } = await axios.post(
         "http://localhost:5000/api/auth/forgot-password",
         { email },
       );
+      logger.info(`✅ [AUTH] Reset token requested successfully for: ${email}`);
       alert("Reset token generated! Check your email for the token.");
       setMode("reset");
     } catch (err) {
@@ -183,10 +190,12 @@ const Auth = () => {
     }
     setIsLoading(true);
     try {
+      logger.info(`🛡️ [AUTH] Attempting password reset with token`);
       await axios.post("http://localhost:5000/api/auth/reset-password", {
         token: resetToken,
         password,
       });
+      logger.info(`✅ [AUTH] Password reset successful`);
       alert("Password reset successful! Please login.");
       setMode("login");
     } catch (err) {

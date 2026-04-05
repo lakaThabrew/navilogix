@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+import logger from "../utils/logger";
 
 const Checkout = () => {
     const [searchParams] = useSearchParams();
@@ -43,6 +44,7 @@ const Checkout = () => {
     };
 
     const handlePlanSelect = (plan) => {
+        logger.info(`🛒 [CHECKOUT] User selected plan: ${plan}`);
         setSelectedPlan(plan);
     };
 
@@ -54,6 +56,7 @@ const Checkout = () => {
         }
 
         try {
+            logger.info(`💳 [CHECKOUT] Attempting to reserve plan: ${selectedPlan} for user: ${user.email}`);
             const config = {
                 headers: { Authorization: `Bearer ${user.token}` },
             };
@@ -63,6 +66,7 @@ const Checkout = () => {
                 config
             );
             
+            logger.info(`✅ [CHECKOUT] Plan ${selectedPlan} successfully reserved for user: ${user.email}`);
             // Update local storage with new user info
             localStorage.setItem("userInfo", JSON.stringify({ ...user, ...data }));
             setCheckoutComplete(true);
