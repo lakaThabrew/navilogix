@@ -31,6 +31,8 @@ const userSchema = new mongoose.Schema({
     },
     branchId: { type: mongoose.Schema.Types.ObjectId, ref: 'Branch', default: null },
     paymentStatus: { type: String, enum: ['paid', 'unpaid'], default: 'unpaid' },
+    selectedPlan: { type: String, enum: ['free', 'plus', 'pro'], default: 'free' },
+    isPlanReserved: { type: Boolean, default: false },
     resetPasswordToken: { type: String },
     resetPasswordExpire: { type: Date },
     createdAt: { type: Date, default: Date.now }

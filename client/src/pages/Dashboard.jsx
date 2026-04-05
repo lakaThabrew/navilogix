@@ -376,34 +376,64 @@ const Dashboard = () => {
       </h1>
 
       {showPaymentModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm">
-          <div className="bg-white p-8 rounded-2xl shadow-2xl max-w-md text-center">
-            <h2 className="text-2xl font-bold text-primary mb-4">
-              🔓 Unlock Premium Features
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm p-4">
+          <div className="bg-white p-8 rounded-[32px] shadow-2xl max-w-2xl w-full text-center relative overflow-hidden">
+             {/* Decorative Background */}
+            <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
+            
+            <h2 className="text-3xl font-bold text-primary mb-2">
+              🔓 Unlock Premium Power
             </h2>
-            <p className="text-gray-600 mb-6">
-              Upgrade to a Regular User account to access your personalized
-              Dashboard, Detailed Reports, and Parcel History.
+            <p className="text-gray-600 mb-8 max-w-md mx-auto text-xs">
+              Choose the package that fits your logistics needs and experience the next level of tracking.
             </p>
-            <div className="bg-blue-50 p-4 rounded-xl mb-6">
-              <p className="text-3xl font-bold text-blue-600">
-                $9.99
-                <span className="text-sm text-gray-400 font-normal">
-                  /month
-                </span>
-              </p>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              {/* Plus Option */}
+              <div 
+                onClick={() => navigate("/checkout?plan=plus")}
+                className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50/50 transition-all cursor-pointer text-left relative overflow-hidden"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl">🚀</div>
+                  <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">Plus</span>
+                </div>
+                <h3 className="font-bold text-slate-900 text-lg mb-1">Plus Plan</h3>
+                <p className="text-2xl font-black text-slate-900">$9.99<span className="text-sm font-normal text-slate-400">/mo</span></p>
+                <ul className="mt-4 space-y-2 text-xs text-slate-500">
+                  <li className="flex items-center gap-2">✓ Real-time Live Tracking</li>
+                  <li className="flex items-center gap-2">✓ Automated Reports</li>
+                  <li className="flex items-center gap-2">✓ Priority Customer Support</li>
+                </ul>
+                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600">→</div>
+              </div>
+
+              {/* Pro Option */}
+              <div 
+                onClick={() => navigate("/checkout?plan=pro")}
+                className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer text-left relative overflow-hidden"
+              >
+                <div className="flex justify-between items-start mb-4">
+                  <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl">💎</div>
+                  <span className="text-xs font-bold text-purple-600 uppercase tracking-wider">Pro</span>
+                </div>
+                <h3 className="font-bold text-slate-900 text-lg mb-1">Pro Plan</h3>
+                <p className="text-2xl font-black text-slate-900">$29.99<span className="text-sm font-normal text-slate-400">/mo</span></p>
+                <ul className="mt-4 space-y-2 text-xs text-slate-500">
+                  <li className="flex items-center gap-2">✓ AI Route Optimization</li>
+                  <li className="flex items-center gap-2">✓ Custom Logistics API</li>
+                  <li className="flex items-center gap-2">✓ Discount on Services</li>
+
+                </ul>
+                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-purple-600">→</div>
+              </div>
             </div>
-            <button
-              onClick={handlePayment}
-              className="w-full bg-gradient-to-r from-secondary to-red-600 text-white font-bold py-3 rounded-xl shadow-lg hover:scale-105 transition-transform"
-            >
-              Pay Now & Unlock
-            </button>
+
             <button
               onClick={() => navigate("/")}
-              className="mt-4 text-gray-400 hover:text-gray-600 text-sm"
+              className="text-slate-400 hover:text-slate-600 text-sm font-medium transition-colors"
             >
-              Go Back Home
+              Maybe later, go back home
             </button>
           </div>
         </div>

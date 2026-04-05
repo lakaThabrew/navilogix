@@ -8,150 +8,150 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 1.1 Navigation Bar (`Navbar.jsx`)
 
-- [✓] **Logo**: Clicks redirect to Home page with smooth hover animation
-- [✓] **Desktop Menu**: All navigation links work correctly
-- [✓] **Mobile Menu**:
-  - [✓] Hamburger menu icon toggles open/close properly
-  - [✓] Mobile menu slides in/out with animation
-  - [✓] Clicking any link closes the mobile menu
-- [✓] **Role-Based Navigation**:
-  - [✓] Guest users see: About, Services, Contact, Login, Register
-  - [✓] Regular users see: About, Services, Contact, Dashboard, Profile
-  - [✓] Admin/Staff see: Dashboard, Profile (+ Inbox/Reports for main admin, Branch Reports for branch head)
-  - [✓] About, Services, Contact hidden for admin/delivery/branch head roles
-- [✓] **Login/Register Buttons** (when logged out):
-  - [✓] Login button navigates to `/login`
-  - [✓] Register button navigates to `/register` with hover animations
-- [✓] **Logout Button** (when logged in):
-  - [✓] Clears localStorage and redirects to `/login`
-  - [✓] Gradient button with proper hover effects
+- [x] **Logo**: Clicks redirect to Home page with smooth hover animation
+- [x] **Desktop Menu**: All navigation links work correctly
+- [x] **Mobile Menu**:
+  - [x] Hamburger menu icon toggles open/close properly
+  - [x] Mobile menu slides in/out with animation
+  - [x] Clicking any link closes the mobile menu
+- [x] **Role-Based Navigation**:
+  - [x] Guest users see: About, Services, Contact, Login, Register
+  - [x] Regular users see: About, Services, Contact, Dashboard, Profile
+  - [x] Admin/Staff see: Dashboard, Profile (+ Inbox/Reports for main admin, Branch Reports for branch head)
+  - [x] About, Services, Contact hidden for admin/delivery/branch head roles
+- [x] **Login/Register Buttons** (when logged out):
+  - [x] Login button navigates to `/login`
+  - [x] Register button navigates to `/register` with hover animations
+- [x] **Logout Button** (when logged in):
+  - [x] Clears localStorage and redirects to `/login`
+  - [x] Gradient button with proper hover effects
 
 ### 1.2 Home Page (`Home.jsx`)
 
-- [✓] Hero section animations load smoothly
-- [✓] Track & Trace Search Bar:
-  - [✓] Accepts tracking ID input
-  - [✓] Clicking "Track" navigates to tracking page
-  - [✓] Shows validation for empty input
-- [✓] "Get Started" button navigates to register page
-- [✓] All floating card animations work properly
-- [✓] Background gradient orbs animate smoothly
+- [x] Hero section animations load smoothly
+- [x] Track & Trace Search Bar:
+  - [x] Accepts tracking ID input
+  - [x] Clicking "Track" navigates to tracking page
+  - [x] Shows validation for empty input
+- [x] "Get Started" button navigates to register page
+- [x] All floating card animations work properly
+- [x] Background gradient orbs animate smoothly
 
 ### 1.3 About Page (`About.jsx`)
 
-- [✓] Leaflet Map loads correctly without broken icons
-- [✓] Branch markers display on map with proper pins
-- [✓] Clicking branch markers shows popup with branch details:
-  - [✓] Branch name
-  - [✓] Branch phone Number
-  - [✓] Service Areas
-- [✓] "From Idea to Global Impact" section displays with proper styling
-- [✓] All team/mission content is visible
-- [✓] Mobile responsive layout works correctly
+- [x] Leaflet Map loads correctly without broken icons
+- [x] Branch markers display on map with proper pins
+- [x] Clicking branch markers shows popup with branch details:
+  - [x] Branch name
+  - [x] Branch phone Number
+  - [x] Service Areas
+- [x] "From Idea to Global Impact" section displays with proper styling
+- [x] All team/mission content is visible
+- [x] Mobile responsive layout works correctly
 
 ### 1.4 Services Page (`Services.jsx`)
 
-- [✓] Three pricing tiers display correctly (Free, Plus, Pro)
-- [✓] Each package shows:
-  - [✓] Package name and pricing
-  - [✓] Feature list with checkmarks
-  - [✓] Proper hover animations on cards
-- [✓] **Action Buttons**:
-  - [✓] Free Package → "Get Started" navigates to `/register`
-  - [✓] Plus Package → "Buy Plus" navigates to `/dashboard`
-  - [✓] Pro Package → "Contact Sales" navigates to `/contact`
-- [✓] Mobile responsive grid layout works
+- [x] Three pricing tiers display correctly (Free, Plus, Pro)
+- [x] Each package shows:
+  - [x] Package name and pricing
+  - [x] Feature list with checkmarks
+  - [x] Proper hover animations on cards
+- [x] **Action Buttons**:
+  - [x] Free Package → "Get Started" navigates to `/register`
+  - [x] Plus Package → "Buy Plus" navigates to `/dashboard`
+  - [x] Pro Package → "Contact Sales" navigates to `/contact`
+- [x] Mobile responsive grid layout works
 
 ### 1.5 Contact Page (`Contact.jsx`)
 
-- [✓] **Contact Form (Formspree Integration)**:
-  - [✓] Form validates all required fields (Name, Email, Subject, Message)
-  - [✓] Email field validates proper email format
-  - [✓] Submit button shows loading state "Sending..."
-  - [✓] Success message displays after submission
-  - [✓] Form clears after successful submission
-  - [✓] Formspree API key is configured correctly
-  - [✓] ValidationError components display properly for errors
-- [✓] **Contact Information Cards** display:
-  - [✓] Headquarters address (with line break)
-  - [✓] Phone numbers
-  - [✓] Email support address
-  - [✓] Business hours
-  - [✓] All cards have hover animations
-- [✓] **Premium Support Section**:
-  - [✓] "Consult with AI" button triggers chatbot to open
-  - [✓] Background animations and gradients work
-- [✓] **RadialShareMenu Component**:
-  - [✓] Auto-opens after 1 second on page load
-  - [✓] Toggle button opens/closes radial menu
+- [x] **Contact Form (Formspree Integration)**:
+  - [x] Form validates all required fields (Name, Email, Subject, Message)
+  - [x] Email field validates proper email format
+  - [x] Submit button shows loading state "Sending..."
+  - [x] Success message displays after submission
+  - [x] Form clears after successful submission
+  - [x] Formspree API key is configured correctly
+  - [x] ValidationError components display properly for errors
+- [x] **Contact Information Cards** display:
+  - [x] Headquarters address (with line break)
+  - [x] Phone numbers
+  - [x] Email support address
+  - [x] Business hours
+  - [x] All cards have hover animations
+- [x] **Premium Support Section**:
+  - [x] "Consult with AI" button triggers chatbot to open
+  - [x] Background animations and gradients work
+- [x] **RadialShareMenu Component**:
+  - [x] Auto-opens after 1 second on page load
+  - [x] Toggle button opens/closes radial menu
   - [ ] All 7 social icons display correctly:
-    - [✓] WhatsApp (0°) - Opens whatsapp link
-    - [✓] Facebook (51.4°) - Opens facebook link
-    - [✓] Email (102.8°) - Opens mailto link
-    - [✓] Instagram (154.2°) - Opens instagram link
-    - [✓] Web (205.6°) - Opens navilogix.com
-    - [✓] GitHub (257°) - Opens github link
-    - [✓] Twitter (308.4°) - Opens twitter link
-  - [✓] Each icon has correct color and hover tooltip
-  - [✓] Clicking icons opens correct external links
-  - [✓] Mobile responsiveness (smaller radius on mobile)
+    - [x] WhatsApp (0°) - Opens whatsapp link
+    - [x] Facebook (51.4°) - Opens facebook link
+    - [x] Email (102.8°) - Opens mailto link
+    - [x] Instagram (154.2°) - Opens instagram link
+    - [x] Web (205.6°) - Opens navilogix.com
+    - [x] GitHub (257°) - Opens github link
+    - [x] Twitter (308.4°) - Opens twitter link
+  - [x] Each icon has correct color and hover tooltip
+  - [x] Clicking icons opens correct external links
+  - [x] Mobile responsiveness (smaller radius on mobile)
 
 ### 1.6 Tracking Page (`Track.jsx` - `/track/:id`)
 
-- [✓] Entering valid Tracking ID shows:
-  - [✓] Parcel status with color-coded badge
-  - [✓] Sender information (name, address, contact)
-  - [✓] Receiver information (name, address, contact)
-  - [✓] Parcel details (weight, type, COD amount)
-  - [✓] Complete timeline/history with status updates
-  - [✓] Branch information if assigned
-  - [✓] Delivery date if applicable
-- [✓] Entering invalid Tracking ID shows:
-  - [✓] "Parcel not found" error message
-  - [✓] User-friendly error styling
-- [✓] Status badge colors correct:
-  - [✓] Delivered = green
+- [x] Entering valid Tracking ID shows:
+  - [x] Parcel status with color-coded badge
+  - [x] Sender information (name, address, contact)
+  - [x] Receiver information (name, address, contact)
+  - [x] Parcel details (weight, type, COD amount)
+  - [x] Complete timeline/history with status updates
+  - [x] Branch information if assigned
+  - [x] Delivery date if applicable
+- [x] Entering invalid Tracking ID shows:
+  - [x] "Parcel not found" error message
+  - [x] User-friendly error styling
+- [x] Status badge colors correct:
+  - [x] Delivered = green
   - [ ] Returned = red
-  - [✓] Out for Delivery = orange
-  - [✓] In the branch = blue
-  - [✓] Pending = Yellow
-- [✓] Mobile responsive layout
-- [✓] Timeline animations work smoothly
+  - [x] Out for Delivery = orange
+  - [x] In the branch = blue
+  - [x] Pending = Yellow
+- [x] Mobile responsive layout
+- [x] Timeline animations work smoothly
 
 ### 1.7 AI Chatbot Component (`ChatBot.jsx`)
 
-- [✓] **Floating Chat Button**:
-  - [✓] Visible on all pages at bottom right
-  - [✓] Opens/closes chat window on click
-  - [✓] Proper z-index (above other elements)
+- [x] **Floating Chat Button**:
+  - [x] Visible on all pages at bottom right
+  - [x] Opens/closes chat window on click
+  - [x] Proper z-index (above other elements)
 - [ ] **Chat Window**:
-  - [✓] Displays welcome message from bot
-  - [✓] User messages align right (blue background)
-  - [✓] Bot messages align left (white background)
-  - [✓] "..." loading indicator shows while waiting for response
-  - [✓] Input field accepts text
-  - [✓] Enter key sends message
-  - [✓] Send button sends message
-  - [✓] auto Scroll to bottom on new messages
+  - [x] Displays welcome message from bot
+  - [x] User messages align right (blue background)
+  - [x] Bot messages align left (white background)
+  - [x] "..." loading indicator shows while waiting for response
+  - [x] Input field accepts text
+  - [x] Enter key sends message
+  - [x] Send button sends message
+  - [x] auto Scroll to bottom on new messages
 - [ ] **AI Integration**:
-  - [✓] Sends message to `/api/ai/chat` endpoint
-  - [✓] Receives response from Gemini AI
-  - [✓] Shows error message if API fails
-  - [✓] Chatbot can answer parcel-related queries
-- [✓] **Event Listener**:
-  - [✓] Works from Contact page "Consult with AI" button
-- [✓] Mobile responsive (full width minus padding)
+  - [x] Sends message to `/api/ai/chat` endpoint
+  - [x] Receives response from Gemini AI
+  - [x] Shows error message if API fails
+  - [x] Chatbot can answer parcel-related queries
+- [x] **Event Listener**:
+  - [x] Works from Contact page "Consult with AI" button
+- [x] Mobile responsive (full width minus padding)
 
 ### 1.8 Footer Component (`Footer.jsx`)
 
-- [✓] Logo displays correctly and connect this to Home Page
-- [✓] Social media icons (Facebook, Twitter, LinkedIn) work with hover effects
-- [✓] Social meida icons connects to external links
-- [✓] Quick Links section shows all navigation links
-- [✓] Contact information displays properly
-- [✓] Copyright year is current
-- [✓] All links navigate correctly
-- [✓] Mobile responsive columns
+- [x] Logo displays correctly and connect this to Home Page
+- [x] Social media icons (Facebook, Twitter, LinkedIn) work with hover effects
+- [x] Social meida icons connects to external links
+- [x] Quick Links section shows all navigation links
+- [x] Contact information displays properly
+- [x] Copyright year is current
+- [x] All links navigate correctly
+- [x] Mobile responsive columns
 
 ---
 ---
@@ -162,51 +162,55 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 #### **Mode: Login (`/login`)**
 
-- [ ] **Visual Panel** (left side on desktop):
-  - [ ] "Welcome Back!" heading with gradient text
-  - [ ] Description text displays correctly
-  - [ ] Lock emoji (🔐) displays
-  - [ ] Background animations work
-  - [ ] Pattern overlay visible
-- [ ] **Form Panel** (right side):
-  - [ ] Logo displays and has hover scale effect
-  - [ ] Toggle switch "LOGIN" is highlighted
-  - [ ] Email field:
-    - [ ] Required field validation
-    - [ ] Email format validation
-    - [ ] Placeholder text shows
-  - [ ] Password field:
-    - [ ] Required field validation
-    - [ ] Show/hide password toggle (Eye icon) works
-    - [ ] Password masks as bullets when hidden
-  - [ ] "Forgot Password?" link navigates to `/forgot-password`
-  - [ ] "SIGN IN" button:
-    - [ ] Shows "Signing in..." when loading
-    - [ ] Disables during submission
-    - [ ] Successful login stores token in localStorage
-    - [ ] Redirects to `/dashboard` after success
-    - [ ] Shows error alert for invalid credentials
+- [x] **Visual Panel** (left side on desktop):
+  - [x] "Welcome Back!" heading with gradient text
+  - [x] Description text displays correctly
+  - [x] Lock emoji (🔐) displays
+  - [x] Background animations work
+  - [x] Pattern overlay visible
+- [x] **Form Panel** (right side):
+  - [x] Logo displays and has hover scale effect
+  - [x] Toggle switch "LOGIN" is highlighted
+  - [x] Email field:
+    - [x] Required field validation
+    - [x] Email format validation
+    - [x] Placeholder text shows
+  - [x] Password field:
+    - [x] Required field validation
+    - [x] Show/hide password toggle (Eye icon) works
+    - [x] Password masks as bullets when hidden
+  - [x] "Forgot Password?" link navigates to `/forgot-password`
+  - [x] "SIGN IN" button:
+    - [x] Shows "Signing in..." when loading
+    - [x] Disables during submission
+    - [x] Successful login stores token in localStorage
+    - [x] Redirects to `/dashboard` after success
+    - [x] Shows error alert for invalid credentials
 
 #### **Mode: Register (`/register`)**
 
-- [ ] **Visual Panel**:
-  - [ ] "Join the Fleet" heading displays
-  - [ ] Rocket emoji (🚀) displays
-  - [ ] Description text shows
-- [ ] **Toggle Switch**: "REGISTER" is highlighted
+- [x] **Visual Panel**:
+  - [x] "Join the Fleet" heading displays
+  - [x] Rocket emoji (🚀) displays
+  - [x] Description text shows
+- [x] **Toggle Switch**: "REGISTER" is highlighted
 - [ ] **Form Fields**:
-  - [ ] Full Name field (required)
-  - [ ] Email field (required, email validation)
-  - [ ] Password field with show/hide toggle
-  - [ ] **Password Strength Meter**:
-    - [ ] Shows when typing password
-    - [ ] Displays score label (Empty/Weak/Fair/Good/Strong)
-    - [ ] Progress bar fills based on strength
-    - [ ] Colors change (gray/red/orange/blue/green)
-    - [ ] Criteria: length, uppercase, numbers, special chars
+  - [x] Full Name field (required)
+  - [x] Email field (required, email validation)
+  - [x] Password field with show/hide toggle
+  - [x] **Password Strength Meter**:
+    - [x] Shows when typing password
+    - [x] Displays score label (Empty/Weak/Fair/Good/Strong, Excellent)
+    - [x] Progress bar fills based on strength
+    - [x] Colors change (gray/red/orange/blue/green)
+    - [x] Criteria: length, uppercase, numbers, special chars
 - [ ] **Payment Prompt** (for regular users):
-  - [ ] Confirms "Proceed to setup payment?"
-  - [ ] Canceling stops registration
+  - [x] Confirms "Proceed to setup payment?"
+  - [x] Clicking "Yes" redirects to checkout page
+  - [x] Clicking "No" stops registration
+  - [x] store the reversation in database
+  - [x] Canceling stops registration
+  - [x] Check the reservation staus in profile
 - [ ] **Create Account Button**:
   - [ ] Shows "Creating..." when loading
   - [ ] Creates user account successfully

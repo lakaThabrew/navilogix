@@ -90,11 +90,39 @@ export const addBranch = async (req, res) => {
     }
 };
 
+export const reservePackage = async (req, res) => {
+    const { plan } = req.body;
+    try {
+        const user = await User.findById(req.user._id);
+        if (user) {
+            user.selectedPlan = plan;
+            user.isPlanReserved = true;
+            await user.save();
+            logger.info(`📝 [RESERVE] User ${user.email} reserved plan: ${plan}`);
+            res.json({
+                _id: user._id,
+                name: user.name,
+                email: user.email,
+                role: user.role,
+                paymentStatus: user.paymentStatus,
+                selectedPlan: user.selectedPlan,
+                isPlanReserved: user.isPlanReserved,
+                token: generateToken(user._id)
+            });
+        } else {
+            res.status(404).json({ message: 'User not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 export const processPayment = async (req, res) => {
     try {
         const user = await User.findById(req.user._id);
         if (user) {
             user.paymentStatus = 'paid';
+            user.isPlanReserved = false; // Reset reservation if paid? Or leave it. Usually paid means they have it.
             await user.save();
             res.json({
                 _id: user._id,
@@ -102,6 +130,7 @@ export const processPayment = async (req, res) => {
                 email: user.email,
                 role: user.role,
                 paymentStatus: user.paymentStatus,
+                selectedPlan: user.selectedPlan,
                 token: generateToken(user._id)
             });
         } else {
