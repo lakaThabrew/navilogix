@@ -13,6 +13,7 @@ import ChatBot from "./components/ChatBot";
 import Footer from "./components/Footer";
 import Contact from "./pages/Contact";
 import Profile from "./pages/Profile";
+import Checkout from "./pages/Checkout";
 import "./index.css";
 import logger from "./utils/logger";
 
@@ -37,6 +38,7 @@ function App() {
             <Route path="/reports" element={<AdminReports />} />
             <Route path="/branch-reports" element={<BranchReports />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/checkout" element={<Checkout />} />
           </Routes>
         </main>
         <ChatBot />

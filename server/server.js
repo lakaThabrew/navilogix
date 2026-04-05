@@ -7,6 +7,7 @@ import parcelRoutes from './routes/parcelRoutes.js';
 import messageRoutes from './routes/messageRoutes.js';
 import aiRoutes from './routes/aiRoutes.js';
 import Branch from './models/Branch.js';
+import mongoSanitize from 'express-mongo-sanitize';
 import logger, { frontendLogger } from './utils/logger.js';
 
 dotenv.config();
@@ -21,6 +22,10 @@ logger.info('✓ CORS enabled');
 
 app.use(express.json());
 logger.info('✓ JSON parser enabled');
+
+// Data sanitization against NoSQL query injection
+app.use(mongoSanitize());
+logger.info('✓ NoSQL injection protection enabled');
 
 // Request logging middleware
 app.use((req, res, next) => {
@@ -65,7 +70,9 @@ app.post('/api/logs/frontend', (req, res) => {
     res.status(200).send('Log received');
 });
 
+
 const PORT = process.env.PORT || 5000;
+
 
 app.listen(PORT, () => {
     logger.info(`✓ Server running on port ${PORT}`);

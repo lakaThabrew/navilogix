@@ -8,150 +8,150 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 1.1 Navigation Bar (`Navbar.jsx`)
 
-- [✓] **Logo**: Clicks redirect to Home page with smooth hover animation
-- [✓] **Desktop Menu**: All navigation links work correctly
-- [✓] **Mobile Menu**:
-  - [✓] Hamburger menu icon toggles open/close properly
-  - [✓] Mobile menu slides in/out with animation
-  - [✓] Clicking any link closes the mobile menu
-- [✓] **Role-Based Navigation**:
-  - [✓] Guest users see: About, Services, Contact, Login, Register
-  - [✓] Regular users see: About, Services, Contact, Dashboard, Profile
-  - [✓] Admin/Staff see: Dashboard, Profile (+ Inbox/Reports for main admin, Branch Reports for branch head)
-  - [✓] About, Services, Contact hidden for admin/delivery/branch head roles
-- [✓] **Login/Register Buttons** (when logged out):
-  - [✓] Login button navigates to `/login`
-  - [✓] Register button navigates to `/register` with hover animations
-- [✓] **Logout Button** (when logged in):
-  - [✓] Clears localStorage and redirects to `/login`
-  - [✓] Gradient button with proper hover effects
+- [x] **Logo**: Clicks redirect to Home page with smooth hover animation
+- [x] **Desktop Menu**: All navigation links work correctly
+- [x] **Mobile Menu**:
+  - [x] Hamburger menu icon toggles open/close properly
+  - [x] Mobile menu slides in/out with animation
+  - [x] Clicking any link closes the mobile menu
+- [x] **Role-Based Navigation**:
+  - [x] Guest users see: About, Services, Contact, Login, Register
+  - [x] Regular users see: About, Services, Contact, Dashboard, Profile
+  - [x] Admin/Staff see: Dashboard, Profile (+ Inbox/Reports for main admin, Branch Reports for branch head)
+  - [x] About, Services, Contact hidden for admin/delivery/branch head roles
+- [x] **Login/Register Buttons** (when logged out):
+  - [x] Login button navigates to `/login`
+  - [x] Register button navigates to `/register` with hover animations
+- [x] **Logout Button** (when logged in):
+  - [x] Clears localStorage and redirects to `/login`
+  - [x] Gradient button with proper hover effects
 
 ### 1.2 Home Page (`Home.jsx`)
 
-- [✓] Hero section animations load smoothly
-- [✓] Track & Trace Search Bar:
-  - [✓] Accepts tracking ID input
-  - [✓] Clicking "Track" navigates to tracking page
-  - [✓] Shows validation for empty input
-- [✓] "Get Started" button navigates to register page
-- [✓] All floating card animations work properly
-- [✓] Background gradient orbs animate smoothly
+- [x] Hero section animations load smoothly
+- [x] Track & Trace Search Bar:
+  - [x] Accepts tracking ID input
+  - [x] Clicking "Track" navigates to tracking page
+  - [x] Shows validation for empty input
+- [x] "Get Started" button navigates to register page
+- [x] All floating card animations work properly
+- [x] Background gradient orbs animate smoothly
 
 ### 1.3 About Page (`About.jsx`)
 
-- [✓] Leaflet Map loads correctly without broken icons
-- [✓] Branch markers display on map with proper pins
-- [✓] Clicking branch markers shows popup with branch details:
-  - [✓] Branch name
-  - [✓] Branch phone Number
-  - [✓] Service Areas
-- [✓] "From Idea to Global Impact" section displays with proper styling
-- [✓] All team/mission content is visible
-- [✓] Mobile responsive layout works correctly
+- [x] Leaflet Map loads correctly without broken icons
+- [x] Branch markers display on map with proper pins
+- [x] Clicking branch markers shows popup with branch details:
+  - [x] Branch name
+  - [x] Branch phone Number
+  - [x] Service Areas
+- [x] "From Idea to Global Impact" section displays with proper styling
+- [x] All team/mission content is visible
+- [x] Mobile responsive layout works correctly
 
 ### 1.4 Services Page (`Services.jsx`)
 
-- [✓] Three pricing tiers display correctly (Free, Plus, Pro)
-- [✓] Each package shows:
-  - [✓] Package name and pricing
-  - [✓] Feature list with checkmarks
-  - [✓] Proper hover animations on cards
-- [✓] **Action Buttons**:
-  - [✓] Free Package → "Get Started" navigates to `/register`
-  - [✓] Plus Package → "Buy Plus" navigates to `/dashboard`
-  - [✓] Pro Package → "Contact Sales" navigates to `/contact`
-- [✓] Mobile responsive grid layout works
+- [x] Three pricing tiers display correctly (Free, Plus, Pro)
+- [x] Each package shows:
+  - [x] Package name and pricing
+  - [x] Feature list with checkmarks
+  - [x] Proper hover animations on cards
+- [x] **Action Buttons**:
+  - [x] Free Package → "Get Started" navigates to `/register`
+  - [x] Plus Package → "Buy Plus" navigates to `/dashboard`
+  - [x] Pro Package → "Contact Sales" navigates to `/contact`
+- [x] Mobile responsive grid layout works
 
 ### 1.5 Contact Page (`Contact.jsx`)
 
-- [✓] **Contact Form (Formspree Integration)**:
-  - [✓] Form validates all required fields (Name, Email, Subject, Message)
-  - [✓] Email field validates proper email format
-  - [✓] Submit button shows loading state "Sending..."
-  - [✓] Success message displays after submission
-  - [✓] Form clears after successful submission
-  - [✓] Formspree API key is configured correctly
-  - [✓] ValidationError components display properly for errors
-- [✓] **Contact Information Cards** display:
-  - [✓] Headquarters address (with line break)
-  - [✓] Phone numbers
-  - [✓] Email support address
-  - [✓] Business hours
-  - [✓] All cards have hover animations
-- [✓] **Premium Support Section**:
-  - [✓] "Consult with AI" button triggers chatbot to open
-  - [✓] Background animations and gradients work
-- [✓] **RadialShareMenu Component**:
-  - [✓] Auto-opens after 1 second on page load
-  - [✓] Toggle button opens/closes radial menu
+- [x] **Contact Form (Formspree Integration)**:
+  - [x] Form validates all required fields (Name, Email, Subject, Message)
+  - [x] Email field validates proper email format
+  - [x] Submit button shows loading state "Sending..."
+  - [x] Success message displays after submission
+  - [x] Form clears after successful submission
+  - [x] Formspree API key is configured correctly
+  - [x] ValidationError components display properly for errors
+- [x] **Contact Information Cards** display:
+  - [x] Headquarters address (with line break)
+  - [x] Phone numbers
+  - [x] Email support address
+  - [x] Business hours
+  - [x] All cards have hover animations
+- [x] **Premium Support Section**:
+  - [x] "Consult with AI" button triggers chatbot to open
+  - [x] Background animations and gradients work
+- [x] **RadialShareMenu Component**:
+  - [x] Auto-opens after 1 second on page load
+  - [x] Toggle button opens/closes radial menu
   - [ ] All 7 social icons display correctly:
-    - [✓] WhatsApp (0°) - Opens whatsapp link
-    - [✓] Facebook (51.4°) - Opens facebook link
-    - [✓] Email (102.8°) - Opens mailto link
-    - [✓] Instagram (154.2°) - Opens instagram link
-    - [✓] Web (205.6°) - Opens navilogix.com
-    - [✓] GitHub (257°) - Opens github link
-    - [✓] Twitter (308.4°) - Opens twitter link
-  - [✓] Each icon has correct color and hover tooltip
-  - [✓] Clicking icons opens correct external links
-  - [✓] Mobile responsiveness (smaller radius on mobile)
+    - [x] WhatsApp (0°) - Opens whatsapp link
+    - [x] Facebook (51.4°) - Opens facebook link
+    - [x] Email (102.8°) - Opens mailto link
+    - [x] Instagram (154.2°) - Opens instagram link
+    - [x] Web (205.6°) - Opens navilogix.com
+    - [x] GitHub (257°) - Opens github link
+    - [x] Twitter (308.4°) - Opens twitter link
+  - [x] Each icon has correct color and hover tooltip
+  - [x] Clicking icons opens correct external links
+  - [x] Mobile responsiveness (smaller radius on mobile)
 
 ### 1.6 Tracking Page (`Track.jsx` - `/track/:id`)
 
-- [✓] Entering valid Tracking ID shows:
-  - [✓] Parcel status with color-coded badge
-  - [✓] Sender information (name, address, contact)
-  - [✓] Receiver information (name, address, contact)
-  - [✓] Parcel details (weight, type, COD amount)
-  - [✓] Complete timeline/history with status updates
-  - [✓] Branch information if assigned
-  - [✓] Delivery date if applicable
-- [✓] Entering invalid Tracking ID shows:
-  - [✓] "Parcel not found" error message
-  - [✓] User-friendly error styling
-- [✓] Status badge colors correct:
-  - [✓] Delivered = green
+- [x] Entering valid Tracking ID shows:
+  - [x] Parcel status with color-coded badge
+  - [x] Sender information (name, address, contact)
+  - [x] Receiver information (name, address, contact)
+  - [x] Parcel details (weight, type, COD amount)
+  - [x] Complete timeline/history with status updates
+  - [x] Branch information if assigned
+  - [x] Delivery date if applicable
+- [x] Entering invalid Tracking ID shows:
+  - [x] "Parcel not found" error message
+  - [x] User-friendly error styling
+- [x] Status badge colors correct:
+  - [x] Delivered = green
   - [ ] Returned = red
-  - [✓] Out for Delivery = orange
-  - [✓] In the branch = blue
-  - [✓] Pending = Yellow
-- [✓] Mobile responsive layout
-- [✓] Timeline animations work smoothly
+  - [x] Out for Delivery = orange
+  - [x] In the branch = blue
+  - [x] Pending = Yellow
+- [x] Mobile responsive layout
+- [x] Timeline animations work smoothly
 
 ### 1.7 AI Chatbot Component (`ChatBot.jsx`)
 
-- [✓] **Floating Chat Button**:
-  - [✓] Visible on all pages at bottom right
-  - [✓] Opens/closes chat window on click
-  - [✓] Proper z-index (above other elements)
+- [x] **Floating Chat Button**:
+  - [x] Visible on all pages at bottom right
+  - [x] Opens/closes chat window on click
+  - [x] Proper z-index (above other elements)
 - [ ] **Chat Window**:
-  - [✓] Displays welcome message from bot
-  - [✓] User messages align right (blue background)
-  - [✓] Bot messages align left (white background)
-  - [✓] "..." loading indicator shows while waiting for response
-  - [✓] Input field accepts text
-  - [✓] Enter key sends message
-  - [✓] Send button sends message
-  - [✓] auto Scroll to bottom on new messages
+  - [x] Displays welcome message from bot
+  - [x] User messages align right (blue background)
+  - [x] Bot messages align left (white background)
+  - [x] "..." loading indicator shows while waiting for response
+  - [x] Input field accepts text
+  - [x] Enter key sends message
+  - [x] Send button sends message
+  - [x] auto Scroll to bottom on new messages
 - [ ] **AI Integration**:
-  - [✓] Sends message to `/api/ai/chat` endpoint
-  - [✓] Receives response from Gemini AI
-  - [✓] Shows error message if API fails
-  - [✓] Chatbot can answer parcel-related queries
-- [✓] **Event Listener**:
-  - [✓] Works from Contact page "Consult with AI" button
-- [✓] Mobile responsive (full width minus padding)
+  - [x] Sends message to `/api/ai/chat` endpoint
+  - [x] Receives response from Gemini AI
+  - [x] Shows error message if API fails
+  - [x] Chatbot can answer parcel-related queries
+- [x] **Event Listener**:
+  - [x] Works from Contact page "Consult with AI" button
+- [x] Mobile responsive (full width minus padding)
 
 ### 1.8 Footer Component (`Footer.jsx`)
 
-- [✓] Logo displays correctly and connect this to Home Page
-- [✓] Social media icons (Facebook, Twitter, LinkedIn) work with hover effects
-- [✓] Social meida icons connects to external links
-- [✓] Quick Links section shows all navigation links
-- [✓] Contact information displays properly
-- [✓] Copyright year is current
-- [✓] All links navigate correctly
-- [✓] Mobile responsive columns
+- [x] Logo displays correctly and connect this to Home Page
+- [x] Social media icons (Facebook, Twitter, LinkedIn) work with hover effects
+- [x] Social meida icons connects to external links
+- [x] Quick Links section shows all navigation links
+- [x] Contact information displays properly
+- [x] Copyright year is current
+- [x] All links navigate correctly
+- [x] Mobile responsive columns
 
 ---
 ---
@@ -162,129 +162,158 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 #### **Mode: Login (`/login`)**
 
-- [ ] **Visual Panel** (left side on desktop):
-  - [ ] "Welcome Back!" heading with gradient text
-  - [ ] Description text displays correctly
-  - [ ] Lock emoji (🔐) displays
-  - [ ] Background animations work
-  - [ ] Pattern overlay visible
-- [ ] **Form Panel** (right side):
-  - [ ] Logo displays and has hover scale effect
-  - [ ] Toggle switch "LOGIN" is highlighted
-  - [ ] Email field:
-    - [ ] Required field validation
-    - [ ] Email format validation
-    - [ ] Placeholder text shows
-  - [ ] Password field:
-    - [ ] Required field validation
-    - [ ] Show/hide password toggle (Eye icon) works
-    - [ ] Password masks as bullets when hidden
-  - [ ] "Forgot Password?" link navigates to `/forgot-password`
-  - [ ] "SIGN IN" button:
-    - [ ] Shows "Signing in..." when loading
-    - [ ] Disables during submission
-    - [ ] Successful login stores token in localStorage
-    - [ ] Redirects to `/dashboard` after success
-    - [ ] Shows error alert for invalid credentials
+- [x] **Visual Panel** (left side on desktop):
+  - [x] "Welcome Back!" heading with gradient text
+  - [x] Description text displays correctly
+  - [x] Lock emoji (🔐) displays
+  - [x] Background animations work
+  - [x] Pattern overlay visible
+- [x] **Form Panel** (right side):
+  - [x] Logo displays and has hover scale effect
+  - [x] Toggle switch "LOGIN" is highlighted
+  - [x] Email field:
+    - [x] Required field validation
+    - [x] Email format validation
+    - [x] Placeholder text shows
+  - [x] Password field:
+    - [x] Required field validation
+    - [x] Show/hide password toggle (Eye icon) works
+    - [x] Password masks as bullets when hidden
+  - [x] "Forgot Password?" link navigates to `/forgot-password`
+  - [x] "SIGN IN" button:
+    - [x] Shows "Signing in..." when loading
+    - [x] Disables during submission
+    - [x] Successful login stores token in localStorage
+    - [x] Redirects to `/dashboard` after success
+    - [x] Shows error alert for invalid credentials
 
 #### **Mode: Register (`/register`)**
 
-- [ ] **Visual Panel**:
-  - [ ] "Join the Fleet" heading displays
-  - [ ] Rocket emoji (🚀) displays
-  - [ ] Description text shows
-- [ ] **Toggle Switch**: "REGISTER" is highlighted
-- [ ] **Form Fields**:
-  - [ ] Full Name field (required)
-  - [ ] Email field (required, email validation)
-  - [ ] Password field with show/hide toggle
-  - [ ] **Password Strength Meter**:
-    - [ ] Shows when typing password
-    - [ ] Displays score label (Empty/Weak/Fair/Good/Strong)
-    - [ ] Progress bar fills based on strength
-    - [ ] Colors change (gray/red/orange/blue/green)
-    - [ ] Criteria: length, uppercase, numbers, special chars
-- [ ] **Payment Prompt** (for regular users):
-  - [ ] Confirms "Proceed to setup payment?"
-  - [ ] Canceling stops registration
-- [ ] **Create Account Button**:
-  - [ ] Shows "Creating..." when loading
-  - [ ] Creates user account successfully
-  - [ ] Stores token in localStorage
-  - [ ] Redirects to `/dashboard`
-  - [ ] Shows error alert if registration fails
+- [x] **Visual Panel**:
+  - [x] "Join the Fleet" heading displays
+  - [x] Rocket emoji (🚀) displays
+  - [x] Description text shows
+- [x] **Toggle Switch**: "REGISTER" is highlighted
+- [x] **Form Fields**:
+  - [x] Full Name field (required)
+  - [x] Email field (required, email validation)
+  - [x] Password field with show/hide toggle
+  - [x] **Password Strength Meter**:
+    - [x] Shows when typing password
+    - [x] Displays score label (Empty/Weak/Fair/Good/Strong, Excellent)
+    - [x] Progress bar fills based on strength
+    - [x] Colors change (gray/red/orange/blue/green)
+    - [x] Criteria: length, uppercase, numbers, special chars
+- [x] **Payment Prompt** (for regular users):
+  - [x] Confirms "Proceed to setup payment?"
+  - [x] Clicking "Yes" redirects to checkout page
+  - [x] Clicking "No" stops registration
+  - [x] store the reversation in database
+  - [x] Canceling stops registration
+  - [x] Check the reservation staus in profile
+   -[x] check the button on remainder is working.
+- [x] **Create Account Button**:
+  - [x] Shows "Creating..." when loading
+  - [x] Creates user account successfully
+  - [x] Stores token in localStorage
+  - [x] Redirects to `/dashboard`
+  - [x] Shows error alert if registration fails
 
 #### **Mode: Forgot Password (`/forgot-password`)**
 
-- [ ] **Visual Panel**:
-  - [ ] "Recover Access" heading
-  - [ ] Email emoji (📧) displays
-- [ ] **Form**:
-  - [ ] Recovery Email field (required)
-  - [ ] "Send Token" button works
-  - [ ] Shows "Sending..." during submission
-  - [ ] Success alert shows after token sent
-  - [ ] Switches to "reset" mode after success
-  - [ ] "Back to Login" button returns to login
-- [ ] **Backend**: Check server console for reset token
+- [x] **Visual Panel**:
+  - [x] "Recover Access" heading
+  - [x] Email emoji (📧) displays
+- [x] **Form**:
+  - [x] Recovery Email field (required)
+  - [x] "Send Token" button works
+  - [x] Shows "Sending..." during submission
+  - [x] Success alert shows after token sent
+  - [x] Switches to "reset" mode after success
+  - [x] "Back to Login" button returns to login
+- [x] **Backend**: Check server console for reset token
+
+#### **Subscription & Checkout Flow (`Checkout.jsx`)**:
+
+- [x] **Plan Selection**:
+  - [x] Navigating from Services/Dashboard carries correct plan name in URL
+  - [x] Correct package details display (Plus vs Pro)
+  - [x] Selecting a package highlights it with a blue border
+- [x] **Maintenance Mode**:
+  - [x] "Payment Gateway: Under Maintenance" alert displays
+  - [x] User is informed about the Reservation process
+- [x] **Reservation Logic**:
+  - [x] "Reserve & Pay Later" button works
+  - [x] Shows "Reserving..." loading state
+  - [x] Successfully calls `/api/auth/reserve` endpoint
+  - [x] Stores `isPlanReserved: true` in localStorage
+  - [x] Redirects to Profile after successful reservation
+- [x] **Error Handling**:
+  - [x] Shows error if reservation fails
+  - [x] Prevents duplicate reservations if already pending
 
 #### **Mode: Reset Password (internal mode)**
 
-- [ ] **Visual Panel**:
-  - [ ] "Secure Account" heading
-  - [ ] Shield emoji (🛡️) displays
-- [ ] **Form**:
-  - [ ] Reset Token field (required)
-  - [ ] New Password field with show/hide toggle
-  - [ ] Confirm Password field with show/hide toggle
-  - [ ] Validates passwords match
-  - [ ] Shows error if passwords don't match
-  - [ ] "Update Password" button:
-    - [ ] Shows "Resetting..." when loading
-    - [ ] Successfully resets password
-    - [ ] Shows success alert
-    - [ ] Returns to login mode
-    - [ ] Shows error if token invalid/expired
+- [x] **Visual Panel**:
+  - [x] "Secure Account" heading
+  - [x] Shield emoji (🛡️) displays
+- [x] **Form**:
+  - [x] Reset Token field (required)
+  - [x] New Password field with show/hide toggle
+  - [x] Confirm Password field with show/hide toggle
+  - [x] Validates passwords match
+  - [x] Shows error if passwords don't match
+  - [x] "Update Password" button:
+    - [x] Shows "Resetting..." when loading
+    - [x] Successfully resets password
+    - [x] Shows success alert
+    - [x] Returns to login mode
+    - [x] Shows error if token invalid/expired
 
 #### **General Auth Features**:
 
-- [ ] Mobile responsive layout
-- [ ] Form animations (slide in/out) work
-- [ ] Background decorative elements animate
-- [ ] All inputs have proper focus states
-- [ ] Buttons have hover/tap animations
-- [ ] URL syncs with mode (`/login`, `/register`, `/forgot-password`)
+- [x] Mobile responsive layout
+- [x] Form animations (slide in/out) work
+- [x] Background decorative elements animate
+- [x] All inputs have proper focus states
+- [x] Buttons have hover/tap animations
+- [x] URL syncs with mode (`/login`, `/register`, `/forgot-password`)
 
 ### 2.2 Profile Page (`Profile.jsx`)
 
-- [ ] **User Information Display**:
-  - [ ] Name displays correctly
-  - [ ] Email displays correctly
-  - [ ] Role displays correctly
-  - [ ] Branch displays (if branch_head or delivery_person)
-  - [ ] Payment status shows (if regular user)
-- [ ] **Update Name**:
-  - [ ] Input field pre-filled with current name
-  - [ ] Can modify name
-  - [ ] "Update Name" button works
-  - [ ] Success message shows
-  - [ ] Name updates across entire app (Navbar, Dashboard, etc.)
-- [ ] **Update Email**:
-  - [ ] Input field pre-filled with current email
-  - [ ] Validates email format
-  - [ ] "Update Email" button works
-  - [ ] Success message shows
-  - [ ] Requires re-login with new email
+- [x] **User Information Display**:
+  - [x] Name displays correctly
+  - [x] Email displays correctly
+  - [x] Role displays correctly
+  - [x] Branch displays (if branch_head or delivery_person)
+  - [x] Payment status shows (if regular user)
+- [x] **Subscription Reminder (Pending Payment)**:
+  - [x] Yellow alert box shows if plan is reserved but unpaid
+  - [x] Shows "Subscription Pending: [Plan Name]"
+  - [x] "Retry Payment" button navigates back to checkout
+  - [x] "Payment Gateway: Maintenance" badge visible
+- [x] **Update Name**:
+  - [x] Input field pre-filled with current name
+  - [x] Can modify name
+  - [x] "Update Name" button works
+  - [x] Success message shows
+  - [x] Name updates across entire app (Navbar, Dashboard, etc.)
+- [x] **Update Email**:
+  - [x] Input field pre-filled with current email
+  - [x] Validates email format
+  - [x] "Update Email" button works
+  - [x] Success message shows
+  - [x] Requires re-login with new email
 - [ ] **Update Password**:
-  - [ ] Current password field (required)
-  - [ ] New password field (required)
-  - [ ] Confirm new password field (required)
-  - [ ] Validates passwords match
-  - [ ] Shows error if current password wrong
-  - [ ] Successfully updates password
-  - [ ] Requires re-login after change
-- [ ] Mobile responsive form layout
-- [ ] All buttons have loading states
+  - [x] Password visibility eye toggle works for both fields
+  - [x] Password strength indicator (score + bar + label) works
+  - [x] New password field (required)
+  - [x] Confirm new password field (required)
+  - [x] Validates passwords match
+  - [x] Successfully updates password
+  - [x] Requires re-login with new password
+- [x] Mobile responsive form layout
+- [x] All buttons have loading states
 
 ---
 
@@ -292,31 +321,31 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 3.1 Navigation Access
 
-- [ ] Can access: Home, Dashboard, Inbox, Reports, Profile
-- [ ] Cannot see: About, Services, Contact (hidden for admin)
-- [ ] Navbar shows "Inbox" and "Reports" links
+- [x] Can access: Home, Dashboard, Inbox, Reports, Profile
+- [x] Cannot see: About, Services, Contact (hidden for admin)
+- [x] Navbar shows "Inbox" and "Reports" links
 
 ### 3.2 Dashboard (`/dashboard`)
 
 #### **Statistics Cards**
 
-- [ ] Total Parcels count displays correctly
-- [ ] Delivered count (green card)
-- [ ] Returned count (red card)
-- [ ] Total COD Revenue displays
+- [x] Total Parcels count displays correctly
+- [x] Delivered count (green card)
+- [x] Returned count (red card)
+- [x] Total COD Revenue displays
 
 #### **Notifications/Messages Section**
 
-- [ ] Notification bell icon visible
-- [ ] Unread message count badge shows
-- [ ] Clicking notification area marks messages as read
-- [ ] Messages from Branch Heads display:
-  - [ ] Sender name
-  - [ ] Message content
-  - [ ] Timestamp
-  - [ ] "Approve" button (if parcel request)
-- [ ] Clicking "Approve" creates parcel from request
-- [ ] Success alert after approval
+- [x] Notification bell icon visible
+- [x] Unread message count badge shows
+- [x] Clicking notification area marks messages as read
+- [x] Messages from Branch Heads display:
+  - [x] Sender name
+  - [x] Message content
+  - [x] Timestamp
+  - [x] "Approve" button (if parcel request)
+- [x] Clicking "Approve" creates parcel from request
+- [x] Success alert after approval
 
 #### **Add New Parcel Form** (Main Office)
 
@@ -521,47 +550,47 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 #### **Add Parcel Form** (Branch Head Version)
 
-- [ ] Form visible to branch head
-- [ ] Same fields as admin form (Sender Info, Receiver Info, Parcel Details)
-- [ ] **Submit Button**: "Send Request to Main Admin"
-  - [ ] Does NOT create parcel directly
-  - [ ] Sends notification message to Main Admin
-  - [ ] Message contains parcel data for approval
-  - [ ] Success alert: "Request Sent to Main Admin!"
-  - [ ] Form clears after submission
-  - [ ] Parcel does NOT appear in table until approved
+- [x] Form visible to branch head
+- [x] Same fields as admin form (Sender Info, Receiver Info, Parcel Details)
+- [x] **Submit Button**: "Send Request to Main Admin"
+  - [x] Does NOT create parcel directly
+  - [x] Sends notification message to Main Admin
+  - [x] Message contains parcel data for approval
+  - [x] Success alert: "Request Sent to Main Admin!"
+  - [x] Form clears after submission
+  - [x] Parcel does NOT appear in table until approved
 
 #### **Parcels Overview Table**
 
-- [ ] Shows ONLY parcels where:
-  - [ ] Branch ID matches branch head's branch
-  - [ ] OR createdBy matches branch head's user ID
-- [ ] **Status Dropdown**:
-  - [ ] Can select: Pending, In Main Branch, Transmitting, In Sub Branch
-  - [ ] **Restriction**: Cannot set to "Delivered" (only riders can)
-  - [ ] Can set to "Out for Delivery" (unlike admin)
-  - [ ] Changing status updates parcel
-- [ ] **Quick Action Buttons**:
-  - [ ] "Receive at Branch" button shows when status is "Transmitting"
-  - [ ] Clicking changes status to "In Sub Branch"
-  - [ ] Success message displays
-- [ ] **Auto-Assignment Feature**:
-  - [ ] When they change status to "In Sub Branch"
-  - [ ] System automatically assigns an available delivery person from their branch
-  - [ ] Success message mentions auto-assignment
-  - [ ] Rider name appears in table
-  - [ ] **Check Logic**:
-    - [ ] Assigns rider with least currently assigned parcels
-    - [ ] Only assigns riders from same branch
-    - [ ] Respects MAX_DAILY_DELIVERIES constant
-- [ ] Table only shows branch-relevant parcels
+- [x] Shows ONLY parcels where:
+  - [x] Branch ID matches branch head's branch
+  - [x] OR createdBy matches branch head's user ID
+- [x] **Status Dropdown**:
+  - [x] Can select: Pending, In Main Branch, Transmitting, In Sub Branch
+  - [x] **Restriction**: Cannot set to "Delivered" (only riders can)
+  - [x] Can set to "Out for Delivery" (unlike admin)
+  - [x] Changing status updates parcel
+- [x] **Quick Action Buttons**:
+  - [x] "Receive at Branch" button shows when status is "Transmitting"
+  - [x] Clicking changes status to "In Sub Branch"
+  - [x] Success message displays
+- [x] **Auto-Assignment Feature**:
+  - [x] When they change status to "In Sub Branch"
+  - [x] System automatically assigns an available delivery person from their branch
+  - [x] Success message mentions auto-assignment
+  - [x] Rider name appears in table
+  - [x] **Check Logic**:
+    - [x] Assigns rider with least currently assigned parcels
+    - [x] Only assigns riders from same branch
+    - [x] Respects MAX_DAILY_DELIVERIES constant
+- [x] Table only shows branch-relevant parcels
 
 #### **Restrictions**
 
-- [ ] Cannot add branches
-- [ ] Cannot add staff users
-- [ ] Cannot access system analytics
-- [ ] Cannot manage other users
+- [x] Cannot add branches
+- [x] Cannot add staff users
+- [x] Cannot access system analytics
+- [x] Cannot manage other users
 
 ---
 
@@ -569,44 +598,43 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 5.1 Navigation Access
 
-- [ ] Can access: Home, Dashboard, Profile
-- [ ] Cannot see: About, Services, Contact, Inbox, Reports
-- [ ] Simplified navbar
+- [x] Can access: Home, Dashboard, Profile
+- [x] Cannot see: About, Services, Contact, Inbox, Reports
+- [x] Simplified navbar
 
 ### 5.2 Dashboard (`/dashboard`)
 
 #### **Statistics Cards**
 
-- [ ] Shows ONLY their assigned parcels
-- [ ] Total Parcels (assigned to them)
-- [ ] Delivered count (they delivered)
-- [ ] Returned count (they marked as returned)
-- [ ] COD collected (from their deliveries)
+- [x] Shows ONLY their assigned parcels
+- [x] Total Parcels (assigned to them)
+- [x] Delivered count (they delivered)
+- [x] Returned count (they marked as returned)
+- [x] COD collected (from their deliveries)
 
 #### **Parcels Overview Table**
 
-- [ ] Shows ONLY parcels where `riderId` matches their user ID
-- [ ] **Status Display**:
-  - [ ] Status shown as colored badge (NOT dropdown)
-  - [ ] Cannot change status via dropdown
-- [ ] **Action Buttons** (per parcel):
-  - [ ] "Mark Delivered" button:
-    - [ ] Visible for all non-delivered parcels
-    - [ ] Clicking updates status to "Delivered"
-    - [ ] Success message displays
-    - [ ] Button text changes to "Delivered ✔" after clicking
-    - [ ] Button becomes disabled after delivered
-  - [ ] "Mark Returned" button:
-    - [ ] Always visible
-    - [ ] Clicking updates status to "Returned"
-    - [ ] Success message displays
-    - [ ] Used when delivery unsuccessful
-- [ ] **Restriction**: Can ONLY set status to "Delivered" or "Returned"
-- [ ] No other status options visible
+- [x] Shows ONLY parcels where `riderId` matches their user ID
+- [x] **Status Display**:
+  - [x] Status shown as colored badge (NOT dropdown)
+  - [x] Cannot change status via dropdown
+- [x] **Action Buttons** (per parcel):
+  - [x] "Mark Delivered" button:
+    - [x] Visible for all non-delivered parcels
+    - [x] Clicking updates status to "Delivered"
+    - [x] Success message displays
+    - [x] Button text changes to "Delivered ✔" after clicking
+    - [x] Button becomes disabled after delivered
+  - [x] "Mark Returned" button:
+    - [x] Always visible
+    - [x] Clicking updates status to "Returned"
+    - [x] Success message displays
+    - [x] Used when delivery unsuccessful
+- [x] **Restriction**: Can ONLY set status to "Delivered" or "Returned"
+- [x] No other status options visible
 
 #### **Delivery Map Component** (`DeliveryMap.jsx`)
 
-- [ ] Map section displays below table
 - [ ] Uses Leaflet/OpenStreetMap
 - [ ] Shows delivery locations for assigned parcels:
   - [ ] Receiver addresses marked on map
@@ -686,13 +714,13 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 #### **Parcels Overview Table**
 
-- [ ] Shows ONLY parcels where:
-  - [ ] User is sender (senderInfo.contact or name matches)
-  - [ ] OR user is receiver (receiverInfo.contact or name matches)
-- [ ] **Columns**: Tracking ID, Receiver, Branch, Status
-- [ ] **Status Display**: Badge only (NOT editable)
-- [ ] **No Actions Column**: Regular users cannot change status
-- [ ] Clicking tracking ID could navigate to track page
+- [x] Shows ONLY parcels where:
+  - [x] User is sender (senderInfo.contact or name matches)
+  - [x] OR user is receiver (receiverInfo.contact or name matches)
+- [x] **Columns**: Tracking ID, Receiver, Branch, Status
+- [x] **Status Display**: Badge only (NOT editable)
+- [x] **No Actions Column**: Regular users cannot change status
+- [x] Clicking tracking ID could navigate to track page
 
 #### **Restrictions**
 
@@ -808,22 +836,36 @@ This checklist contains all the features, functions, and buttons you need to tes
 - [ ] Keyboard navigation works (Tab, Enter, Esc)
 - [ ] Color contrast meets WCAG standards
 
+### 7.8 Logging & Observability (Winston Integration)
+
+- [ ] **Frontend Logs** (Check Developer Console):
+  - [ ] Auth: Login/Register/Forgot/Reset actions log correctly
+  - [ ] Profile: Name/Email/Password update attempts log correctly
+  - [ ] Checkout: Plan selection and Reservation success/fail log correctly
+  - [ ] Logs include timestamps and contextual data
+- [ ] **Backend Logs** (Check `/logs/app.log` or server console):
+  - [ ] Database connection success/error logs
+  - [ ] Parcel creation and status update logs
+  - [ ] Auth controller: Detailed security action logs (Password reset, Payment, etc.)
+  - [ ] Error objects include stack traces and request IDs
+
 ---
 
 ## 8. Backend API Testing
 
 ### 8.1 Auth Endpoints (`/api/auth`)
 
-- [ ] POST `/api/auth/register` - Creates new user
-- [ ] POST `/api/auth/login` - Returns JWT token
-- [ ] POST `/api/auth/forgot-password` - Generates reset token
-- [ ] POST `/api/auth/reset-password` - Resets password with token
-- [ ] GET `/api/auth/branches` - Returns all branches
-- [ ] POST `/api/auth/branches` - Creates new branch (admin only)
-- [ ] GET `/api/auth/users` - Returns all users (admin only)
-- [ ] PUT `/api/auth/users/:id/role` - Updates user role (admin only)
-- [ ] DELETE `/api/auth/users/:id` - Deletes user (admin only)
-- [ ] PUT `/api/auth/profile` - Updates user profile
+- [x] POST `/api/auth/register` - Creates new user
+- [x] POST `/api/auth/login` - Returns JWT token
+- [x] POST `/api/auth/forgot-password` - Generates reset token
+- [x] POST `/api/auth/reset-password` - Resets password with token
+- [x] POST `/api/auth/reserve` - Reserves a package plan
+- [x] GET `/api/auth/branches` - Returns all branches
+- [x] POST `/api/auth/branches` - Creates new branch (admin only)
+- [x] GET `/api/auth/users` - Returns all users (admin only)
+- [x] PUT `/api/auth/users/:id/role` - Updates user role (admin only)
+- [x] DELETE `/api/auth/users/:id` - Deletes user (admin only)
+- [x] PUT `/api/auth/profile` - Updates user profile
 
 ### 8.2 Parcel Endpoints (`/api/parcels`)
 
@@ -879,21 +921,20 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 10.1 Environment Variables
 
-- [ ] **Client** (`.env` in `/client`):
-  - [ ] `VITE_FORMSPREE_FORM_ID` - Formspree form ID configured
-  - [ ] API base URL if different from default
-- [ ] **Server** (`.env` in `/server`):
-  - [ ] `PORT` - Server port (default 5000)
-  - [ ] `MONGO_URI` - MongoDB connection string
-  - [ ] `JWT_SECRET` - JWT secret key set
-  - [ ] `GEMINI_API_KEY` - Google Gemini API key configured
+- [x] **Client** (`.env` in `/client`):
+  - [x] `VITE_FORMSPREE_FORM_ID` - Formspree form ID configured
+- [x] **Server** (`.env` in `/server`):
+  - [x] `PORT` - Server port (default 5000)
+  - [x] `MONGO_URI` - MongoDB connection string
+  - [x] `JWT_SECRET` - JWT secret key set
+  - [x] `GEMINI_API_KEY` - Google Gemini API key configured
 
 ### 10.2 Database Connection
 
-- [ ] MongoDB connection successful
-- [ ] Collections created: users, parcels, branches, messages
-- [ ] Seeded data populated correctly (`npm run seed` works)
-- [ ] Database credentials secured
+- [x] MongoDB connection successful
+- [x] Collections created: users, parcels, branches, messages
+- [x] Seeded data populated correctly (`npm run seed` works)
+- [x] Database credentials secured
 
 ### 10.3 External Services
 

@@ -22,6 +22,7 @@ const Auth = () => {
   const [role, setRole] = useState("regular");
   const [resetToken, setResetToken] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState({ field: "", message: "" });
   const [strength, setStrength] = useState({
     score: 0,
     label: "Empty",
@@ -46,9 +47,12 @@ const Auth = () => {
     if (pass.length > 8) score++;
     if (/[A-Z]/.test(pass)) score++;
     if (/[0-9]/.test(pass)) score++;
+    if (/[!@#$%^&*]/.test(pass)) score++;
     if (/[^A-Za-z0-9]/.test(pass)) score++;
 
-    const result = { score, label: "Weak", color: "bg-red-500" };
+    const result = {
+      score, label: "Weak", color: "bg-red-500"
+    };
     if (score > 2) {
       result.label = "Fair";
       result.color = "bg-orange-400";
@@ -59,6 +63,10 @@ const Auth = () => {
     }
     if (score > 4) {
       result.label = "Strong";
+      result.color = "bg-[#41dc8e]";
+    }
+    if (score>5){
+      result.label = "Excellent";
       result.color = "bg-green-500";
     }
     if (pass.length === 0) {
@@ -70,14 +78,27 @@ const Auth = () => {
     setStrength(result);
   };
 
+  const isValidEmail = (email) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
   const handleLogin = async (e) => {
     e.preventDefault();
+    setError({ field: "", message: "" });
+
+    if (!isValidEmail(email)) {
+      setError({ field: "email", message: "Please enter a valid email address." });
+      return;
+    }
+
     setIsLoading(true);
     try {
+      logger.info(`🔐 [AUTH] Attempting login for email: ${email}`);
       const { data } = await axios.post(
         "http://localhost:5000/api/auth/login",
         { email, password },
       );
+      logger.info(`✅ [AUTH] Login successful for: ${email}`);
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/dashboard");
     } catch (error) {
@@ -90,14 +111,33 @@ const Auth = () => {
 
   const handleRegister = async (e) => {
     e.preventDefault();
+    setError({ field: "", message: "" });
+
+    if (name.length > 30) {
+      setError({ field: "name", message: "Full name must be 30 characters or less." });
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError({ field: "email", message: "Please enter a valid email address." });
+      return;
+    }
+
+    if (strength.label !== "Strong" && strength.label !== "Excellent") {
+      setError({ field: "password", message: "Please choose a stronger password to join the fleet." });
+      return;
+    }
+
     setIsLoading(true);
 
     try {
+      logger.info(`📝 [AUTH] Attempting registration for: ${email} as ${role}`);
       if (role === "regular") {
         const pay = window.confirm(
           "Regular accounts come with premium features. Proceed to setup payment?",
         );
         if (!pay) {
+          logger.info(`🚫 [AUTH] User cancelled payment prompt for regular account: ${email}`);
           setIsLoading(false);
           return;
         }
@@ -107,6 +147,7 @@ const Auth = () => {
         "http://localhost:5000/api/auth/register",
         { name, email, password, role },
       );
+      logger.info(`✅ [AUTH] Registration successful: ${email}`);
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/dashboard");
     } catch (error) {
@@ -120,15 +161,17 @@ const Auth = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
+      logger.info(`📧 [AUTH] Requesting password reset token for: ${email}`);
       const { data } = await axios.post(
         "http://localhost:5000/api/auth/forgot-password",
         { email },
       );
+      logger.info(`✅ [AUTH] Reset token requested successfully for: ${email}`);
       alert("Reset token generated! Check your email for the token.");
       setMode("reset");
-    } catch (error) {
-      logger.error("Forgot password error:", error);
-      alert(error.response?.data?.message || "Failed to initiate reset");
+    } catch (err) {
+      logger.error("Forgot password error:", err);
+      alert(err.response?.data?.message || "Failed to initiate reset");
     } finally {
       setIsLoading(false);
     }
@@ -136,20 +179,27 @@ const Auth = () => {
 
   const handleReset = async (e) => {
     e.preventDefault();
+    setError({ field: "", message: "" });
     if (password !== confirmPassword) {
-      alert("Passwords do not match");
+      setError({ field: "confirm", message: "Passwords do not match" });
+      return;
+    }
+    if (strength.label !== "Strong" && strength.label !== "Excellent") {
+      setError({ field: "password", message: "Please choose a stronger password." });
       return;
     }
     setIsLoading(true);
     try {
+      logger.info(`🛡️ [AUTH] Attempting password reset with token`);
       await axios.post("http://localhost:5000/api/auth/reset-password", {
         token: resetToken,
         password,
       });
+      logger.info(`✅ [AUTH] Password reset successful`);
       alert("Password reset successful! Please login.");
       setMode("login");
-    } catch (error) {
-      alert(error.response?.data?.message || "Reset failed");
+    } catch (err) {
+      alert(err.response?.data?.message || "Reset failed");
     } finally {
       setIsLoading(false);
     }
@@ -224,17 +274,37 @@ const Auth = () => {
                   </>
                 )}
               </h1>
-              <p className="text-white/70 text-lg mb-12 font-medium leading-relaxed">
-                {mode === "login"
-                  ? "Access your dashboard and manage your global logistics with NaviLogix AI."
-                  : mode === "register"
-                    ? "Start shipping smarter today. Create your account and unlock priority tracking."
-                    : mode === "forgot"
-                      ? "Enter your email to receive a recovery token for your account."
-                      : "Choose a strong new password to regain access to your dashboard."}
+              <p className="text-white/70 text-base mb-12 font-medium leading-relaxed">
+                {mode === "login" ? (
+                  <>
+                    Access your dashboard and manage your global logistics with{" "}
+                    <br />
+                    <span className="text-white font-bold ">NaviLogix AI</span>
+                  </>
+                ) : mode === "register" ? (
+                  <>
+                    Start shipping smarter today. Create your account and unlock{" "}
+                    <br />
+                    <span className="text-white font-bold"> priority tracking.</span>
+                  </>
+                ) : mode === "forgot" ? (
+                  <>
+                    Enter your email to receive a recovery token for your{" "}
+                    <br/>
+                    <span className="text-white font-bold">account.</span>
+                  </>
+                ) : (
+                  <>
+                    Choose a strong{" "}
+                    <br/>
+                    <span className="text-white font-bold">new password</span>{" "}
+                    <br/>
+                    to regain access to your dashboard.
+                  </>
+                )}
               </p>
 
-              <div className="w-48 h-48 bg-white/10 rounded-[40px] flex items-center justify-center backdrop-blur-md shadow-inner">
+              <div className="w-48 h-48 bg-white/10 mt-12 rounded-[40px] flex items-center justify-center backdrop-blur-md shadow-inner">
                 <span className="text-7xl">
                   {mode === "login"
                     ? "🔐"
@@ -310,11 +380,19 @@ const Auth = () => {
                       <input
                         type="email"
                         required
-                        className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                        className={`w-full bg-gray-50 border-2 ${error.field === "email" ? "border-red-500" : "border-transparent"} p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold`}
                         placeholder="your@email.com"
                         value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          if (error.field === "email") setError({ field: "", message: "" });
+                        }}
                       />
+                      {error.field === "email" && (
+                        <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-1">
+                          {error.message}
+                        </p>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">
@@ -378,11 +456,19 @@ const Auth = () => {
                       <input
                         type="text"
                         required
-                        className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                        className={`w-full bg-gray-50 border-2 ${error.field === "name" ? "border-red-500" : "border-transparent"} p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold`}
                         placeholder="John Doe"
                         value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        onChange={(e) => {
+                          setName(e.target.value);
+                          if (error.field === "name") setError({ field: "", message: "" });
+                        }}
                       />
+                      {error.field === "name" && (
+                        <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-1">
+                          {error.message}
+                        </p>
+                      )}
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
                       <div className="space-y-2">
@@ -392,11 +478,19 @@ const Auth = () => {
                         <input
                           type="email"
                           required
-                          className="w-full bg-gray-50 border-2 border-transparent p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
+                          className={`w-full bg-gray-50 border-2 ${error.field === "email" ? "border-red-500" : "border-transparent"} p-4 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold`}
                           placeholder="your@email.com"
                           value={email}
-                          onChange={(e) => setEmail(e.target.value)}
+                          onChange={(e) => {
+                            setEmail(e.target.value);
+                            if (error.field === "email") setError({ field: "", message: "" });
+                          }}
                         />
+                        {error.field === "email" && (
+                          <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-1">
+                            {error.message}
+                          </p>
+                        )}
                       </div>
                       <div className="space-y-2">
                         <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">
@@ -412,6 +506,7 @@ const Auth = () => {
                             onChange={(e) => {
                               setPassword(e.target.value);
                               calculateStrength(e.target.value);
+                              if (error) setError("");
                             }}
                           />
                           <button
@@ -434,7 +529,7 @@ const Auth = () => {
                                 Security Strength
                               </span>
                               <span
-                                className={`text-[10px] font-black uppercase tracking-wider ${strength.label === "Strong" ? "text-green-500" : "text-orange-400"}`}
+                                className={`text-[10px] font-black uppercase tracking-wider ${strength.color.replace("bg-", "text-")}`}
                               >
                                 {strength.label}
                               </span>
@@ -443,11 +538,16 @@ const Auth = () => {
                               <motion.div
                                 initial={{ width: 0 }}
                                 animate={{
-                                  width: `${(strength.score / 5) * 100}%`,
+                                  width: `${(strength.score / 6) * 100 + 10}%`,
                                 }}
                                 className={`h-full ${strength.color} transition-all duration-500`}
                               />
                             </div>
+                            {error.field === "password" && (
+                              <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-2">
+                                {error.message}
+                              </p>
+                            )}
                           </div>
                         )}
                       </div>
@@ -539,7 +639,10 @@ const Auth = () => {
                           className="w-full bg-gray-50 border-2 border-transparent p-4 pr-12 rounded-2xl outline-none focus:border-primary/10 transition-all font-semibold"
                           placeholder="••••••••"
                           value={password}
-                          onChange={(e) => setPassword(e.target.value)}
+                          onChange={(e) => {
+                            setPassword(e.target.value);
+                            calculateStrength(e.target.value);
+                          }}
                         />
                         <button
                           type="button"
@@ -553,6 +656,36 @@ const Auth = () => {
                           )}
                         </button>
                       </div>
+                      
+                      {/* Strength Meter */}
+                      {password.length > 0 && (
+                        <div className="px-1 pt-1">
+                          <div className="flex justify-between items-center mb-1">
+                            <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">
+                              Security Strength
+                            </span>
+                            <span
+                              className={`text-[10px] font-black uppercase tracking-wider ${strength.color.replace("bg-", "text-")}`}
+                            >
+                              {strength.label}
+                            </span>
+                          </div>
+                          <div className="h-1.5 w-full bg-gray-100 rounded-full overflow-hidden">
+                            <motion.div
+                              initial={{ width: 0 }}
+                              animate={{
+                                width: `${(strength.score / 6) * 100 + 10}%`,
+                              }}
+                              className={`h-full ${strength.color} transition-all duration-500`}
+                            />
+                          </div>
+                          {error.field === "password" && (
+                            <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-2">
+                              {error.message}
+                            </p>
+                          )}
+                        </div>
+                      )}
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-black text-[#001F3F]/40 uppercase tracking-widest ml-1">
@@ -579,6 +712,11 @@ const Auth = () => {
                           )}
                         </button>
                       </div>
+                      {error.field === "confirm" && (
+                        <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-1">
+                          {error.message}
+                        </p>
+                      )}
                     </div>
                     <button
                       type="submit"

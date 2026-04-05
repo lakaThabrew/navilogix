@@ -264,7 +264,7 @@ const Services = () => {
               </li>
             </ul>
             <button
-              onClick={() => navigate("/dashboard")}
+              onClick={() => navigate("/checkout?plan=plus")}
               className="mt-auto w-full py-3 rounded-xl bg-secondary text-white font-bold hover:bg-orange-600 transition-all shadow-lg hover:shadow-secondary/30"
             >
               Buy Plus
@@ -307,10 +307,10 @@ const Services = () => {
               </li>
             </ul>
             <button
-              onClick={() => navigate("/contact")}
+              onClick={() => navigate("/checkout?plan=pro")}
               className="mt-auto w-full py-3 rounded-xl border-2 border-primary text-primary font-bold hover:bg-primary hover:text-white transition-all"
             >
-              Contact Sales
+              Buy Pro
             </button>
           </motion.div>
         </div>

@@ -15,10 +15,12 @@ NaviLogix is a comprehensive parcel tracking and delivery management system desi
   - **Branch Heads**: Manage localized branch hubs. Request parcel entries via an integrated Inbox system, receive incoming parcels at the branch, and automatically trigger the **Smart Rider Auto-Assignment Algorithm**.
   - **Main Admin**: Full system control. Register branches, manage staff users on the fly, approve parcel requests, and access comprehensive system-wide analytics.
 - 🤖 **AI Integration**:
-  - **Gemini Chatbot**: Integrated AI assistant floating on all pages for natural language queries about system usage and logistics guidance.
+  - **Gemini 3.1 Chatbot**: A powerful, floating AI assistant powered by the latest **Gemini 3.1 Flash-Lite** models. It autonomously parses user queries, detects Tracking IDs, and fetches real-time parcel status directly from the database to provide instant logistics guidance.
 - ⚙️ **Smart Delivery Automation**:
   - **Auto-Assignment Algorithm**: Parcels entering a sub-branch automatically distribute to available riders based on daily capacity limits ensuring balanced workloads.
-- 📍 **Real-Time Tracking & Maps**: Live parcel timeline updates and interactive branch/rider maps powered by Leaflet and OpenStreetMap.
+- 📍 **Interactive Route Visualization**: 
+  - **Advanced Maps**: Powered by Leaflet and OpenStreetMap, featuring solid route lines and color-coded markers (🟢 Origin, 🔴 Destination, 🔵 Intermediate Stops).
+  - **Visual Status Badges**: Real-time parcel status visualization with intuitive color-coded badges: 🟢 Delivered, 🔴 Returned, 🟠 Out for Delivery, and 🟡 Pending.
 - 📊 **Advanced Analytics & Financials**: Interactive Chart.js dashboards offering time-based, parcel-type, and branch-based statistical insights along with Cash-on-Delivery (COD) revenue tracking.
 - 📧 **Built-in Inbox & Notifications**: Direct intra-system messaging for Branch Heads to securely request new parcel dispatches from the Main Admin for approval.
 - ✉️ **Live Contact Forms**: Integrated Formspree endpoint for real-world customer support requests.
