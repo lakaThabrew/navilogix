@@ -194,7 +194,7 @@ This checklist contains all the features, functions, and buttons you need to tes
   - [x] Rocket emoji (🚀) displays
   - [x] Description text shows
 - [x] **Toggle Switch**: "REGISTER" is highlighted
-- [ ] **Form Fields**:
+- [x] **Form Fields**:
   - [x] Full Name field (required)
   - [x] Email field (required, email validation)
   - [x] Password field with show/hide toggle
@@ -204,7 +204,7 @@ This checklist contains all the features, functions, and buttons you need to tes
     - [x] Progress bar fills based on strength
     - [x] Colors change (gray/red/orange/blue/green)
     - [x] Criteria: length, uppercase, numbers, special chars
-- [ ] **Payment Prompt** (for regular users):
+- [x] **Payment Prompt** (for regular users):
   - [x] Confirms "Proceed to setup payment?"
   - [x] Clicking "Yes" redirects to checkout page
   - [x] Clicking "No" stops registration
@@ -212,7 +212,7 @@ This checklist contains all the features, functions, and buttons you need to tes
   - [x] Canceling stops registration
   - [x] Check the reservation staus in profile
    -[x] check the button on remainder is working.
-- [ ] **Create Account Button**:
+- [x] **Create Account Button**:
   - [x] Shows "Creating..." when loading
   - [x] Creates user account successfully
   - [x] Stores token in localStorage
