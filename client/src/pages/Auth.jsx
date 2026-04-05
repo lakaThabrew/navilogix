@@ -656,6 +656,7 @@ const Auth = () => {
                           )}
                         </button>
                       </div>
+                      
                       {/* Strength Meter */}
                       {password.length > 0 && (
                         <div className="px-1 pt-1">
@@ -678,6 +679,11 @@ const Auth = () => {
                               className={`h-full ${strength.color} transition-all duration-500`}
                             />
                           </div>
+                          {error.field === "password" && (
+                            <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-2">
+                              {error.message}
+                            </p>
+                          )}
                         </div>
                       )}
                     </div>
@@ -706,6 +712,11 @@ const Auth = () => {
                           )}
                         </button>
                       </div>
+                      {error.field === "confirm" && (
+                        <p className="text-red-500 text-[10px] font-black uppercase tracking-wider ml-1 mt-1">
+                          {error.message}
+                        </p>
+                      )}
                     </div>
                     <button
                       type="submit"

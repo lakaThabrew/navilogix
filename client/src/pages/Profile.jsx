@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
 import logger from "../utils/logger";
-import { User, Mail, Lock, CheckCircle, Shield, AlertCircle, CreditCard } from "lucide-react";
+import { User, Mail, Lock, CheckCircle, Shield, AlertCircle, CreditCard, Eye, EyeOff } from "lucide-react";
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -12,6 +12,12 @@ const Profile = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [isUpdating, setIsUpdating] = useState(false);
     const [message, setMessage] = useState({ text: "", type: "" });
+    const [showPassword, setShowPassword] = useState(false);
+    const [strength, setStrength] = useState({
+        score: 0,
+        label: "Empty",
+        color: "bg-gray-200",
+    });
 
     useEffect(() => {
         const u = JSON.parse(localStorage.getItem("userInfo"));
@@ -21,6 +27,25 @@ const Profile = () => {
             setEmail(u.email);
         }
     }, []);
+
+    const calculateStrength = (pass) => {
+        let score = 0;
+        if (pass.length > 5) score++;
+        if (pass.length > 8) score++;
+        if (/[A-Z]/.test(pass)) score++;
+        if (/[0-9]/.test(pass)) score++;
+        if (/[!@#$%^&*]/.test(pass)) score++;
+        if (/[^A-Za-z0-9]/.test(pass)) score++;
+
+        const result = { score, label: "Weak", color: "bg-red-500" };
+        if (score > 2) { result.label = "Fair"; result.color = "bg-orange-400"; }
+        if (score > 3) { result.label = "Good"; result.color = "bg-blue-400"; }
+        if (score > 4) { result.label = "Strong"; result.color = "bg-[#41dc8e]"; }
+        if (score > 5) { result.label = "Excellent"; result.color = "bg-green-500"; }
+        if (pass.length === 0) { result.label = "Empty"; result.score = 0; result.color = "bg-gray-200"; }
+
+        setStrength(result);
+    };
 
     const handleUpdate = async (e) => {
         e.preventDefault();
@@ -191,13 +216,41 @@ const Profile = () => {
                                                     <Lock size={18} className="text-gray-400" />
                                                 </div>
                                                 <input
-                                                    type="password"
-                                                    className="w-full pl-12 pr-4 py-3 border-none rounded-2xl bg-gray-50 shadow-inset outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder-gray-400"
+                                                    type={showPassword ? "text" : "password"}
+                                                    className="w-full pl-12 pr-12 py-3 border-none rounded-2xl bg-gray-50 shadow-inset outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder-gray-400"
                                                     placeholder="••••••••"
                                                     value={password}
-                                                    onChange={(e) => setPassword(e.target.value)}
+                                                    onChange={(e) => {
+                                                        setPassword(e.target.value);
+                                                        calculateStrength(e.target.value);
+                                                    }}
                                                 />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                                                >
+                                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                </button>
                                             </div>
+                                            
+                                            {/* Strength Meter */}
+                                            {password.length > 0 && (
+                                                <div className="mt-2 px-1">
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <span className="text-[10px] font-black uppercase tracking-wider text-gray-400">
+                                                            Strength: <span className={strength.color.replace('bg-', 'text-')}>{strength.label}</span>
+                                                        </span>
+                                                    </div>
+                                                    <div className="h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                                                        <motion.div
+                                                            initial={{ width: 0 }}
+                                                            animate={{ width: `${(strength.score / 6) * 100}%` }}
+                                                            className={`h-full ${strength.color} transition-all duration-500`}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
                                         </div>
                                         <div>
                                             <label className="block text-sm font-medium text-gray-700 mb-2 ml-1">Confirm Password</label>
@@ -206,12 +259,19 @@ const Profile = () => {
                                                     <Lock size={18} className="text-gray-400" />
                                                 </div>
                                                 <input
-                                                    type="password"
-                                                    className="w-full pl-12 pr-4 py-3 border-none rounded-2xl bg-gray-50 shadow-inset outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder-gray-400"
+                                                    type={showPassword ? "text" : "password"}
+                                                    className="w-full pl-12 pr-12 py-3 border-none rounded-2xl bg-gray-50 shadow-inset outline-none focus:ring-2 focus:ring-primary/20 transition-all placeholder-gray-400"
                                                     placeholder="••••••••"
                                                     value={confirmPassword}
                                                     onChange={(e) => setConfirmPassword(e.target.value)}
                                                 />
+                                                <button
+                                                    type="button"
+                                                    onClick={() => setShowPassword(!showPassword)}
+                                                    className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+                                                >
+                                                    {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
