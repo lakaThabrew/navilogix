@@ -154,7 +154,7 @@ export const loginUser = async (req, res) => {
 
     try {
         // Select password explicitly since it's hidden by default
-        const user = await User.findOne({ email }).select('+password');
+        const user = await User.findOne({ email }).select('+password').populate('branchId', 'branchName');
         logger.info(`🔍 [LOGIN] User found: ${!!user}`);
 
         if (user && (await bcrypt.compare(password, user.password))) {
@@ -164,7 +164,8 @@ export const loginUser = async (req, res) => {
                 name: user.name,
                 email: user.email,
                 role: user.role,
-                branchId: user.branchId,
+                branchId: user.branchId?._id || user.branchId,
+                branchName: user.branchId?.branchName || 'N/A',
                 paymentStatus: user.paymentStatus || 'unpaid',
                 token: generateToken(user._id)
             });
@@ -286,7 +287,8 @@ export const updateUserProfile = async (req, res) => {
                 user.password = await bcrypt.hash(req.body.password, salt);
             }
 
-            const updatedUser = await user.save();
+            await user.save();
+            const updatedUser = await User.findById(user._id).populate('branchId', 'branchName');
 
             logger.info(`✅ [PROFILE] User profile updated: ${updatedUser.email}`);
 
@@ -295,7 +297,8 @@ export const updateUserProfile = async (req, res) => {
                 name: updatedUser.name,
                 email: updatedUser.email,
                 role: updatedUser.role,
-                branchId: updatedUser.branchId,
+                branchId: updatedUser.branchId?._id || updatedUser.branchId,
+                branchName: updatedUser.branchId?.branchName || 'N/A',
                 paymentStatus: updatedUser.paymentStatus,
                 token: generateToken(updatedUser._id) // Refreshing token could be optional
             });

@@ -70,6 +70,17 @@ const Profile = () => {
 
             logger.info(`✅ [PROFILE] Update successful for ${email}`);
 
+            // Check if email or password was changed to force re-login
+            if (email !== user.email || password) {
+                logger.info(`🔄 [PROFILE] Sensitive info changed, forcing re-login for ${email}`);
+                localStorage.removeItem("userInfo");
+                setMessage({ text: "Profile updated! Please log in again with your new credentials. 🔐", type: "success" });
+                setTimeout(() => {
+                    window.location.href = "/login";
+                }, 2000);
+                return;
+            }
+
             // Update local storage with new info (including new token)
             localStorage.setItem("userInfo", JSON.stringify(data));
             setUser(data);
@@ -112,6 +123,19 @@ const Profile = () => {
                                 <Shield size={16} />
                                 {user.role.replace('_', ' ').toUpperCase()}
                             </span>
+
+                            {/* Branch Info (if staff) */}
+                            {(user.role === 'branch_head' || user.role === 'delivery_person') && (
+                                <div className="mt-4 flex flex-col items-center gap-1 group">
+                                    <div className="flex items-center gap-2 text-gray-500 text-sm font-semibold">
+                                        <div className="w-2 h-2 rounded-full bg-secondary animate-pulse"></div>
+                                        <span>Assigned Branch</span>
+                                    </div>
+                                    <span className="text-gray-800 font-black uppercase tracking-tight text-lg group-hover:text-primary transition-colors">
+                                        {user.branchName || 'No Branch'}
+                                    </span>
+                                </div>
+                            )}
 
                             {user.role === 'regular' && (
                                 <div className={`mt-6 w-full py-2 px-4 rounded-xl text-sm font-bold flex items-center justify-center gap-2 ${user.paymentStatus === 'paid' ? 'bg-green-100 text-green-700' : user.isPlanReserved ? 'bg-amber-100 text-amber-700' : 'bg-orange-100 text-orange-700'}`}>
