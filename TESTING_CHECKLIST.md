@@ -281,38 +281,39 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 2.2 Profile Page (`Profile.jsx`)
 
-- [ ] **User Information Display**:
-  - [ ] Name displays correctly
-  - [ ] Email displays correctly
-  - [ ] Role displays correctly
-  - [ ] Branch displays (if branch_head or delivery_person)
-  - [ ] Payment status shows (if regular user)
-- [ ] **Subscription Reminder (Pending Payment)**:
-  - [ ] Yellow alert box shows if plan is reserved but unpaid
-  - [ ] Shows "Subscription Pending: [Plan Name]"
-  - [ ] "Retry Payment" button navigates back to checkout
-  - [ ] "Payment Gateway: Maintenance" badge visible
-- [ ] **Update Name**:
-  - [ ] Input field pre-filled with current name
-  - [ ] Can modify name
-  - [ ] "Update Name" button works
-  - [ ] Success message shows
-  - [ ] Name updates across entire app (Navbar, Dashboard, etc.)
-- [ ] **Update Email**:
-  - [ ] Input field pre-filled with current email
-  - [ ] Validates email format
-  - [ ] "Update Email" button works
-  - [ ] Success message shows
-  - [ ] Requires re-login with new email
+- [x] **User Information Display**:
+  - [x] Name displays correctly
+  - [x] Email displays correctly
+  - [x] Role displays correctly
+  - [x] Branch displays (if branch_head or delivery_person)
+  - [x] Payment status shows (if regular user)
+- [x] **Subscription Reminder (Pending Payment)**:
+  - [x] Yellow alert box shows if plan is reserved but unpaid
+  - [x] Shows "Subscription Pending: [Plan Name]"
+  - [x] "Retry Payment" button navigates back to checkout
+  - [x] "Payment Gateway: Maintenance" badge visible
+- [x] **Update Name**:
+  - [x] Input field pre-filled with current name
+  - [x] Can modify name
+  - [x] "Update Name" button works
+  - [x] Success message shows
+  - [x] Name updates across entire app (Navbar, Dashboard, etc.)
+- [x] **Update Email**:
+  - [x] Input field pre-filled with current email
+  - [x] Validates email format
+  - [x] "Update Email" button works
+  - [x] Success message shows
+  - [x] Requires re-login with new email
 - [ ] **Update Password**:
-  - [ ] Password visibility eye toggle works for both fields
-  - [ ] Password strength indicator (score + bar + label) works
-  - [ ] New password field (required)
-  - [ ] Confirm new password field (required)
-  - [ ] Validates passwords match
-  - [ ] Successfully updates password
-- [ ] Mobile responsive form layout
-- [ ] All buttons have loading states
+  - [x] Password visibility eye toggle works for both fields
+  - [x] Password strength indicator (score + bar + label) works
+  - [x] New password field (required)
+  - [x] Confirm new password field (required)
+  - [x] Validates passwords match
+  - [x] Successfully updates password
+  - [x] Requires re-login with new password
+- [x] Mobile responsive form layout
+- [x] All buttons have loading states
 
 ---
 
