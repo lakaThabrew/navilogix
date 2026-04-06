@@ -117,18 +117,33 @@ const BranchReports = () => {
 
     const typeLabelsRaw = Object.keys(stats.typeBreakdown || {});
     const typeData = Object.values(stats.typeBreakdown || {});
-    const typeLabels = typeLabelsRaw.map(
-        (label, index) => `${label} (${typeData[index]})`,
+
+    // Standardize labels to Title Case and merge
+    const standardizedMap = {};
+    typeLabelsRaw.forEach((label, index) => {
+        const stdLabel = label.charAt(0) != label.charAt(0).toUpperCase() ? label.charAt(0).toUpperCase() + label.slice(1) : label;
+        standardizedMap[stdLabel] = (standardizedMap[stdLabel] || 0) + typeData[index];
+    });
+
+    const finalTypeLabels = Object.keys(standardizedMap);
+    const finalTypeData = Object.values(standardizedMap);
+
+    const typeLabelsWithCount = finalTypeLabels.map(
+        (label, index) => `${label} (${finalTypeData[index]})`,
     );
+
     const typeChartData = {
-        labels: typeLabels,
+        labels: typeLabelsWithCount,
         datasets: [
             {
-                data: typeData,
+                data: finalTypeData,
                 backgroundColor: [
-                    "rgba(153, 102, 255, 0.6)",
-                    "rgba(255, 159, 64, 0.6)",
-                    "rgba(75, 192, 192, 0.6)",
+                    "rgba(54, 162, 235, 0.6)", // Blue
+                    "rgba(255, 99, 132, 0.6)", // Red-ish
+                    "rgba(255, 206, 86, 0.6)", // Yellow
+                    "rgba(75, 192, 192, 0.6)", // Teal
+                    "rgba(153, 102, 255, 0.6)", // Purple
+                    "rgba(255, 159, 64, 0.6)", // Orange
                 ],
                 borderWidth: 1,
             },
@@ -268,7 +283,7 @@ const BranchReports = () => {
                             🏷️ Parcel Types
                         </h3>
                         <div className="w-full max-w-[300px]">
-                            {typeLabels.length > 0 ? (
+                            {typeLabelsWithCount.length > 0 ? (
                                 <Pie
                                     options={{
                                         responsive: true,
