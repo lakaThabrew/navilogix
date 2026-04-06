@@ -84,7 +84,7 @@ This checklist contains all the features, functions, and buttons you need to tes
 - [x] **RadialShareMenu Component**:
   - [x] Auto-opens after 1 second on page load
   - [x] Toggle button opens/closes radial menu
-  - [ ] All 7 social icons display correctly:
+  - [x] All 7 social icons display correctly:
     - [x] WhatsApp (0°) - Opens whatsapp link
     - [x] Facebook (51.4°) - Opens facebook link
     - [x] Email (102.8°) - Opens mailto link
@@ -133,7 +133,7 @@ This checklist contains all the features, functions, and buttons you need to tes
   - [x] Enter key sends message
   - [x] Send button sends message
   - [x] auto Scroll to bottom on new messages
-- [ ] **AI Integration**:
+- [x] **AI Integration**:
   - [x] Sends message to `/api/ai/chat` endpoint
   - [x] Receives response from Gemini AI
   - [x] Shows error message if API fails
@@ -217,8 +217,7 @@ This checklist contains all the features, functions, and buttons you need to tes
   - [x] Creates user account successfully
   - [x] Stores token in localStorage
   - [x] Redirects to `/dashboard`
-  - [x] Shows error alert if registration fails
-
+  - [x] Shows error alert if registration failsx
 #### **Mode: Forgot Password (`/forgot-password`)**
 
 - [x] **Visual Panel**:
@@ -304,7 +303,7 @@ This checklist contains all the features, functions, and buttons you need to tes
   - [x] "Update Email" button works
   - [x] Success message shows
   - [x] Requires re-login with new email
-- [ ] **Update Password**:
+- [x] **Update Password**:
   - [x] Password visibility eye toggle works for both fields
   - [x] Password strength indicator (score + bar + label) works
   - [x] New password field (required)
@@ -321,7 +320,7 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 3.1 Navigation Access
 
-- [x] Can access: Home, Dashboard, Inbox, Reports, Profile
+- [x] Can access: Home, Dashboard, Inbox, Reports, Profile, logout
 - [x] Cannot see: About, Services, Contact (hidden for admin)
 - [x] Navbar shows "Inbox" and "Reports" links
 
@@ -349,184 +348,185 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 #### **Add New Parcel Form** (Main Office)
 
-- [ ] Form visible to main_admin
-- [ ] **Sender Information**:
-  - [ ] Name field (required)
-  - [ ] Address field (required)
-  - [ ] Contact field (required)
-- [ ] **Receiver Information**:
-  - [ ] Name field (required)
-  - [ ] Address field (required)
-  - [ ] Contact field (required)
-- [ ] **Parcel Details**:
-  - [ ] Weight field
-  - [ ] Type dropdown (Standard, Document, Parcel)
-  - [ ] COD Amount field
-- [ ] **Submit Button**: "Add Parcel to System"
-  - [ ] Creates parcel immediately (not a request)
-  - [ ] Auto-assigns branch based on receiver address
-  - [ ] Generates unique tracking ID
-  - [ ] Success alert shows
-  - [ ] Form clears after submission
-  - [ ] Parcel appears in table below
+- [x] Form visible to main_admin
+- [x] **Sender Information**:
+  - [x] Name field (required)
+  - [x] Address field (required)
+  - [x] Contact field (required - validates 10 digits)
+- [x] **Receiver Information**:
+  - [x] Name field (required)
+  - [x] Address field (required)
+  - [x] Contact field (required - validates 10 digits)
+- [x] **Parcel Details**:
+  - [x] Weight field (validates non-negative)
+  - [x] Type dropdown (Standard, Document, Parcel)
+  - [x] COD Amount field (validates non-negative)
+- [x] **Submit Button**: "Add Parcel to System"
+  - [x] Creates parcel immediately (not a request)
+  - [x] Auto-assigns branch based on receiver address
+  - [x] Generates unique tracking ID
+  - [x] Success alert shows
+  - [x] Form clears after submission
+  - [x] Parcel appears in table below
 
 #### **Add Branch Form**
 
-- [ ] Form appears for main_admin
-- [ ] Fields: Branch Name, City, Latitude, Longitude
-- [ ] Required field validation works
-- [ ] "Add Branch" button creates new branch
-- [ ] Success alert displays
-- [ ] Form clears after success
-- [ ] New branch appears in system (check About page map)
+- [x] Form appears for main_admin
+- [x] Fields: Branch Name, City, Latitude, Longitude
+- [x] Required field validation works
+- [x] "Add Branch" button creates new branch
+- [x] Success alert displays
+- [x] Form clears after success
+- [x] New branch appears in system (check About page map)
 
 #### **Add Staff User Form**
 
-- [ ] Form visible to main_admin
-- [ ] Fields: Name, Email, Password, Role, Branch (conditional)
-- [ ] Role dropdown shows:
-  - [ ] Regular
-  - [ ] Delivery Person
-  - [ ] Branch Head
-  - [ ] Main Admin
-- [ ] **Branch Selection**:
-  - [ ] Dropdown appears when "Branch Head" or "Delivery Person" selected
-  - [ ] Dropdown hidden for "Regular" and "Main Admin"
-  - [ ] Lists all available branches
-- [ ] **Create User Button**:
-  - [ ] Creates user successfully
-  - [ ] Assigns branch if applicable
-  - [ ] Success alert shows
-  - [ ] Form clears
-  - [ ] New user visible in Reports > User Management
+- [x] Form visible to main_admin
+- [x] Fields: Name, Email, Password, Role, Branch (conditional)
+- [x] Role dropdown shows:
+  - [x] Regular
+  - [x] Delivery Person
+  - [x] Branch Head
+  - [x] Main Admin
+- [x] **Branch Selection**:
+  - [x] Dropdown appears when "Branch Head" or "Delivery Person" selected
+  - [x] Dropdown hidden for "Regular" and "Main Admin"
+  - [x] Lists all available branches
+- [x] **Create User Button**:
+  - [x] Creates user successfully
+  - [x] Assigns branch if applicable
+  - [x] Success alert shows
+  - [x] Form clears
+  - [x] New user visible in Reports > User Management
 
 #### **Parcels Overview Table**
 
-- [ ] Shows ALL parcels in system (admin has full access)
-- [ ] **Columns Display**:
-  - [ ] Tracking ID
-  - [ ] Receiver Address
-  - [ ] Branch Name
-  - [ ] Status (dropdown for editing)
-  - [ ] Actions column
-- [ ] **Status Dropdown** (for each parcel):
-  - [ ] Can select: Pending, In Main Branch, Transmitting, In Sub Branch
-  - [ ] **Restrictions**: Cannot directly set to "Out for Delivery" or "Delivered"
-  - [ ] Changing status updates immediately
-  - [ ] Status color changes based on selection
-  - [ ] Updates history timeline
-- [ ] **Quick Action Buttons**:
-  - [ ] "Transmit to Branch" appears when status is "In Main Branch"
-  - [ ] Clicking changes status to "Transmitting"
-  - [ ] Button shows for parcels with assigned branches
-- [ ] **Assign Rider Dropdown**:
-  - [ ] Shows "Assign Rider" dropdown for parcels in "In Sub Branch" status
-  - [ ] Lists only delivery persons from the parcel's branch
-  - [ ] Assigning rider shows success message
-  - [ ] Rider name appears in table after assignment
-- [ ] Table pagination/scroll works
-- [ ] Mobile responsive (horizontal scroll)
+- [x] Shows ALL parcels in system (admin has full access)
+- [x] **Columns Display**:
+  - [x] Tracking ID
+  - [x] Receiver Address
+  - [x] Branch Name
+  - [x] Created Date
+  - [x] Status (dropdown for editing)
+  - [x] Actions column
+- [x] **Status Dropdown** (for each parcel):
+  - [x] Can select: Pending, In Main Branch, Transmitting, In Sub Branch
+  - [x] **Restrictions**: Cannot directly set to "Out for Delivery" or "Delivered"
+  - [x] Changing status updates immediately
+  - [x] Status color changes based on selection
+  - [x] Updates history timeline
+- [x] **Quick Action Buttons**:
+  - [x] "Transmit to Branch" appears when status is "In Main Branch"
+  - [x] Clicking changes status to "Transmitting"
+  - [x] Button shows for parcels with assigned branches
+- [x] **Assign Rider Dropdown**:
+  - [x] Shows "Assign Rider" dropdown for parcels in "In Sub Branch" status
+  - [x] Lists only delivery persons from the parcel's branch
+  - [x] Assigning rider shows success message
+  - [x] Rider name appears in table after assignment
+- [x] Table pagination/scroll works
+- [x] Mobile responsive (horizontal scroll)
 
 ### 3.3 Inbox Page (`/inbox`)
 
-- [ ] Accessible from Navbar "Inbox" link
-- [ ] Shows current user role in heading
-- [ ] Displays unread message count badge
+- [x] Accessible from Navbar "Inbox" link
+- [x] Shows current user role in heading
+- [x] Displays unread message count badge
 - [ ] **Message List**:
-  - [ ] Unread messages highlighted (blue background, blue dot)
-  - [ ] Read messages have reduced opacity
-  - [ ] Each message shows:
-    - [ ] Sender name
-    - [ ] Message content
-    - [ ] Timestamp
-    - [ ] Read/unread indicator dot
-  - [ ] Clicking message marks it as read
+  - [x] Unread messages highlighted (blue background, blue dot)
+  - [x] Read messages have reduced opacity
+  - [x] Each message shows:
+    - [x] Sender name
+    - [x] Message content
+    - [x] Timestamp
+    - [x] Read/unread indicator dot
+  - [x] Clicking message marks it as read
 - [ ] **Approval Flow** (for parcel requests):
-  - [ ] Messages with parcelData show "Approve" button
-  - [ ] Clicking "Approve" prompts confirmation
-  - [ ] Confirming creates parcel in system
-  - [ ] Success alert displays
-  - [ ] Message marked as read after approval
-  - [ ] Error alert if approval fails
-- [ ] Empty state displays if no messages
-- [ ] Mobile responsive layout
+  - [x] Messages with parcelData show "Approve" button
+  - [x] Clicking "Approve" prompts confirmation
+  - [x] Confirming creates parcel in system
+  - [x] Success alert displays
+  - [x] Message marked as read after approval
+  - [x] Error alert if approval fails
+- [x] Empty state displays if no messages
+- [x] Mobile responsive layout
 
 ### 3.4 Reports/Analytics Page (`/reports`)
 
-- [ ] Accessible from Navbar "Reports" link
-- [ ] Page title: "System Analytics"
+- [x] Accessible from Navbar "Reports" link
+- [x] Page title: "System Analytics"
 
 #### **Date Filter Section**
 
-- [ ] Start Date input field
-- [ ] End Date input field
-- [ ] "Apply Filter" button:
-  - [ ] Filters all data by date range
-  - [ ] Updates all charts and stats
-- [ ] "Clear" button:
-  - [ ] Resets dates to empty
-  - [ ] Shows all-time data again
+- [x] Start Date input field
+- [x] End Date input field
+- [x] "Apply Filter" button:
+  - [x] Filters all data by date range
+  - [x] Updates all charts and stats
+- [x] "Clear" button:
+  - [x] Resets dates to empty
+  - [x] Shows all-time data again
 
 #### **Key Metrics Cards**
 
-- [ ] **Total Parcels** (blue border) - Count of all parcels in date range
-- [ ] **Total Revenue (COD)** (green border) - Sum of all COD amounts
-- [ ] **Pending Delivery** (yellow border) - Count of non-delivered/returned
-- [ ] **Returns** (red border) - Count of returned parcels
+- [x] **Total Parcels** (blue border) - Count of all parcels in date range
+- [x] **Total Revenue (COD)** (green border) - Sum of all COD amounts
+- [x] **Pending Delivery** (yellow border) - Count of non-delivered/returned
+- [x] **Returns** (red border) - Count of returned parcels
 
 #### **Charts Section**
 
-- [ ] **Branch Performance** (Bar Chart):
-  - [ ] X-axis: Branch names
-  - [ ] Y-axis: Parcel count
-  - [ ] Shows "No branch data yet" if empty
-  - [ ] Chart is responsive
-- [ ] **Rider Efficiency** (Bar Chart):
-  - [ ] Two bars per rider: Assigned vs Delivered
-  - [ ] Different colors for each bar
-  - [ ] Shows rider names
-  - [ ] Shows "No rider data yet" if empty
-- [ ] **Parcel Status Breakdown** (Doughnut Chart):
-  - [ ] Shows all status types with counts in labels
-  - [ ] Different colors for each status
-  - [ ] Legend at bottom
-  - [ ] Centered in card
-  - [ ] Shows "No status data yet" if empty
-- [ ] **Parcel Types** (Pie Chart):
-  - [ ] Shows parcel types (Document, Package, Standard)
-  - [ ] Counts in labels
-  - [ ] Legend at bottom
-  - [ ] Shows "No parcel type data yet" if empty
-- [ ] All charts resize properly on mobile
+- [x] **Branch Performance** (Bar Chart):
+  - [x] X-axis: Branch names
+  - [x] Y-axis: Parcel count
+  - [x] Shows "No branch data yet" if empty
+  - [x] Chart is responsive
+- [x] **Rider Efficiency** (Bar Chart):
+  - [x] Two bars per rider: Assigned vs Delivered
+  - [x] Different colors for each bar
+  - [x] Shows rider names
+  - [x] Shows "No rider data yet" if empty
+- [x] **Parcel Status Breakdown** (Doughnut Chart):
+  - [x] Shows all status types with counts in labels
+  - [x] Different colors for each status
+  - [x] Legend at bottom
+  - [x] Centered in card
+  - [x] Shows "No status data yet" if empty
+- [x] **Parcel Types** (Pie Chart):
+  - [x] Shows parcel types (Document, Package, Standard)
+  - [x] Counts in labels
+  - [x] Legend at bottom
+  - [x] Shows "No parcel type data yet" if empty
+- [x] All charts resize properly on mobile
 
 #### **User Management Section**
 
-- [ ] Section visible only to main_admin
-- [ ] Heading: "User Management"
-- [ ] "Add New User" button:
-  - [ ] Opens in new tab
-  - [ ] Navigates to `/register`
-- [ ] **User Management Table**:
-  - [ ] **Columns**: Name, Email, Current Role, Branch, Actions
-  - [ ] Lists ALL users in system
-  - [ ] **Role Dropdown** (for each user):
-    - [ ] Options: Regular, Delivery Person, Branch Head, Main Admin
-    - [ ] Changing dropdown updates role immediately
-    - [ ] Success alert after update
-    - [ ] Refetches user list
-  - [ ] **Branch Assignment Dropdown**:
-    - [ ] Shows only for Branch Head and Delivery Person roles
-    - [ ] Shows "N/A" for Regular and Main Admin
-    - [ ] Lists all available branches
-    - [ ] Selecting branch updates user immediately
-  - [ ] **Remove Button**:
-    - [ ] Shows confirmation dialog
-    - [ ] Deletes user from system
-    - [ ] Success message after deletion
-    - [ ] User removed from table
-    - [ ] Error alert if deletion fails
-  - [ ] Table hover effects work
-  - [ ] Horizontal scroll on mobile
+- [x] Section visible only to main_admin
+- [x] Heading: "User Management"
+- [x] "Add New User" button:
+  - [x] Opens in new tab
+  - [x] Navigates to `/dashboard`
+- [x] **User Management Table**:
+  - [x] **Columns**: Name, Email, Current Role, Branch, Actions
+  - [x] Lists ALL users in system
+  - [x] **Role Dropdown** (for each user):
+    - [x] Options: Regular, Delivery Person, Branch Head, Main Admin
+    - [x] Changing dropdown updates role immediately
+    - [x] Success alert after update
+    - [x] Refetches user list
+  - [x] **Branch Assignment Dropdown**:
+    - [x] Shows only for Branch Head and Delivery Person roles
+    - [x] Shows "N/A" for Regular and Main Admin
+    - [x] Lists all available branches
+    - [x] Selecting branch updates user immediately
+  - [x] **Remove Button**:
+    - [x] Shows confirmation dialog
+    - [x] Deletes user from system
+    - [x] Success message after deletion
+    - [x] User removed from table
+    - [x] Error alert if deletion fails
+  - [x] Table hover effects work
+  - [x] Horizontal scroll on mobile
 
 ---
 
@@ -534,19 +534,19 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 4.1 Navigation Access
 
-- [ ] Can access: Home, Dashboard, Profile
-- [ ] Cannot see: About, Services, Contact, Inbox, Reports
-- [ ] Navbar simplified for branch head
+- [x] Can access: Home, Dashboard, Profile, logout
+- [x] Cannot see: About, Services, Contact, Inbox, Reports
+- [x] Navbar simplified for branch head
 
 ### 4.2 Dashboard (`/dashboard`)
 
 #### **Statistics Cards**
 
-- [ ] Shows stats for ONLY their branch parcels
-- [ ] Total Parcels (filtered by branch)
-- [ ] Delivered count (from their branch)
-- [ ] Returned count (from their branch)
-- [ ] COD Revenue (from their branch)
+- [x] Shows stats for ONLY their branch parcels
+- [x] Total Parcels (filtered by branch)
+- [x] Delivered count (from their branch)
+- [x] Returned count (from their branch)
+- [x] COD Revenue (from their branch)
 
 #### **Add Parcel Form** (Branch Head Version)
 
@@ -562,35 +562,35 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 #### **Parcels Overview Table**
 
-- [x] Shows ONLY parcels where:
-  - [x] Branch ID matches branch head's branch
-  - [x] OR createdBy matches branch head's user ID
-- [x] **Status Dropdown**:
-  - [x] Can select: Pending, In Main Branch, Transmitting, In Sub Branch
-  - [x] **Restriction**: Cannot set to "Delivered" (only riders can)
-  - [x] Can set to "Out for Delivery" (unlike admin)
-  - [x] Changing status updates parcel
-- [x] **Quick Action Buttons**:
-  - [x] "Receive at Branch" button shows when status is "Transmitting"
-  - [x] Clicking changes status to "In Sub Branch"
-  - [x] Success message displays
-- [x] **Auto-Assignment Feature**:
-  - [x] When they change status to "In Sub Branch"
-  - [x] System automatically assigns an available delivery person from their branch
-  - [x] Success message mentions auto-assignment
-  - [x] Rider name appears in table
-  - [x] **Check Logic**:
-    - [x] Assigns rider with least currently assigned parcels
-    - [x] Only assigns riders from same branch
-    - [x] Respects MAX_DAILY_DELIVERIES constant
-- [x] Table only shows branch-relevant parcels
+- [ ] Shows ONLY parcels where:
+  - [ ] Branch ID matches branch head's branch
+  - [ ] OR createdBy matches branch head's user ID
+- [ ] **Status Dropdown**:
+  - [ ] Can select: Pending, In Main Branch, Transmitting, In Sub Branch
+  - [ ] **Restriction**: Cannot set to "Delivered" (only riders can)
+  - [ ] Can set to "Out for Delivery" (unlike admin)
+  - [ ] Changing status updates parcel
+- [ ] **Quick Action Buttons**:
+  - [ ] "Receive at Branch" button shows when status is "Transmitting"
+  - [ ] Clicking changes status to "In Sub Branch"
+  - [ ] Success message displays
+- [ ] **Auto-Assignment Feature**:
+  - [ ] When they change status to "In Sub Branch"
+  - [ ] System automatically assigns an available delivery person from their branch
+  - [ ] Success message mentions auto-assignment
+  - [ ] Rider name appears in table
+  - [ ] **Check Logic**:
+    - [ ] Assigns rider with least currently assigned parcels
+    - [ ] Only assigns riders from same branch
+    - [ ] Respects MAX_DAILY_DELIVERIES constant
+- [ ] Table only shows branch-relevant parcels
 
 #### **Restrictions**
 
-- [x] Cannot add branches
-- [x] Cannot add staff users
-- [x] Cannot access system analytics
-- [x] Cannot manage other users
+- [ ] Cannot add branches
+- [ ] Cannot add staff users
+- [ ] Cannot access system analytics
+- [ ] Cannot manage other users
 
 ---
 
@@ -598,9 +598,9 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 5.1 Navigation Access
 
-- [x] Can access: Home, Dashboard, Profile
-- [x] Cannot see: About, Services, Contact, Inbox, Reports
-- [x] Simplified navbar
+- [ ] Can access: Home, Dashboard, Profile
+- [ ] Cannot see: About, Services, Contact, Inbox, Reports
+- [ ] Simplified navbar
 
 ### 5.2 Dashboard (`/dashboard`)
 
@@ -714,13 +714,13 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 #### **Parcels Overview Table**
 
-- [x] Shows ONLY parcels where:
-  - [x] User is sender (senderInfo.contact or name matches)
-  - [x] OR user is receiver (receiverInfo.contact or name matches)
-- [x] **Columns**: Tracking ID, Receiver, Branch, Status
-- [x] **Status Display**: Badge only (NOT editable)
-- [x] **No Actions Column**: Regular users cannot change status
-- [x] Clicking tracking ID could navigate to track page
+- [ ] Shows ONLY parcels where:
+  - [ ] User is sender (senderInfo.contact or name matches)
+  - [ ] OR user is receiver (receiverInfo.contact or name matches)
+- [ ] **Columns**: Tracking ID, Receiver, Branch, Status
+- [ ] **Status Display**: Badge only (NOT editable)
+- [ ] **No Actions Column**: Regular users cannot change status
+- [ ] Clicking tracking ID could navigate to track page
 
 #### **Restrictions**
 
@@ -753,10 +753,10 @@ This checklist contains all the features, functions, and buttons you need to tes
 ### 7.2 Data Validation
 
 - [ ] **Parcel Form**:
-  - [ ] Negative weight rejected
-  - [ ] Negative COD amount rejected
+  - [ ] Negative weight rejected (shows alert)
+  - [ ] Negative COD amount rejected (shows alert)
+  - [ ] Invalid phone numbers (not 10 digits) rejected
   - [ ] Empty required fields show validation errors
-  - [ ] Invalid phone numbers handled gracefully
   - [ ] Address fields accept long text without breaking layout
 - [ ] **User Forms**:
   - [ ] Email format validated (contains @, domain)
@@ -855,17 +855,17 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 8.1 Auth Endpoints (`/api/auth`)
 
-- [x] POST `/api/auth/register` - Creates new user
-- [x] POST `/api/auth/login` - Returns JWT token
-- [x] POST `/api/auth/forgot-password` - Generates reset token
-- [x] POST `/api/auth/reset-password` - Resets password with token
-- [x] POST `/api/auth/reserve` - Reserves a package plan
-- [x] GET `/api/auth/branches` - Returns all branches
-- [x] POST `/api/auth/branches` - Creates new branch (admin only)
-- [x] GET `/api/auth/users` - Returns all users (admin only)
-- [x] PUT `/api/auth/users/:id/role` - Updates user role (admin only)
-- [x] DELETE `/api/auth/users/:id` - Deletes user (admin only)
-- [x] PUT `/api/auth/profile` - Updates user profile
+- [ ] POST `/api/auth/register` - Creates new user
+- [ ] POST `/api/auth/login` - Returns JWT token
+- [ ] POST `/api/auth/forgot-password` - Generates reset token
+- [ ] POST `/api/auth/reset-password` - Resets password with token
+- [ ] POST `/api/auth/reserve` - Reserves a package plan
+- [ ] GET `/api/auth/branches` - Returns all branches
+- [ ] POST `/api/auth/branches` - Creates new branch (admin only)
+- [ ] GET `/api/auth/users` - Returns all users (admin only)
+- [ ] PUT `/api/auth/users/:id/role` - Updates user role (admin only)
+- [ ] DELETE `/api/auth/users/:id` - Deletes user (admin only)
+- [ ] PUT `/api/auth/profile` - Updates user profile
 
 ### 8.2 Parcel Endpoints (`/api/parcels`)
 
@@ -921,20 +921,20 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 10.1 Environment Variables
 
-- [x] **Client** (`.env` in `/client`):
-  - [x] `VITE_FORMSPREE_FORM_ID` - Formspree form ID configured
-- [x] **Server** (`.env` in `/server`):
-  - [x] `PORT` - Server port (default 5000)
-  - [x] `MONGO_URI` - MongoDB connection string
-  - [x] `JWT_SECRET` - JWT secret key set
-  - [x] `GEMINI_API_KEY` - Google Gemini API key configured
+- [ ] **Client** (`.env` in `/client`):
+  - [ ] `VITE_FORMSPREE_FORM_ID` - Formspree form ID configured
+- [ ] **Server** (`.env` in `/server`):
+  - [ ] `PORT` - Server port (default 5000)
+  - [ ] `MONGO_URI` - MongoDB connection string
+  - [ ] `JWT_SECRET` - JWT secret key set
+  - [ ] `GEMINI_API_KEY` - Google Gemini API key configured
 
 ### 10.2 Database Connection
 
-- [x] MongoDB connection successful
-- [x] Collections created: users, parcels, branches, messages
-- [x] Seeded data populated correctly (`npm run seed` works)
-- [x] Database credentials secured
+- [ ] MongoDB connection successful
+- [ ] Collections created: users, parcels, branches, messages
+- [ ] Seeded data populated correctly (`npm run seed` works)
+- [ ] Database credentials secured
 
 ### 10.3 External Services
 

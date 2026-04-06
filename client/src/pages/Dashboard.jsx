@@ -37,6 +37,23 @@ const Dashboard = () => {
   const [newBranchLng, setNewBranchLng] = useState("");
   const [newBranchAreas, setNewBranchAreas] = useState("");
   const [addingBranch, setAddingBranch] = useState(false);
+  const [staffUsers, setStaffUsers] = useState([]);
+
+  async function fetchStaffUsers() {
+    try {
+      const u = JSON.parse(localStorage.getItem("userInfo"));
+      if (!u || (u.role !== "main_admin" && u.role !== "branch_head")) return;
+      const config = { headers: { Authorization: `Bearer ${u.token}` } };
+      const { data } = await axios.get(
+        "http://localhost:5000/api/auth/users",
+        config,
+      );
+      // Filter for delivery persons only
+      setStaffUsers(data.filter((user) => user.role === "delivery_person"));
+    } catch (error) {
+      logger.error("Error fetching staff users: " + error.message);
+    }
+  }
 
   async function fetchBranches() {
     try {
@@ -92,9 +109,10 @@ const Dashboard = () => {
     } else {
       setUser(u);
       fetchParcels(u);
-      if (u.role === "main_admin") {
+      if (u.role === "main_admin" || u.role === "branch_head") {
         fetchMessages(u);
         fetchBranches();
+        fetchStaffUsers();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -121,6 +139,21 @@ const Dashboard = () => {
 
   const handleCreateBranchAdmin = async (e) => {
     e.preventDefault();
+
+    // Validation
+    if (!branchForm.email.includes("@")) {
+      alert("Please enter a valid email address!");
+      return;
+    }
+    if (branchForm.password.length < 6) {
+      alert("Password must be at least 6 characters long!");
+      return;
+    }
+    if ((branchForm.role === "branch_head" || branchForm.role === "delivery_person") && !branchForm.branchId) {
+      alert("Please assign a branch for this staff role!");
+      return;
+    }
+
     try {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
@@ -149,6 +182,16 @@ const Dashboard = () => {
     e.preventDefault();
     if (!newBranchName || !newBranchLat || !newBranchLng) {
       alert("Branch Name, Latitude, and Longitude are required.");
+      return;
+    }
+
+    if (newBranchContact.length !== 10) {
+      alert("Branch contact number must be exactly 10 digits!");
+      return;
+    }
+
+    if (isNaN(newBranchLat) || isNaN(newBranchLng)) {
+      alert("Latitude and Longitude must be valid numbers!");
       return;
     }
 
@@ -191,6 +234,23 @@ const Dashboard = () => {
     logger.info(
       "➕ [CLIENT DASHBOARD] Adding new parcel: " + form.receiverName,
     );
+
+    // Validation Logic
+    if (form.senderContact.length !== 10 || form.receiverContact.length !== 10) {
+      alert("Contact numbers must be exactly 10 digits!");
+      return;
+    }
+
+    if (Number(form.weight) < 0) {
+      alert("Weight cannot be negative!");
+      return;
+    }
+
+    if (Number(form.codAmount) < 0) {
+      alert("COD Amount (Payment) cannot be negative!");
+      return;
+    }
+
     try {
       const parcelData = {
         senderInfo: {
@@ -278,6 +338,24 @@ const Dashboard = () => {
     }
   };
 
+  const handleAssignRider = async (parcelId, riderId) => {
+    if (!riderId) return;
+    try {
+      const u = JSON.parse(localStorage.getItem("userInfo"));
+      const config = { headers: { Authorization: `Bearer ${u.token}` } };
+      await axios.post(
+        "http://localhost:5000/api/parcels/assign",
+        { parcelId, riderId },
+        config,
+      );
+      alert("Rider Assigned Successfully!");
+      fetchParcels();
+    } catch (error) {
+      logger.error("Error assigning rider: " + error.message);
+      alert("Failed to assign rider");
+    }
+  };
+
   const [reportData, setReportData] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
@@ -355,10 +433,10 @@ const Dashboard = () => {
     total: displayedParcels.length,
     delivered: displayedParcels.filter((p) => p.status === "Delivered").length,
     returned: displayedParcels.filter((p) => p.status === "Returned").length,
-    cod: displayedParcels.reduce(
+    cod: Math.round(displayedParcels.reduce(
       (acc, p) => acc + (Number(p.codAmount) || 0),
       0,
-    ),
+    ) * 100) / 100,
   };
 
   return (
@@ -378,9 +456,9 @@ const Dashboard = () => {
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm p-4">
           <div className="bg-white p-8 rounded-[32px] shadow-2xl max-w-2xl w-full text-center relative overflow-hidden">
-             {/* Decorative Background */}
+            {/* Decorative Background */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
-            
+
             <h2 className="text-3xl font-bold text-primary mb-2">
               🔓 Unlock Premium Power
             </h2>
@@ -390,7 +468,7 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {/* Plus Option */}
-              <div 
+              <div
                 onClick={() => navigate("/checkout?plan=plus")}
                 className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50/50 transition-all cursor-pointer text-left relative overflow-hidden"
               >
@@ -409,7 +487,7 @@ const Dashboard = () => {
               </div>
 
               {/* Pro Option */}
-              <div 
+              <div
                 onClick={() => navigate("/checkout?plan=pro")}
                 className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer text-left relative overflow-hidden"
               >
@@ -440,20 +518,33 @@ const Dashboard = () => {
       )}
 
       {user.role === "main_admin" && messages.length > 0 && (
-        <div className="mb-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
-          <h3 className="text-xl font-bold text-yellow-800 mb-4">
-            🔔 Notifications
+        <div className="mb-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl relative overflow-hidden">
+          {/* Unread Count Badge */}
+          {messages.filter(m => !m.isRead).length > 0 && (
+            <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse shadow-lg">
+              {messages.filter(m => !m.isRead).length} New
+            </div>
+          )}
+
+          <h3 className="text-xl font-bold text-yellow-800 mb-4 flex items-center gap-2">
+            <span className="text-2xl">🔔</span> Notifications
           </h3>
           <div className="space-y-3">
             {messages.map((msg) => (
               <div
                 key={msg._id}
                 onClick={() => markAsRead(msg._id)}
-                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-colors ${
-                  msg.isRead ? "border-gray-300" : "border-blue-500"
-                }`}
+                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-all ${msg.isRead ? "border-gray-300 opacity-60" : "border-blue-500 ring-1 ring-blue-100"
+                  }`}
               >
-                <p className="font-medium text-gray-800">{msg.content}</p>
+                <div className="flex justify-between items-start">
+                  <p className={`font-medium ${msg.isRead ? "text-gray-500" : "text-gray-800"}`}>
+                    {msg.content}
+                  </p>
+                  {!msg.isRead && (
+                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                  )}
+                </div>
                 <p className="text-xs text-gray-500 mt-1">
                   {new Date(msg.createdAt).toLocaleString()}
                 </p>
@@ -464,33 +555,32 @@ const Dashboard = () => {
       )}
 
       <div
-        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 ${
-          user.role === "regular" && user.paymentStatus !== "paid"
+        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 ${user.role === "regular" && user.paymentStatus !== "paid"
             ? "opacity-20 pointer-events-none select-none filter blur-sm"
             : ""
-        }`}
+          }`}
       >
-        <div className="floating-card text-center p-6">
-          <div className="text-4xl font-bold text-primary mb-2">
+        <div className="floating-card text-center p-6 overflow-hidden">
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-2">
             {currentStats.total}
           </div>
           <div className="text-gray-500">Total Parcels</div>
         </div>
-        <div className="floating-card text-center p-6 bg-green-50 border border-green-100">
-          <div className="text-4xl font-bold text-green-600 mb-2">
+        <div className="floating-card text-center p-6 bg-green-50 border border-green-100 overflow-hidden">
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 mb-2">
             {currentStats.delivered}
           </div>
           <div className="text-gray-500">Delivered</div>
         </div>
-        <div className="floating-card text-center p-6 bg-red-50 border border-red-100">
-          <div className="text-4xl font-bold text-red-600 mb-2">
+        <div className="floating-card text-center p-6 bg-red-50 border border-red-100 overflow-hidden">
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-red-600 mb-2">
             {currentStats.returned}
           </div>
           <div className="text-gray-500">Returned</div>
         </div>
-        <div className="floating-card text-center p-6 bg-blue-50 border border-blue-100">
-          <div className="text-4xl font-bold text-blue-600 mb-2">
-            Rs. {currentStats.cod}
+        <div className="floating-card text-center p-6 bg-blue-50 border border-blue-100 overflow-hidden">
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600 mb-2 break-all">
+            Rs. {Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
           <div className="text-gray-500">COD Volume</div>
         </div>
@@ -526,13 +616,13 @@ const Dashboard = () => {
               <div className="flex justify-between items-center mb-2">
                 <span>Total Paid:</span>
                 <span className="font-bold text-red-500">
-                  Rs. {reportData.codPaid}
+                  Rs. {Number(reportData.codPaid).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 10 }).split('.')[0] + (reportData.codPaid % 1 !== 0 ? '.' + reportData.codPaid.toString().split('.')[1].substring(0, 2) : '')}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Total to Receive:</span>
                 <span className="font-bold text-green-500">
-                  Rs. {reportData.codToReceive}
+                  Rs. {Number(reportData.codToReceive).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
             </div>
@@ -622,34 +712,34 @@ const Dashboard = () => {
                   </div>
                   {(branchForm.role === "branch_head" ||
                     branchForm.role === "delivery_person") && (
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Branch *
-                      </label>
-                      <select
-                        className="input-field"
-                        value={branchForm.branchId}
-                        onChange={(e) =>
-                          setBranchForm({
-                            ...branchForm,
-                            branchId: e.target.value,
-                          })
-                        }
-                        required
-                      >
-                        <option value="">Select a Branch</option>
-                        {branches.map((b) => (
-                          <option key={b._id} value={b._id}>
-                            {b.branchName}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Branch *
+                        </label>
+                        <select
+                          className="input-field"
+                          value={branchForm.branchId}
+                          onChange={(e) =>
+                            setBranchForm({
+                              ...branchForm,
+                              branchId: e.target.value,
+                            })
+                          }
+                          required
+                        >
+                          <option value="">Select a Branch</option>
+                          {branches.map((b) => (
+                            <option key={b._id} value={b._id}>
+                              {b.branchName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                 </div>
                 <div className="flex justify-end pt-4">
                   <button type="submit" className="btn-primary font-bold px-8">
-                    Register User
+                    + Register User
                   </button>
                 </div>
               </form>
@@ -684,7 +774,7 @@ const Dashboard = () => {
                       value={newBranchContact}
                       onChange={(e) => setNewBranchContact(e.target.value)}
                       className="input-field"
-                      placeholder="e.g., 081-2234567"
+                      placeholder="e.g., 0812234567"
                     />
                   </div>
                   <div>
@@ -786,7 +876,7 @@ const Dashboard = () => {
               </label>
               <input
                 className="input-field"
-                placeholder="077-1234567"
+                placeholder="0771234567"
                 value={form.senderContact}
                 onChange={(e) =>
                   setForm({ ...form, senderContact: e.target.value })
@@ -825,7 +915,7 @@ const Dashboard = () => {
               </label>
               <input
                 className="input-field"
-                placeholder="077-1234567"
+                placeholder="0771234567"
                 value={form.receiverContact}
                 onChange={(e) =>
                   setForm({ ...form, receiverContact: e.target.value })
@@ -908,16 +998,18 @@ const Dashboard = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-100">
+              <thead className="bg-slate-50/80 backdrop-blur-sm sticky top-0 z-10 border-b border-slate-100">
                 <tr>
-                  <th className="p-4 font-bold text-gray-600 rounded-tl-xl">
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider rounded-tl-2xl">
                     Tracking ID
                   </th>
-                  <th className="p-4 font-bold text-gray-600">Receiver</th>
-                  <th className="p-4 font-bold text-gray-600">Branch</th>
-                  <th className="p-4 font-bold text-gray-600">Status</th>
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Receiver & Address</th>
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Branch</th>
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Date</th>
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Status</th>
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Rider</th>
                   {user.role !== "regular" && (
-                    <th className="p-4 font-bold text-gray-600 rounded-tr-xl">
+                    <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider rounded-tr-2xl text-right">
                       Actions
                     </th>
                   )}
@@ -927,47 +1019,59 @@ const Dashboard = () => {
                 {displayedParcels.map((p) => (
                   <tr
                     key={p._id}
-                    className="hover:bg-gray-50 transition-colors"
+                    className="group border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-all duration-200"
                   >
-                    <td className="p-4 font-medium text-primary">
-                      {p.trackingId}
+                    <td className="p-4">
+                      <span className="font-mono text-sm font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded-lg">
+                        {p.trackingId}
+                      </span>
                     </td>
-                    <td className="p-4 text-gray-600">
-                      {p.receiverInfo.address}
+                    <td className="p-4">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold text-slate-700">{p.receiverInfo.name}</span>
+                        <span className="text-[11px] text-slate-400 truncate max-w-[150px]" title={p.receiverInfo.address}>
+                          {p.receiverInfo.address}
+                        </span>
+                      </div>
                     </td>
-                    <td className="p-4 text-gray-600">
-                      {p.branchId?.branchName || "Unassigned"}
+                    <td className="p-4">
+                      <div className="flex items-center gap-2">
+                         <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                         <span className="text-xs font-semibold text-slate-600">
+                            {p.branchId?.branchName || "Unassigned"}
+                         </span>
+                      </div>
+                    </td>
+                    <td className="p-4 text-xs font-medium text-slate-500 whitespace-nowrap">
+                      {new Date(p.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </td>
                     <td className="p-4">
                       {user.role === "main_admin" ||
-                      user.role === "branch_head" ? (
+                        user.role === "branch_head" ? (
                         <select
                           value={p.status}
                           onChange={(e) => updateStatus(p._id, e.target.value)}
-                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm outline-none cursor-pointer border-none
-                            ${
-                              p.status === "Delivered"
-                                ? "bg-green-100 text-green-800"
-                                : p.status === "Returned"
-                                  ? "bg-red-100 text-red-800"
-                                  : p.status === "Out for Delivery"
-                                    ? "bg-orange-100 text-orange-800"
-                                    : "bg-blue-100 text-blue-800"
-                            }`}
+                          className={`appearance-none px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tight shadow-sm outline-none cursor-pointer border-0 w-full text-center transition-all hover:scale-105 active:scale-95
+                            ${p.status === "Delivered"
+                               ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
+                               : p.status === "Returned"
+                                 ? "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
+                                 : p.status === "Out for Delivery"
+                                   ? "bg-amber-100 text-amber-800 ring-1 ring-amber-200"
+                                   : "bg-blue-100 text-blue-800 ring-1 ring-blue-200"
+                             }`}
                         >
                           <option value="Pending">Pending</option>
                           <option value="In Main Branch">In Main Branch</option>
                           <option value="Transmitting">Transmitting</option>
                           <option value="In Sub Branch">In Sub Branch</option>
 
-                          {/* Restricting Options Based on Role */}
                           {user.role !== "main_admin" && (
                             <option value="Out for Delivery">
                               Out for Delivery
                             </option>
                           )}
 
-                          {/* Delivered is theoretically restricted from both admin and branch head, but if it was already delivered by a rider, it should display it */}
                           <option value="Delivered" disabled>
                             Delivered
                           </option>
@@ -976,65 +1080,117 @@ const Dashboard = () => {
                         </select>
                       ) : (
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm
-                                                  ${
-                                                    p.status === "Delivered"
-                                                      ? "bg-green-100 text-green-800"
-                                                      : p.status === "Returned"
-                                                        ? "bg-red-100 text-red-800"
-                                                        : "bg-blue-100 text-blue-800"
-                                                  }`}
+                          className={`inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tight shadow-sm
+                            ${p.status === "Delivered"
+                               ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
+                               : p.status === "Returned"
+                                 ? "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
+                                 : "bg-slate-100 text-slate-800 ring-1 ring-slate-200"
+                             }`}
                         >
                           {p.status}
                         </span>
                       )}
                     </td>
-                    {user.role !== "regular" && (
-                      <td className="p-4 flex gap-2">
-                        {user.role === "delivery_person" && (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => updateStatus(p._id, "Delivered")}
-                              className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 shadow-md"
-                              disabled={p.status === "Delivered"}
-                            >
-                              {p.status === "Delivered"
-                                ? "Delivered ✔"
-                                : "Mark Delivered"}
-                            </button>
-                            <button
-                              onClick={() => updateStatus(p._id, "Returned")}
-                              className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-700 shadow-md"
-                            >
-                              Mark Returned
-                            </button>
+                    <td className="p-4">
+                      {(user.role === "main_admin" || user.role === "branch_head") ? (
+                        p.status === "In Sub Branch" ? (
+                          <select
+                            value={p.riderId?._id || ""}
+                            onChange={(e) => handleAssignRider(p._id, e.target.value)}
+                            className="appearance-none text-[10px] font-bold border border-slate-200 rounded-lg p-1.5 bg-white w-full focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                          >
+                            <option value="">
+                              {p.riderId ? `⚡ ${p.riderId.name}` : "Assign Rider..."}
+                            </option>
+                            {staffUsers
+                              .filter(s => s.branchId?._id === p.branchId?._id || s.branchId === p.branchId?._id)
+                              .map((rider) => (
+                                <option key={rider._id} value={rider._id}>
+                                  {rider.name}
+                                </option>
+                              ))}
+                          </select>
+                        ) : (
+                          <div className="flex items-center gap-1.5">
+                             {p.riderId ? (
+                               <>
+                                 <div className="w-5 h-5 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-[8px] font-bold uppercase ring-1 ring-blue-100">
+                                   {p.riderId.name.charAt(0)}
+                                 </div>
+                                 <span className="text-[11px] text-slate-600 font-bold">
+                                   {p.riderId.name}
+                                 </span>
+                               </>
+                             ) : (
+                               <span className="text-[10px] text-slate-300 italic">Unassigned</span>
+                             )}
                           </div>
-                        )}
-                        {/* Status updates for admin/branch head is now in the dropdown, but we can keep standard quick action buttons for Transmitting etc if needed */}
-                        {user.role === "branch_head" &&
-                          p.status === "Transmitting" && (
-                            <button
-                              onClick={() =>
-                                updateStatus(p._id, "In Sub Branch")
-                              }
-                              className="bg-blue-100 text-blue-700 border border-blue-200 py-1 px-3 text-sm rounded-lg hover:bg-blue-200 transition-colors"
-                            >
-                              Receive at Branch
-                            </button>
+                        )
+                      ) : (
+                        <div className="flex items-center gap-1.5">
+                          {p.riderId ? (
+                             <>
+                               <div className="w-5 h-5 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-[10px] font-bold uppercase ring-1 ring-blue-100">
+                                 {p.riderId.name.charAt(0)}
+                               </div>
+                               <span className="text-[11px] text-slate-600 font-bold">
+                                 {p.riderId.name}
+                               </span>
+                             </>
+                           ) : (
+                             <span className="text-[10px] text-slate-300 italic">Unassigned</span>
+                           )}
+                        </div>
+                      )}
+                    </td>
+                    {user.role !== "regular" && (
+                      <td className="p-4 text-right whitespace-nowrap">
+                         <div className="flex justify-end gap-2 pr-2">
+                          {user.role === "delivery_person" && (
+                            <>
+                              <button
+                                onClick={() => updateStatus(p._id, "Delivered")}
+                                className="bg-emerald-500 text-white p-1.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-all"
+                                disabled={p.status === "Delivered"}
+                                title="Mark Delivered"
+                              >
+                                ✅
+                              </button>
+                              <button
+                                onClick={() => updateStatus(p._id, "Returned")}
+                                className="bg-rose-500 text-white p-1.5 rounded-lg hover:bg-rose-600 shadow-sm transition-all"
+                                title="Mark Returned"
+                              >
+                                🔄
+                              </button>
+                            </>
                           )}
-                        {user.role === "main_admin" &&
-                          !p.riderId &&
-                          p.branchId &&
-                          p.status === "In Main Branch" && (
-                            <button
-                              onClick={() =>
-                                updateStatus(p._id, "Transmitting")
-                              }
-                              className="bg-indigo-100 text-indigo-700 border border-indigo-200 py-1 px-3 text-sm rounded-lg hover:bg-indigo-200 transition-colors"
-                            >
-                              Transmit to Branch
-                            </button>
-                          )}
+                          {user.role === "branch_head" &&
+                            p.status === "Transmitting" && (
+                              <button
+                                onClick={() =>
+                                  updateStatus(p._id, "In Sub Branch")
+                                }
+                                className="text-[10px] uppercase font-black tracking-wider bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all duration-300"
+                              >
+                                Receive
+                              </button>
+                            )}
+                          {user.role === "main_admin" &&
+                            !p.riderId &&
+                            p.branchId &&
+                            p.status === "In Main Branch" && (
+                              <button
+                                onClick={() =>
+                                  updateStatus(p._id, "Transmitting")
+                                }
+                                className="text-[10px] uppercase font-black tracking-wider bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg border border-orange-100 hover:bg-orange-600 hover:text-white transition-all duration-300"
+                              >
+                                Dispatch
+                              </button>
+                            )}
+                         </div>
                       </td>
                     )}
                   </tr>

@@ -29,15 +29,15 @@ const BranchReports = () => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
-    const fetchStats = async () => {
+    const fetchStats = async (sDate = startDate, eDate = endDate) => {
         try {
             const user = JSON.parse(localStorage.getItem("userInfo"));
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
             let url = "http://localhost:5000/api/parcels/reports";
 
             const params = new URLSearchParams();
-            if (startDate) params.append("startDate", startDate);
-            if (endDate) params.append("endDate", endDate);
+            if (sDate) params.append("startDate", sDate);
+            if (eDate) params.append("endDate", eDate);
             if (params.toString()) url += `?${params.toString()}`;
 
             const { data } = await axios.get(url, config);
@@ -117,18 +117,33 @@ const BranchReports = () => {
 
     const typeLabelsRaw = Object.keys(stats.typeBreakdown || {});
     const typeData = Object.values(stats.typeBreakdown || {});
-    const typeLabels = typeLabelsRaw.map(
-        (label, index) => `${label} (${typeData[index]})`,
+
+    // Standardize labels to Title Case and merge
+    const standardizedMap = {};
+    typeLabelsRaw.forEach((label, index) => {
+        const stdLabel = label.charAt(0) != label.charAt(0).toUpperCase() ? label.charAt(0).toUpperCase() + label.slice(1) : label;
+        standardizedMap[stdLabel] = (standardizedMap[stdLabel] || 0) + typeData[index];
+    });
+
+    const finalTypeLabels = Object.keys(standardizedMap);
+    const finalTypeData = Object.values(standardizedMap);
+
+    const typeLabelsWithCount = finalTypeLabels.map(
+        (label, index) => `${label} (${finalTypeData[index]})`,
     );
+
     const typeChartData = {
-        labels: typeLabels,
+        labels: typeLabelsWithCount,
         datasets: [
             {
-                data: typeData,
+                data: finalTypeData,
                 backgroundColor: [
-                    "rgba(153, 102, 255, 0.6)",
-                    "rgba(255, 159, 64, 0.6)",
-                    "rgba(75, 192, 192, 0.6)",
+                    "rgba(54, 162, 235, 0.6)", // Blue
+                    "rgba(255, 99, 132, 0.6)", // Red-ish
+                    "rgba(255, 206, 86, 0.6)", // Yellow
+                    "rgba(75, 192, 192, 0.6)", // Teal
+                    "rgba(153, 102, 255, 0.6)", // Purple
+                    "rgba(255, 159, 64, 0.6)", // Orange
                 ],
                 borderWidth: 1,
             },
@@ -170,8 +185,8 @@ const BranchReports = () => {
                         />
                     </div>
                     <button
-                        onClick={fetchStats}
-                        className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-opacity-90 transition-all flex-[0.5]"
+                        onClick={() => fetchStats()}
+                        className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all active:scale-95 text-xs"
                     >
                         Apply Filter
                     </button>
@@ -179,9 +194,9 @@ const BranchReports = () => {
                         onClick={() => {
                             setStartDate("");
                             setEndDate("");
-                            setTimeout(fetchStats, 100);
+                            fetchStats("", "");
                         }}
-                        className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all"
+                        className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all text-xs"
                     >
                         Clear
                     </button>
@@ -193,7 +208,7 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Total Parcels
                         </h3>
-                        <p className="text-4xl font-bold text-blue-600">
+                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">
                             {stats.totalParcels}
                         </p>
                     </div>
@@ -201,15 +216,15 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Total Revenue (COD)
                         </h3>
-                        <p className="text-4xl font-bold text-green-600">
-                            Rs. {stats.totalRevenue}
+                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 break-words">
+                            Rs. {Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                     </div>
                     <div className="floating-card p-6 !bg-white border-l-4 border-yellow-500">
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Pending Delivery
                         </h3>
-                        <p className="text-4xl font-bold text-yellow-500">
+                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-yellow-500">
                             {stats.totalPending}
                         </p>
                     </div>
@@ -217,7 +232,7 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Returns
                         </h3>
-                        <p className="text-4xl font-bold text-red-500">
+                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-red-500">
                             {stats.totalReturned}
                         </p>
                     </div>
@@ -268,7 +283,7 @@ const BranchReports = () => {
                             🏷️ Parcel Types
                         </h3>
                         <div className="w-full max-w-[300px]">
-                            {typeLabels.length > 0 ? (
+                            {typeLabelsWithCount.length > 0 ? (
                                 <Pie
                                     options={{
                                         responsive: true,
