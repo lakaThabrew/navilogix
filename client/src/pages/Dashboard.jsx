@@ -121,6 +121,21 @@ const Dashboard = () => {
 
   const handleCreateBranchAdmin = async (e) => {
     e.preventDefault();
+
+    // Validation
+    if (!branchForm.email.includes("@")) {
+      alert("Please enter a valid email address!");
+      return;
+    }
+    if (branchForm.password.length < 6) {
+      alert("Password must be at least 6 characters long!");
+      return;
+    }
+    if ((branchForm.role === "branch_head" || branchForm.role === "delivery_person") && !branchForm.branchId) {
+      alert("Please assign a branch for this staff role!");
+      return;
+    }
+
     try {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
@@ -149,6 +164,16 @@ const Dashboard = () => {
     e.preventDefault();
     if (!newBranchName || !newBranchLat || !newBranchLng) {
       alert("Branch Name, Latitude, and Longitude are required.");
+      return;
+    }
+
+    if (newBranchContact.length !== 10) {
+      alert("Branch contact number must be exactly 10 digits!");
+      return;
+    }
+
+    if (isNaN(newBranchLat) || isNaN(newBranchLng)) {
+      alert("Latitude and Longitude must be valid numbers!");
       return;
     }
 
@@ -395,9 +420,9 @@ const Dashboard = () => {
       {showPaymentModal && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 backdrop-blur-sm p-4">
           <div className="bg-white p-8 rounded-[32px] shadow-2xl max-w-2xl w-full text-center relative overflow-hidden">
-             {/* Decorative Background */}
+            {/* Decorative Background */}
             <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
-            
+
             <h2 className="text-3xl font-bold text-primary mb-2">
               🔓 Unlock Premium Power
             </h2>
@@ -407,7 +432,7 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {/* Plus Option */}
-              <div 
+              <div
                 onClick={() => navigate("/checkout?plan=plus")}
                 className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50/50 transition-all cursor-pointer text-left relative overflow-hidden"
               >
@@ -426,7 +451,7 @@ const Dashboard = () => {
               </div>
 
               {/* Pro Option */}
-              <div 
+              <div
                 onClick={() => navigate("/checkout?plan=pro")}
                 className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer text-left relative overflow-hidden"
               >
@@ -464,7 +489,7 @@ const Dashboard = () => {
               {messages.filter(m => !m.isRead).length} New
             </div>
           )}
-          
+
           <h3 className="text-xl font-bold text-yellow-800 mb-4 flex items-center gap-2">
             <span className="text-2xl">🔔</span> Notifications
           </h3>
@@ -473,9 +498,8 @@ const Dashboard = () => {
               <div
                 key={msg._id}
                 onClick={() => markAsRead(msg._id)}
-                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-all ${
-                  msg.isRead ? "border-gray-300 opacity-60" : "border-blue-500 ring-1 ring-blue-100"
-                }`}
+                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-all ${msg.isRead ? "border-gray-300 opacity-60" : "border-blue-500 ring-1 ring-blue-100"
+                  }`}
               >
                 <div className="flex justify-between items-start">
                   <p className={`font-medium ${msg.isRead ? "text-gray-500" : "text-gray-800"}`}>
@@ -495,11 +519,10 @@ const Dashboard = () => {
       )}
 
       <div
-        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 ${
-          user.role === "regular" && user.paymentStatus !== "paid"
+        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 ${user.role === "regular" && user.paymentStatus !== "paid"
             ? "opacity-20 pointer-events-none select-none filter blur-sm"
             : ""
-        }`}
+          }`}
       >
         <div className="floating-card text-center p-6">
           <div className="text-4xl font-bold text-primary mb-2">
@@ -557,7 +580,7 @@ const Dashboard = () => {
               <div className="flex justify-between items-center mb-2">
                 <span>Total Paid:</span>
                 <span className="font-bold text-red-500">
-                  Rs. {Number(reportData.codPaid).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 10 }).split('.')[0] + (reportData.codPaid % 1 !== 0 ? '.' + reportData.codPaid.toString().split('.')[1].substring(0,2) : '')}
+                  Rs. {Number(reportData.codPaid).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 10 }).split('.')[0] + (reportData.codPaid % 1 !== 0 ? '.' + reportData.codPaid.toString().split('.')[1].substring(0, 2) : '')}
                 </span>
               </div>
               <div className="flex justify-between items-center">
@@ -653,30 +676,30 @@ const Dashboard = () => {
                   </div>
                   {(branchForm.role === "branch_head" ||
                     branchForm.role === "delivery_person") && (
-                    <div className="md:col-span-2">
-                      <label className="block text-sm font-medium text-gray-700 mb-1">
-                        Branch *
-                      </label>
-                      <select
-                        className="input-field"
-                        value={branchForm.branchId}
-                        onChange={(e) =>
-                          setBranchForm({
-                            ...branchForm,
-                            branchId: e.target.value,
-                          })
-                        }
-                        required
-                      >
-                        <option value="">Select a Branch</option>
-                        {branches.map((b) => (
-                          <option key={b._id} value={b._id}>
-                            {b.branchName}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+                      <div className="md:col-span-2">
+                        <label className="block text-sm font-medium text-gray-700 mb-1">
+                          Branch *
+                        </label>
+                        <select
+                          className="input-field"
+                          value={branchForm.branchId}
+                          onChange={(e) =>
+                            setBranchForm({
+                              ...branchForm,
+                              branchId: e.target.value,
+                            })
+                          }
+                          required
+                        >
+                          <option value="">Select a Branch</option>
+                          {branches.map((b) => (
+                            <option key={b._id} value={b._id}>
+                              {b.branchName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+                    )}
                 </div>
                 <div className="flex justify-end pt-4">
                   <button type="submit" className="btn-primary font-bold px-8">
@@ -975,19 +998,18 @@ const Dashboard = () => {
                     </td>
                     <td className="p-4">
                       {user.role === "main_admin" ||
-                      user.role === "branch_head" ? (
+                        user.role === "branch_head" ? (
                         <select
                           value={p.status}
                           onChange={(e) => updateStatus(p._id, e.target.value)}
                           className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm outline-none cursor-pointer border-none
-                            ${
-                              p.status === "Delivered"
-                                ? "bg-green-100 text-green-800"
-                                : p.status === "Returned"
-                                  ? "bg-red-100 text-red-800"
-                                  : p.status === "Out for Delivery"
-                                    ? "bg-orange-100 text-orange-800"
-                                    : "bg-blue-100 text-blue-800"
+                            ${p.status === "Delivered"
+                              ? "bg-green-100 text-green-800"
+                              : p.status === "Returned"
+                                ? "bg-red-100 text-red-800"
+                                : p.status === "Out for Delivery"
+                                  ? "bg-orange-100 text-orange-800"
+                                  : "bg-blue-100 text-blue-800"
                             }`}
                         >
                           <option value="Pending">Pending</option>
@@ -1012,13 +1034,12 @@ const Dashboard = () => {
                       ) : (
                         <span
                           className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm
-                                                  ${
-                                                    p.status === "Delivered"
-                                                      ? "bg-green-100 text-green-800"
-                                                      : p.status === "Returned"
-                                                        ? "bg-red-100 text-red-800"
-                                                        : "bg-blue-100 text-blue-800"
-                                                  }`}
+                                                  ${p.status === "Delivered"
+                              ? "bg-green-100 text-green-800"
+                              : p.status === "Returned"
+                                ? "bg-red-100 text-red-800"
+                                : "bg-blue-100 text-blue-800"
+                            }`}
                         >
                           {p.status}
                         </span>
