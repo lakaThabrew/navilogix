@@ -29,15 +29,15 @@ const BranchReports = () => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
 
-    const fetchStats = async () => {
+    const fetchStats = async (sDate = startDate, eDate = endDate) => {
         try {
             const user = JSON.parse(localStorage.getItem("userInfo"));
             const config = { headers: { Authorization: `Bearer ${user.token}` } };
             let url = "http://localhost:5000/api/parcels/reports";
 
             const params = new URLSearchParams();
-            if (startDate) params.append("startDate", startDate);
-            if (endDate) params.append("endDate", endDate);
+            if (sDate) params.append("startDate", sDate);
+            if (eDate) params.append("endDate", eDate);
             if (params.toString()) url += `?${params.toString()}`;
 
             const { data } = await axios.get(url, config);
@@ -170,8 +170,8 @@ const BranchReports = () => {
                         />
                     </div>
                     <button
-                        onClick={fetchStats}
-                        className="bg-primary text-white px-6 py-3 rounded-xl font-bold hover:bg-opacity-90 transition-all flex-[0.5]"
+                        onClick={() => fetchStats()}
+                        className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all active:scale-95 text-xs"
                     >
                         Apply Filter
                     </button>
@@ -179,9 +179,9 @@ const BranchReports = () => {
                         onClick={() => {
                             setStartDate("");
                             setEndDate("");
-                            setTimeout(fetchStats, 100);
+                            fetchStats("", "");
                         }}
-                        className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all"
+                        className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all text-xs"
                     >
                         Clear
                     </button>
