@@ -191,6 +191,23 @@ const Dashboard = () => {
     logger.info(
       "➕ [CLIENT DASHBOARD] Adding new parcel: " + form.receiverName,
     );
+
+    // Validation Logic
+    if (form.senderContact.length !== 10 || form.receiverContact.length !== 10) {
+      alert("Contact numbers must be exactly 10 digits!");
+      return;
+    }
+
+    if (Number(form.weight) < 0) {
+      alert("Weight cannot be negative!");
+      return;
+    }
+
+    if (Number(form.codAmount) < 0) {
+      alert("COD Amount (Payment) cannot be negative!");
+      return;
+    }
+
     try {
       const parcelData = {
         senderInfo: {
@@ -355,10 +372,10 @@ const Dashboard = () => {
     total: displayedParcels.length,
     delivered: displayedParcels.filter((p) => p.status === "Delivered").length,
     returned: displayedParcels.filter((p) => p.status === "Returned").length,
-    cod: displayedParcels.reduce(
+    cod: Math.round(displayedParcels.reduce(
       (acc, p) => acc + (Number(p.codAmount) || 0),
       0,
-    ),
+    ) * 100) / 100,
   };
 
   return (
@@ -440,20 +457,34 @@ const Dashboard = () => {
       )}
 
       {user.role === "main_admin" && messages.length > 0 && (
-        <div className="mb-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl">
-          <h3 className="text-xl font-bold text-yellow-800 mb-4">
-            🔔 Notifications
+        <div className="mb-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl relative overflow-hidden">
+          {/* Unread Count Badge */}
+          {messages.filter(m => !m.isRead).length > 0 && (
+            <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse shadow-lg">
+              {messages.filter(m => !m.isRead).length} New
+            </div>
+          )}
+          
+          <h3 className="text-xl font-bold text-yellow-800 mb-4 flex items-center gap-2">
+            <span className="text-2xl">🔔</span> Notifications
           </h3>
           <div className="space-y-3">
             {messages.map((msg) => (
               <div
                 key={msg._id}
                 onClick={() => markAsRead(msg._id)}
-                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-colors ${
-                  msg.isRead ? "border-gray-300" : "border-blue-500"
+                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-all ${
+                  msg.isRead ? "border-gray-300 opacity-60" : "border-blue-500 ring-1 ring-blue-100"
                 }`}
               >
-                <p className="font-medium text-gray-800">{msg.content}</p>
+                <div className="flex justify-between items-start">
+                  <p className={`font-medium ${msg.isRead ? "text-gray-500" : "text-gray-800"}`}>
+                    {msg.content}
+                  </p>
+                  {!msg.isRead && (
+                    <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
+                  )}
+                </div>
                 <p className="text-xs text-gray-500 mt-1">
                   {new Date(msg.createdAt).toLocaleString()}
                 </p>
@@ -490,7 +521,7 @@ const Dashboard = () => {
         </div>
         <div className="floating-card text-center p-6 bg-blue-50 border border-blue-100">
           <div className="text-4xl font-bold text-blue-600 mb-2">
-            Rs. {currentStats.cod}
+            Rs. {Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
           <div className="text-gray-500">COD Volume</div>
         </div>
@@ -526,13 +557,13 @@ const Dashboard = () => {
               <div className="flex justify-between items-center mb-2">
                 <span>Total Paid:</span>
                 <span className="font-bold text-red-500">
-                  Rs. {reportData.codPaid}
+                  Rs. {Number(reportData.codPaid).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 10 }).split('.')[0] + (reportData.codPaid % 1 !== 0 ? '.' + reportData.codPaid.toString().split('.')[1].substring(0,2) : '')}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Total to Receive:</span>
                 <span className="font-bold text-green-500">
-                  Rs. {reportData.codToReceive}
+                  Rs. {Number(reportData.codToReceive).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                 </span>
               </div>
             </div>
@@ -684,7 +715,7 @@ const Dashboard = () => {
                       value={newBranchContact}
                       onChange={(e) => setNewBranchContact(e.target.value)}
                       className="input-field"
-                      placeholder="e.g., 081-2234567"
+                      placeholder="e.g., 0812234567"
                     />
                   </div>
                   <div>
@@ -786,7 +817,7 @@ const Dashboard = () => {
               </label>
               <input
                 className="input-field"
-                placeholder="077-1234567"
+                placeholder="0771234567"
                 value={form.senderContact}
                 onChange={(e) =>
                   setForm({ ...form, senderContact: e.target.value })
@@ -825,7 +856,7 @@ const Dashboard = () => {
               </label>
               <input
                 className="input-field"
-                placeholder="077-1234567"
+                placeholder="0771234567"
                 value={form.receiverContact}
                 onChange={(e) =>
                   setForm({ ...form, receiverContact: e.target.value })
@@ -913,8 +944,9 @@ const Dashboard = () => {
                   <th className="p-4 font-bold text-gray-600 rounded-tl-xl">
                     Tracking ID
                   </th>
-                  <th className="p-4 font-bold text-gray-600">Receiver</th>
+                  <th className="p-4 font-bold text-gray-600">Receiver Address</th>
                   <th className="p-4 font-bold text-gray-600">Branch</th>
+                  <th className="p-4 font-bold text-gray-600">Date</th>
                   <th className="p-4 font-bold text-gray-600">Status</th>
                   {user.role !== "regular" && (
                     <th className="p-4 font-bold text-gray-600 rounded-tr-xl">
@@ -937,6 +969,9 @@ const Dashboard = () => {
                     </td>
                     <td className="p-4 text-gray-600">
                       {p.branchId?.branchName || "Unassigned"}
+                    </td>
+                    <td className="p-4 text-gray-600">
+                      {new Date(p.createdAt).toLocaleDateString()}
                     </td>
                     <td className="p-4">
                       {user.role === "main_admin" ||
