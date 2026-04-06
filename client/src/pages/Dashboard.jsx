@@ -703,7 +703,7 @@ const Dashboard = () => {
                 </div>
                 <div className="flex justify-end pt-4">
                   <button type="submit" className="btn-primary font-bold px-8">
-                    Register User
+                    + Register User
                   </button>
                 </div>
               </form>
