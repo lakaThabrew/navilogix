@@ -560,26 +560,26 @@ const Dashboard = () => {
             : ""
           }`}
       >
-        <div className="floating-card text-center p-6">
-          <div className="text-4xl font-bold text-primary mb-2">
+        <div className="floating-card text-center p-6 overflow-hidden">
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-2">
             {currentStats.total}
           </div>
           <div className="text-gray-500">Total Parcels</div>
         </div>
-        <div className="floating-card text-center p-6 bg-green-50 border border-green-100">
-          <div className="text-4xl font-bold text-green-600 mb-2">
+        <div className="floating-card text-center p-6 bg-green-50 border border-green-100 overflow-hidden">
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 mb-2">
             {currentStats.delivered}
           </div>
           <div className="text-gray-500">Delivered</div>
         </div>
-        <div className="floating-card text-center p-6 bg-red-50 border border-red-100">
-          <div className="text-4xl font-bold text-red-600 mb-2">
+        <div className="floating-card text-center p-6 bg-red-50 border border-red-100 overflow-hidden">
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-red-600 mb-2">
             {currentStats.returned}
           </div>
           <div className="text-gray-500">Returned</div>
         </div>
-        <div className="floating-card text-center p-6 bg-blue-50 border border-blue-100">
-          <div className="text-4xl font-bold text-blue-600 mb-2">
+        <div className="floating-card text-center p-6 bg-blue-50 border border-blue-100 overflow-hidden">
+          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600 mb-2 break-all">
             Rs. {Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </div>
           <div className="text-gray-500">COD Volume</div>

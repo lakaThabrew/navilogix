@@ -193,7 +193,7 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Total Parcels
                         </h3>
-                        <p className="text-4xl font-bold text-blue-600">
+                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">
                             {stats.totalParcels}
                         </p>
                     </div>
@@ -201,7 +201,7 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Total Revenue (COD)
                         </h3>
-                        <p className="text-4xl font-bold text-green-600">
+                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 break-words">
                             Rs. {Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                     </div>
@@ -209,7 +209,7 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Pending Delivery
                         </h3>
-                        <p className="text-4xl font-bold text-yellow-500">
+                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-yellow-500">
                             {stats.totalPending}
                         </p>
                     </div>
@@ -217,7 +217,7 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Returns
                         </h3>
-                        <p className="text-4xl font-bold text-red-500">
+                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-red-500">
                             {stats.totalReturned}
                         </p>
                     </div>
