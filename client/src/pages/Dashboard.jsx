@@ -37,6 +37,23 @@ const Dashboard = () => {
   const [newBranchLng, setNewBranchLng] = useState("");
   const [newBranchAreas, setNewBranchAreas] = useState("");
   const [addingBranch, setAddingBranch] = useState(false);
+  const [staffUsers, setStaffUsers] = useState([]);
+
+  async function fetchStaffUsers() {
+    try {
+      const u = JSON.parse(localStorage.getItem("userInfo"));
+      if (!u || (u.role !== "main_admin" && u.role !== "branch_head")) return;
+      const config = { headers: { Authorization: `Bearer ${u.token}` } };
+      const { data } = await axios.get(
+        "http://localhost:5000/api/auth/users",
+        config,
+      );
+      // Filter for delivery persons only
+      setStaffUsers(data.filter((user) => user.role === "delivery_person"));
+    } catch (error) {
+      logger.error("Error fetching staff users: " + error.message);
+    }
+  }
 
   async function fetchBranches() {
     try {
@@ -92,9 +109,10 @@ const Dashboard = () => {
     } else {
       setUser(u);
       fetchParcels(u);
-      if (u.role === "main_admin") {
+      if (u.role === "main_admin" || u.role === "branch_head") {
         fetchMessages(u);
         fetchBranches();
+        fetchStaffUsers();
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -317,6 +335,24 @@ const Dashboard = () => {
       logger.error(
         "❌ [CLIENT DASHBOARD] Error updating status: " + error.message,
       );
+    }
+  };
+
+  const handleAssignRider = async (parcelId, riderId) => {
+    if (!riderId) return;
+    try {
+      const u = JSON.parse(localStorage.getItem("userInfo"));
+      const config = { headers: { Authorization: `Bearer ${u.token}` } };
+      await axios.post(
+        "http://localhost:5000/api/parcels/assign",
+        { parcelId, riderId },
+        config,
+      );
+      alert("Rider Assigned Successfully!");
+      fetchParcels();
+    } catch (error) {
+      logger.error("Error assigning rider: " + error.message);
+      alert("Failed to assign rider");
     }
   };
 
@@ -971,6 +1007,7 @@ const Dashboard = () => {
                   <th className="p-4 font-bold text-gray-600">Branch</th>
                   <th className="p-4 font-bold text-gray-600">Date</th>
                   <th className="p-4 font-bold text-gray-600">Status</th>
+                  <th className="p-4 font-bold text-gray-600">Rider</th>
                   {user.role !== "regular" && (
                     <th className="p-4 font-bold text-gray-600 rounded-tr-xl">
                       Actions
@@ -1002,7 +1039,7 @@ const Dashboard = () => {
                         <select
                           value={p.status}
                           onChange={(e) => updateStatus(p._id, e.target.value)}
-                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm outline-none cursor-pointer border-none
+                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm outline-none cursor-pointer border-none w-full
                             ${p.status === "Delivered"
                               ? "bg-green-100 text-green-800"
                               : p.status === "Returned"
@@ -1017,14 +1054,12 @@ const Dashboard = () => {
                           <option value="Transmitting">Transmitting</option>
                           <option value="In Sub Branch">In Sub Branch</option>
 
-                          {/* Restricting Options Based on Role */}
                           {user.role !== "main_admin" && (
                             <option value="Out for Delivery">
                               Out for Delivery
                             </option>
                           )}
 
-                          {/* Delivered is theoretically restricted from both admin and branch head, but if it was already delivered by a rider, it should display it */}
                           <option value="Delivered" disabled>
                             Delivered
                           </option>
@@ -1042,6 +1077,37 @@ const Dashboard = () => {
                             }`}
                         >
                           {p.status}
+                        </span>
+                      )}
+                    </td>
+                    <td className="p-4">
+                      {/* Rider Assignment Dropdown for Admin/Branch Head */}
+                      {(user.role === "main_admin" || user.role === "branch_head") ? (
+                        p.status === "In Sub Branch" ? (
+                          <select
+                            value={p.riderId?._id || ""}
+                            onChange={(e) => handleAssignRider(p._id, e.target.value)}
+                            className="text-xs border border-gray-200 rounded p-1 bg-white w-full"
+                          >
+                            <option value="">
+                              {p.riderId ? `Assigned: ${p.riderId.name}` : "Assign Rider..."}
+                            </option>
+                            {staffUsers
+                              .filter(s => s.branchId?._id === p.branchId?._id || s.branchId === p.branchId?._id)
+                              .map((rider) => (
+                                <option key={rider._id} value={rider._id}>
+                                  {rider.name}
+                                </option>
+                              ))}
+                          </select>
+                        ) : (
+                          <span className="text-xs text-gray-500 font-medium">
+                            {p.riderId?.name || "N/A"}
+                          </span>
+                        )
+                      ) : (
+                        <span className="text-xs text-gray-500 font-medium">
+                          {p.riderId?.name || "N/A"}
                         </span>
                       )}
                     </td>
