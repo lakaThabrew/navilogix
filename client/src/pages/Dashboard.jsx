@@ -998,18 +998,18 @@ const Dashboard = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-gray-100">
+              <thead className="bg-slate-50/80 backdrop-blur-sm sticky top-0 z-10 border-b border-slate-100">
                 <tr>
-                  <th className="p-4 font-bold text-gray-600 rounded-tl-xl">
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider rounded-tl-2xl">
                     Tracking ID
                   </th>
-                  <th className="p-4 font-bold text-gray-600">Receiver Address</th>
-                  <th className="p-4 font-bold text-gray-600">Branch</th>
-                  <th className="p-4 font-bold text-gray-600">Date</th>
-                  <th className="p-4 font-bold text-gray-600">Status</th>
-                  <th className="p-4 font-bold text-gray-600">Rider</th>
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Receiver & Address</th>
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Branch</th>
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Date</th>
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Status</th>
+                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Rider</th>
                   {user.role !== "regular" && (
-                    <th className="p-4 font-bold text-gray-600 rounded-tr-xl">
+                    <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider rounded-tr-2xl text-right">
                       Actions
                     </th>
                   )}
@@ -1019,19 +1019,31 @@ const Dashboard = () => {
                 {displayedParcels.map((p) => (
                   <tr
                     key={p._id}
-                    className="hover:bg-gray-50 transition-colors"
+                    className="group border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-all duration-200"
                   >
-                    <td className="p-4 font-medium text-primary">
-                      {p.trackingId}
+                    <td className="p-4">
+                      <span className="font-mono text-sm font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded-lg">
+                        {p.trackingId}
+                      </span>
                     </td>
-                    <td className="p-4 text-gray-600">
-                      {p.receiverInfo.address}
+                    <td className="p-4">
+                      <div className="flex flex-col">
+                        <span className="text-sm font-bold text-slate-700">{p.receiverInfo.name}</span>
+                        <span className="text-[11px] text-slate-400 truncate max-w-[150px]" title={p.receiverInfo.address}>
+                          {p.receiverInfo.address}
+                        </span>
+                      </div>
                     </td>
-                    <td className="p-4 text-gray-600">
-                      {p.branchId?.branchName || "Unassigned"}
+                    <td className="p-4">
+                      <div className="flex items-center gap-2">
+                         <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
+                         <span className="text-xs font-semibold text-slate-600">
+                            {p.branchId?.branchName || "Unassigned"}
+                         </span>
+                      </div>
                     </td>
-                    <td className="p-4 text-gray-600">
-                      {new Date(p.createdAt).toLocaleDateString()}
+                    <td className="p-4 text-xs font-medium text-slate-500 whitespace-nowrap">
+                      {new Date(p.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                     </td>
                     <td className="p-4">
                       {user.role === "main_admin" ||
@@ -1039,15 +1051,15 @@ const Dashboard = () => {
                         <select
                           value={p.status}
                           onChange={(e) => updateStatus(p._id, e.target.value)}
-                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm outline-none cursor-pointer border-none w-full
+                          className={`appearance-none px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tight shadow-sm outline-none cursor-pointer border-0 w-full text-center transition-all hover:scale-105 active:scale-95
                             ${p.status === "Delivered"
-                              ? "bg-green-100 text-green-800"
-                              : p.status === "Returned"
-                                ? "bg-red-100 text-red-800"
-                                : p.status === "Out for Delivery"
-                                  ? "bg-orange-100 text-orange-800"
-                                  : "bg-blue-100 text-blue-800"
-                            }`}
+                               ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
+                               : p.status === "Returned"
+                                 ? "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
+                                 : p.status === "Out for Delivery"
+                                   ? "bg-amber-100 text-amber-800 ring-1 ring-amber-200"
+                                   : "bg-blue-100 text-blue-800 ring-1 ring-blue-200"
+                             }`}
                         >
                           <option value="Pending">Pending</option>
                           <option value="In Main Branch">In Main Branch</option>
@@ -1068,29 +1080,28 @@ const Dashboard = () => {
                         </select>
                       ) : (
                         <span
-                          className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm
-                                                  ${p.status === "Delivered"
-                              ? "bg-green-100 text-green-800"
-                              : p.status === "Returned"
-                                ? "bg-red-100 text-red-800"
-                                : "bg-blue-100 text-blue-800"
-                            }`}
+                          className={`inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tight shadow-sm
+                            ${p.status === "Delivered"
+                               ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
+                               : p.status === "Returned"
+                                 ? "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
+                                 : "bg-slate-100 text-slate-800 ring-1 ring-slate-200"
+                             }`}
                         >
                           {p.status}
                         </span>
                       )}
                     </td>
                     <td className="p-4">
-                      {/* Rider Assignment Dropdown for Admin/Branch Head */}
                       {(user.role === "main_admin" || user.role === "branch_head") ? (
                         p.status === "In Sub Branch" ? (
                           <select
                             value={p.riderId?._id || ""}
                             onChange={(e) => handleAssignRider(p._id, e.target.value)}
-                            className="text-xs border border-gray-200 rounded p-1 bg-white w-full"
+                            className="appearance-none text-[10px] font-bold border border-slate-200 rounded-lg p-1.5 bg-white w-full focus:ring-2 focus:ring-blue-100 outline-none transition-all"
                           >
                             <option value="">
-                              {p.riderId ? `Assigned: ${p.riderId.name}` : "Assign Rider..."}
+                              {p.riderId ? `⚡ ${p.riderId.name}` : "Assign Rider..."}
                             </option>
                             {staffUsers
                               .filter(s => s.branchId?._id === p.branchId?._id || s.branchId === p.branchId?._id)
@@ -1101,62 +1112,85 @@ const Dashboard = () => {
                               ))}
                           </select>
                         ) : (
-                          <span className="text-xs text-gray-500 font-medium">
-                            {p.riderId?.name || "N/A"}
-                          </span>
+                          <div className="flex items-center gap-1.5">
+                             {p.riderId ? (
+                               <>
+                                 <div className="w-5 h-5 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-[8px] font-bold uppercase ring-1 ring-blue-100">
+                                   {p.riderId.name.charAt(0)}
+                                 </div>
+                                 <span className="text-[11px] text-slate-600 font-bold">
+                                   {p.riderId.name}
+                                 </span>
+                               </>
+                             ) : (
+                               <span className="text-[10px] text-slate-300 italic">Unassigned</span>
+                             )}
+                          </div>
                         )
                       ) : (
-                        <span className="text-xs text-gray-500 font-medium">
-                          {p.riderId?.name || "N/A"}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          {p.riderId ? (
+                             <>
+                               <div className="w-5 h-5 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-[10px] font-bold uppercase ring-1 ring-blue-100">
+                                 {p.riderId.name.charAt(0)}
+                               </div>
+                               <span className="text-[11px] text-slate-600 font-bold">
+                                 {p.riderId.name}
+                               </span>
+                             </>
+                           ) : (
+                             <span className="text-[10px] text-slate-300 italic">Unassigned</span>
+                           )}
+                        </div>
                       )}
                     </td>
                     {user.role !== "regular" && (
-                      <td className="p-4 flex gap-2">
-                        {user.role === "delivery_person" && (
-                          <div className="flex gap-2">
-                            <button
-                              onClick={() => updateStatus(p._id, "Delivered")}
-                              className="bg-green-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-green-700 shadow-md"
-                              disabled={p.status === "Delivered"}
-                            >
-                              {p.status === "Delivered"
-                                ? "Delivered ✔"
-                                : "Mark Delivered"}
-                            </button>
-                            <button
-                              onClick={() => updateStatus(p._id, "Returned")}
-                              className="bg-red-600 text-white px-3 py-1 rounded-lg text-sm hover:bg-red-700 shadow-md"
-                            >
-                              Mark Returned
-                            </button>
-                          </div>
-                        )}
-                        {/* Status updates for admin/branch head is now in the dropdown, but we can keep standard quick action buttons for Transmitting etc if needed */}
-                        {user.role === "branch_head" &&
-                          p.status === "Transmitting" && (
-                            <button
-                              onClick={() =>
-                                updateStatus(p._id, "In Sub Branch")
-                              }
-                              className="bg-blue-100 text-blue-700 border border-blue-200 py-1 px-3 text-sm rounded-lg hover:bg-blue-200 transition-colors"
-                            >
-                              Receive at Branch
-                            </button>
+                      <td className="p-4 text-right whitespace-nowrap">
+                         <div className="flex justify-end gap-2 pr-2">
+                          {user.role === "delivery_person" && (
+                            <>
+                              <button
+                                onClick={() => updateStatus(p._id, "Delivered")}
+                                className="bg-emerald-500 text-white p-1.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-all"
+                                disabled={p.status === "Delivered"}
+                                title="Mark Delivered"
+                              >
+                                ✅
+                              </button>
+                              <button
+                                onClick={() => updateStatus(p._id, "Returned")}
+                                className="bg-rose-500 text-white p-1.5 rounded-lg hover:bg-rose-600 shadow-sm transition-all"
+                                title="Mark Returned"
+                              >
+                                🔄
+                              </button>
+                            </>
                           )}
-                        {user.role === "main_admin" &&
-                          !p.riderId &&
-                          p.branchId &&
-                          p.status === "In Main Branch" && (
-                            <button
-                              onClick={() =>
-                                updateStatus(p._id, "Transmitting")
-                              }
-                              className="bg-indigo-100 text-indigo-700 border border-indigo-200 py-1 px-3 text-sm rounded-lg hover:bg-indigo-200 transition-colors"
-                            >
-                              Transmit to Branch
-                            </button>
-                          )}
+                          {user.role === "branch_head" &&
+                            p.status === "Transmitting" && (
+                              <button
+                                onClick={() =>
+                                  updateStatus(p._id, "In Sub Branch")
+                                }
+                                className="text-[10px] uppercase font-black tracking-wider bg-indigo-50 text-indigo-600 px-3 py-1.5 rounded-lg border border-indigo-100 hover:bg-indigo-600 hover:text-white transition-all duration-300"
+                              >
+                                Receive
+                              </button>
+                            )}
+                          {user.role === "main_admin" &&
+                            !p.riderId &&
+                            p.branchId &&
+                            p.status === "In Main Branch" && (
+                              <button
+                                onClick={() =>
+                                  updateStatus(p._id, "Transmitting")
+                                }
+                                className="text-[10px] uppercase font-black tracking-wider bg-orange-50 text-orange-600 px-3 py-1.5 rounded-lg border border-orange-100 hover:bg-orange-600 hover:text-white transition-all duration-300"
+                              >
+                                Dispatch
+                              </button>
+                            )}
+                         </div>
                       </td>
                     )}
                   </tr>
