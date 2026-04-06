@@ -202,7 +202,7 @@ const BranchReports = () => {
                             Total Revenue (COD)
                         </h3>
                         <p className="text-4xl font-bold text-green-600">
-                            Rs. {stats.totalRevenue}
+                            Rs. {Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                     </div>
                     <div className="floating-card p-6 !bg-white border-l-4 border-yellow-500">
