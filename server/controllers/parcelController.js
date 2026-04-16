@@ -116,7 +116,8 @@ export const createParcel = async (req, res) => {
     }
 
     try {
-        const branchId = await determineBranch(receiverInfo.address);
+        const senderBranchId = await determineBranch(senderInfo.address);
+        const receiverBranchId = await determineBranch(receiverInfo.address);
 
         const trackingId =
             "NV-" +
@@ -124,25 +125,31 @@ export const createParcel = async (req, res) => {
             Math.random().toString(36).slice(3, 4).toUpperCase();
 
         logger.info(`🔖 [CREATE PARCEL] Generated tracking ID: ${trackingId}`);
-        logger.info(`🏢 [CREATE PARCEL] Assigned branch ID: ${branchId}`);
 
         let initialStatus = 'In Main Branch';
         let initialHistory = { status: 'In Main Branch', location: 'Main Office', timestamp: new Date() };
+        let initialBranchId = senderBranchId;
 
         if (req.user.role === 'branch_head') {
             initialStatus = 'In Sub Branch'; // Or 'Dispatched to Main'
+            initialBranchId = req.user.branchId;
             initialHistory = {
                 status: 'In Sub Branch',
                 location: `Branch: ${req.user.branchId || 'Unknown'}`,
                 timestamp: new Date()
             };
+        } else if (req.user.role === 'main_admin') {
+            const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
+            initialBranchId = mainOffice ? mainOffice._id : senderBranchId;
         }
+
+        logger.info(`🏢 [CREATE PARCEL] Assigned initial branch ID: ${initialBranchId}`);
 
         const parcel = await Parcel.create({
             trackingId,
             senderInfo,
             receiverInfo,
-            branchId,
+            branchId: initialBranchId,
             weight,
             type,
             codAmount,
@@ -163,9 +170,12 @@ export const createParcel = async (req, res) => {
 
         logger.info(`✅ [CREATE PARCEL] Parcel created successfully: ${trackingId}`);
 
-        // Try auto-assign immediately if it started in a sub-branch
+        // Try auto-assign immediately if it started in a sub-branch AND is a local delivery
         if (parcel.status === 'In Sub Branch') {
-            await autoAssignRider(parcel._id, branchId);
+            const isLocalDelivery = req.user.role === 'branch_head' && req.user.branchId && req.user.branchId.toString() === branchId.toString();
+            if (isLocalDelivery) {
+                await autoAssignRider(parcel._id, branchId);
+            }
         }
 
         res.status(201).json(parcel);
@@ -227,6 +237,27 @@ export const updateParcelStatus = async (req, res) => {
         }
         if (userRole === 'delivery_person' && status !== 'Delivered' && status !== 'Returned') {
             return res.status(403).json({ message: 'Delivery Person can only change status to Delivered or Returned' });
+        }
+
+        const previousStatus = parcel.status;
+        
+        // Update branchId based on status progression
+        if (status === 'Transmitting') {
+             if (previousStatus === 'In Sub Branch') {
+                 // From Sender branch -> Main Office
+                 const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
+                 if (mainOffice) parcel.branchId = mainOffice._id;
+             } else if (previousStatus === 'In Main Branch') {
+                 // From Main Office -> Receiver branch
+                 parcel.branchId = await determineBranch(parcel.receiverInfo.address);
+             }
+        } else if (status === 'In Main Branch') {
+             const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
+             if (mainOffice) parcel.branchId = mainOffice._id;
+        } else if (status === 'In Sub Branch') {
+             if (previousStatus === 'Transmitting' || previousStatus === 'In Main Branch') {
+                 parcel.branchId = await determineBranch(parcel.receiverInfo.address);
+             }
         }
 
         parcel.status = status;
