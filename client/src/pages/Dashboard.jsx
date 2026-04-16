@@ -578,9 +578,15 @@ const Dashboard = () => {
           </div>
           <div className="text-gray-500">Returned</div>
         </div>
-        <div className="floating-card text-center p-6 bg-blue-50 border border-blue-100 overflow-hidden">
-          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600 mb-2 break-all">
-            Rs. {Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+        <div className="floating-card text-center p-6 bg-blue-50 border border-blue-100 flex flex-col justify-center items-center overflow-hidden">
+          <div className="w-full" style={{ containerType: 'inline-size' }}>
+            <div 
+              className="font-bold text-blue-600 mb-2 whitespace-nowrap text-ellipsis overflow-hidden truncate"
+              style={{ fontSize: 'clamp(1rem, 12cqw, 2.25rem)' }}
+              title={`Rs. ${Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+            >
+              Rs. {Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            </div>
           </div>
           <div className="text-gray-500">COD Volume</div>
         </div>

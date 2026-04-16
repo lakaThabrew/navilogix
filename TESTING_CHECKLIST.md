@@ -562,35 +562,35 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 #### **Parcels Overview Table**
 
-- [ ] Shows ONLY parcels where:
-  - [ ] Branch ID matches branch head's branch
-  - [ ] OR createdBy matches branch head's user ID
-- [ ] **Status Dropdown**:
-  - [ ] Can select: Pending, In Main Branch, Transmitting, In Sub Branch
-  - [ ] **Restriction**: Cannot set to "Delivered" (only riders can)
-  - [ ] Can set to "Out for Delivery" (unlike admin)
-  - [ ] Changing status updates parcel
-- [ ] **Quick Action Buttons**:
-  - [ ] "Receive at Branch" button shows when status is "Transmitting"
-  - [ ] Clicking changes status to "In Sub Branch"
-  - [ ] Success message displays
+- [x] Shows ONLY parcels where:
+  - [x] Branch ID matches branch head's branch
+  - [x] OR createdBy matches branch head's user ID
+- [x] **Status Dropdown**:
+  - [x] Can select: Pending, In Main Branch, Transmitting, In Sub Branch
+  - [x] **Restriction**: Cannot set to "Delivered" (only riders can)
+  - [x] Can set to "Out for Delivery" (unlike admin)
+  - [x] Changing status updates parcel
+- [x] **Quick Action Buttons**:
+  - [x] "Receive at Branch" button shows when status is "Transmitting"
+  - [x] Clicking changes status to "In Sub Branch"
+  - [x] Success message displays
 - [ ] **Auto-Assignment Feature**:
-  - [ ] When they change status to "In Sub Branch"
-  - [ ] System automatically assigns an available delivery person from their branch
-  - [ ] Success message mentions auto-assignment
-  - [ ] Rider name appears in table
-  - [ ] **Check Logic**:
-    - [ ] Assigns rider with least currently assigned parcels
-    - [ ] Only assigns riders from same branch
-    - [ ] Respects MAX_DAILY_DELIVERIES constant
-- [ ] Table only shows branch-relevant parcels
+  - [x] When they change status to "In Sub Branch"
+  - [x] System automatically assigns an available delivery person from their branch
+  - [x] Success message mentions auto-assignment
+  - [x] Rider name appears in table
+  - [x] **Check Logic**:
+    - [x] Assigns rider with least currently assigned parcels
+    - [x] Only assigns riders from same branch
+    - [x] Respects MAX_DAILY_DELIVERIES constant
+- [x] Table only shows branch-relevant parcels
 
 #### **Restrictions**
 
-- [ ] Cannot add branches
-- [ ] Cannot add staff users
-- [ ] Cannot access system analytics
-- [ ] Cannot manage other users
+- [x] Cannot add branches
+- [x] Cannot add staff users
+- [x] Cannot access system analytics
+- [x] Cannot manage other users
 
 ---
 
