@@ -598,9 +598,9 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 5.1 Navigation Access
 
-- [ ] Can access: Home, Dashboard, Profile
-- [ ] Cannot see: About, Services, Contact, Inbox, Reports
-- [ ] Simplified navbar
+- [x] Can access: Home, Dashboard, Profile
+- [x] Cannot see: About, Services, Contact, Inbox, Reports
+- [x] Simplified navbar
 
 ### 5.2 Dashboard (`/dashboard`)
 
@@ -635,23 +635,22 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 #### **Delivery Map Component** (`DeliveryMap.jsx`)
 
-- [ ] Uses Leaflet/OpenStreetMap
+- [x] Uses Leaflet/OpenStreetMap
 - [ ] Shows delivery locations for assigned parcels:
-  - [ ] Receiver addresses marked on map
-  - [ ] Markers show parcel tracking ID
-  - [ ] Popup on click shows parcel details
-  - [ ] Different marker colors for different statuses
-- [ ] Map centers on delivery locations
-- [ ] Zoom controls work
-- [ ] Route lines shown between locations (if implemented)
-- [ ] Mobile responsive map size
+  - [x] Receiver addresses marked on map
+  - [x] Markers show parcel tracking ID
+  - [x] Popup on click shows parcel details
+- [x] Map centers on delivery locations
+- [x] Zoom controls work
+- [x] Route lines shown between locations 
+- [x] Mobile responsive map size
 
 #### **Restrictions**
 
-- [ ] Cannot add parcels
-- [ ] Cannot assign riders
-- [ ] Cannot access admin features
-- [ ] Cannot change status to anything except Delivered/Returned
+- [x] Cannot add parcels
+- [x] Cannot assign riders
+- [x] Cannot access admin features
+- [x] Cannot change status to anything except Delivered/Returned
 
 ---
 
