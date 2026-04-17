@@ -374,7 +374,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (user && user.role === "regular") {
-      if (user.paymentStatus !== "paid") {
+      if (user.paymentStatus !== "paid" && !user.isPlanReserved) {
         setShowPaymentModal(true);
       } else {
         fetchReportData();
@@ -433,10 +433,13 @@ const Dashboard = () => {
     total: displayedParcels.length,
     delivered: displayedParcels.filter((p) => p.status === "Delivered").length,
     returned: displayedParcels.filter((p) => p.status === "Returned").length,
-    cod: Math.round(displayedParcels.reduce(
-      (acc, p) => acc + (Number(p.codAmount) || 0),
-      0,
-    ) * 100) / 100,
+    cod: Math.round(displayedParcels.reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
+    
+    // Regular user specifics
+    totalSent: user && displayedParcels.filter(p => p.senderInfo && (p.senderInfo.contact === user.email || p.senderInfo.name === user.name)).length,
+    totalReceived: user && displayedParcels.filter(p => p.receiverInfo && (p.receiverInfo.contact === user.email || p.receiverInfo.name === user.name)).length,
+    codToReceive: user && Math.round(displayedParcels.filter(p => p.senderInfo && (p.senderInfo.contact === user.email || p.senderInfo.name === user.name)).reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
+    codPaid: user && Math.round(displayedParcels.filter(p => p.receiverInfo && (p.receiverInfo.contact === user.email || p.receiverInfo.name === user.name)).reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
   };
 
   return (
@@ -446,9 +449,19 @@ const Dashboard = () => {
         <span className="text-lg font-normal text-gray-500">({user.role})</span>
         {user.role === "regular" && (
           <span
-            className={`ml-4 text-sm px-3 py-1 rounded-full ${user.paymentStatus === "paid" ? "bg-green-100 text-green-800" : "bg-red-100 text-red-800"}`}
+            className={`ml-4 text-sm px-3 py-1 rounded-full ${
+              user.paymentStatus === "paid"
+                ? "bg-green-100 text-green-800"
+                : user.isPlanReserved
+                ? "bg-amber-100 text-amber-800"
+                : "bg-red-100 text-red-800"
+            }`}
           >
-            {user.paymentStatus === "paid" ? "Premium Unlocked" : "Free Tier"}
+            {user.paymentStatus === "paid"
+              ? "Premium Unlocked"
+              : user.isPlanReserved
+              ? "Plan Reserved"
+              : "Free Tier"}
           </span>
         )}
       </h1>
@@ -460,7 +473,7 @@ const Dashboard = () => {
             <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/10 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
 
             <h2 className="text-3xl font-bold text-primary mb-2">
-              🔓 Unlock Premium Power
+              ✨ Unlock Premium Features
             </h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto text-xs">
               Choose the package that fits your logistics needs and experience the next level of tracking.
@@ -507,12 +520,20 @@ const Dashboard = () => {
               </div>
             </div>
 
-            <button
-              onClick={() => navigate("/")}
-              className="text-slate-400 hover:text-slate-600 text-sm font-medium transition-colors"
-            >
-              Maybe later, go back home
-            </button>
+            <div className="flex flex-col gap-3 mt-6">
+              <button
+                onClick={handlePayment}
+                className="w-full py-3.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-xl shadow-lg shadow-blue-200 hover:shadow-xl hover:-translate-y-0.5 transition-all"
+              >
+                Pay Now (Simulate Payment)
+              </button>
+              <button
+                onClick={() => navigate("/")}
+                className="text-slate-400 hover:text-slate-600 text-sm font-medium transition-colors uppercase tracking-wider"
+              >
+                Cancel
+              </button>
+            </div>
           </div>
         </div>
       )}
@@ -554,43 +575,72 @@ const Dashboard = () => {
         </div>
       )}
 
-      <div
-        className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12 ${user.role === "regular" && user.paymentStatus !== "paid"
-            ? "opacity-20 pointer-events-none select-none filter blur-sm"
-            : ""
-          }`}
-      >
-        <div className="floating-card text-center p-6 overflow-hidden">
-          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-2">
-            {currentStats.total}
+      {user.role === "regular" ? (
+        <div
+          className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12 ${user.paymentStatus !== "paid"
+              ? "opacity-20 pointer-events-none select-none filter blur-sm"
+              : ""
+            }`}
+        >
+          <div className="floating-card text-center p-4">
+            <div className="text-2xl font-bold text-primary mb-2">{currentStats.totalSent}</div>
+            <div className="text-xs text-gray-500 font-bold uppercase truncate">Total Sent</div>
           </div>
-          <div className="text-gray-500">Total Parcels</div>
-        </div>
-        <div className="floating-card text-center p-6 bg-green-50 border border-green-100 overflow-hidden">
-          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 mb-2">
-            {currentStats.delivered}
+          <div className="floating-card text-center p-4">
+            <div className="text-2xl font-bold text-indigo-600 mb-2">{currentStats.totalReceived}</div>
+            <div className="text-xs text-gray-500 font-bold uppercase truncate">Total Received</div>
           </div>
-          <div className="text-gray-500">Delivered</div>
-        </div>
-        <div className="floating-card text-center p-6 bg-red-50 border border-red-100 overflow-hidden">
-          <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-red-600 mb-2">
-            {currentStats.returned}
+          <div className="floating-card text-center p-4 bg-green-50">
+            <div className="text-2xl font-bold text-green-600 mb-2">{currentStats.delivered}</div>
+            <div className="text-xs text-green-700 font-bold uppercase truncate">Delivered</div>
           </div>
-          <div className="text-gray-500">Returned</div>
+          <div className="floating-card text-center p-4 bg-red-50">
+            <div className="text-2xl font-bold text-red-600 mb-2">{currentStats.returned}</div>
+            <div className="text-xs text-red-700 font-bold uppercase truncate">Returned</div>
+          </div>
+          <div className="floating-card text-center p-4 bg-rose-50 border-rose-100 overflow-hidden">
+            <div className="text-lg font-bold text-rose-600 mb-2 truncate" title={`Rs. ${currentStats.codPaid}`}>Rs. {currentStats.codPaid}</div>
+            <div className="text-[10px] text-rose-700 font-bold uppercase truncate">COD Paid</div>
+          </div>
+          <div className="floating-card text-center p-4 bg-emerald-50 border-emerald-100 overflow-hidden">
+            <div className="text-lg font-bold text-emerald-600 mb-2 truncate" title={`Rs. ${currentStats.codToReceive}`}>Rs. {currentStats.codToReceive}</div>
+            <div className="text-[10px] text-emerald-700 font-bold uppercase truncate">COD To Rcv</div>
+          </div>
         </div>
-        <div className="floating-card text-center p-6 bg-blue-50 border border-blue-100 flex flex-col justify-center items-center overflow-hidden">
-          <div className="w-full" style={{ containerType: 'inline-size' }}>
-            <div 
-              className="font-bold text-blue-600 mb-2 whitespace-nowrap text-ellipsis overflow-hidden truncate"
-              style={{ fontSize: 'clamp(1rem, 12cqw, 2.25rem)' }}
-              title={`Rs. ${Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
-            >
-              Rs. {Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+          <div className="floating-card text-center p-6 overflow-hidden">
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-primary mb-2">
+              {currentStats.total}
             </div>
+            <div className="text-gray-500">Total Parcels</div>
           </div>
-          <div className="text-gray-500">COD Volume</div>
+          <div className="floating-card text-center p-6 bg-green-50 border border-green-100 overflow-hidden">
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 mb-2">
+              {currentStats.delivered}
+            </div>
+            <div className="text-gray-500">Delivered</div>
+          </div>
+          <div className="floating-card text-center p-6 bg-red-50 border border-red-100 overflow-hidden">
+            <div className="text-2xl sm:text-3xl lg:text-4xl font-bold text-red-600 mb-2">
+              {currentStats.returned}
+            </div>
+            <div className="text-gray-500">Returned</div>
+          </div>
+          <div className="floating-card text-center p-6 bg-blue-50 border border-blue-100 flex flex-col justify-center items-center overflow-hidden">
+            <div className="w-full" style={{ containerType: 'inline-size' }}>
+              <div 
+                className="font-bold text-blue-600 mb-2 whitespace-nowrap text-ellipsis overflow-hidden truncate"
+                style={{ fontSize: 'clamp(1rem, 12cqw, 2.25rem)' }}
+                title={`Rs. ${Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+              >
+                Rs. {Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              </div>
+            </div>
+            <div className="text-gray-500">COD Volume</div>
+          </div>
         </div>
-      </div>
+      )}
 
       {reportData && user.role === "regular" && (
         <div className="mb-12">
@@ -1028,7 +1078,11 @@ const Dashboard = () => {
                     className="group border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-all duration-200"
                   >
                     <td className="p-4">
-                      <span className="font-mono text-sm font-bold text-slate-800 bg-slate-100 px-2 py-1 rounded-lg">
+                      <span 
+                        className="font-mono text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-100 px-2 py-1 rounded-lg cursor-pointer transition-all hover:underline"
+                        onClick={() => navigate(`/track?id=${p.trackingId}`)}
+                        title="Click to track parcel"
+                      >
                         {p.trackingId}
                       </span>
                     </td>
