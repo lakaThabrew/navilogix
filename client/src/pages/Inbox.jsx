@@ -116,7 +116,7 @@ const Inbox = () => {
                                     {msg.parcelData && (
                                         <div className="mt-4 p-4 bg-gray-50 rounded-xl border border-gray-200" onClick={(e) => e.stopPropagation()}>
                                             <h5 className="font-bold text-gray-700 text-sm mb-2">📦 Parcel Request Details:</h5>
-                                            <div className="grid grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs text-gray-600 mb-3">
                                                 <div><span className="font-semibold">Sender:</span> {msg.parcelData.senderInfo?.name}</div>
                                                 <div><span className="font-semibold">Receiver:</span> {msg.parcelData.receiverInfo?.name}</div>
                                                 <div><span className="font-semibold">To:</span> {msg.parcelData.receiverInfo?.address}</div>
