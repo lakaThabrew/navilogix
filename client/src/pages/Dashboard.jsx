@@ -403,30 +403,16 @@ const Dashboard = () => {
 
   if (!user) return null;
 
-  // Filter logic
+  // Filter logic: Backend already filters by role/permissions.
+  // We only keep frontend filtering if there's a search term or specific UI toggle.
   let displayedParcels = parcels;
+
+  // Regular users still filter the already-filtered list to show Sent vs Received counts correctly
+  // but we don't need to re-authorize the list here.
   if (user.role === "regular") {
-    displayedParcels = parcels.filter(
-      (p) =>
-        (p.senderInfo &&
-          (p.senderInfo.contact === user.email ||
-            p.senderInfo.name === user.name)) ||
-        (p.receiverInfo &&
-          (p.receiverInfo.contact === user.email ||
-            p.receiverInfo.name === user.name)),
-    );
-  } else if (user.role === "delivery_person") {
-    displayedParcels = parcels.filter(
-      (p) =>
-        p.riderId && (p.riderId._id === user._id || p.riderId === user._id),
-    );
-  } else if (user.role === "branch_head") {
-    displayedParcels = parcels.filter(
-      (p) =>
-        (p.branchId &&
-          (p.branchId._id === user.branchId || p.branchId === user.branchId)) ||
-        p.createdBy === user._id,
-    );
+    // If we wanted to filter by a search term, we'd do it here.
+    // For now, displayedParcels is the full authorized list from backend.
+    displayedParcels = parcels;
   }
 
   const currentStats = {
@@ -435,16 +421,16 @@ const Dashboard = () => {
     returned: displayedParcels.filter((p) => p.status === "Returned").length,
     cod: Math.round(displayedParcels.reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
     
-    // Regular user specifics
-    totalSent: user && displayedParcels.filter(p => p.senderInfo && (p.senderInfo.contact === user.email || p.senderInfo.name === user.name)).length,
-    totalReceived: user && displayedParcels.filter(p => p.receiverInfo && (p.receiverInfo.contact === user.email || p.receiverInfo.name === user.name)).length,
-    codToReceive: user && Math.round(displayedParcels.filter(p => p.senderInfo && (p.senderInfo.contact === user.email || p.senderInfo.name === user.name)).reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
-    codPaid: user && Math.round(displayedParcels.filter(p => p.receiverInfo && (p.receiverInfo.contact === user.email || p.receiverInfo.name === user.name)).reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
+    // Regular user specifics - using name as the fallback identifier
+    totalSent: user && displayedParcels.filter(p => p.senderInfo && (p.senderInfo.name === user.name)).length,
+    totalReceived: user && displayedParcels.filter(p => p.receiverInfo && (p.receiverInfo.name === user.name)).length,
+    codToReceive: user && Math.round(displayedParcels.filter(p => p.senderInfo && (p.senderInfo.name === user.name)).reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
+    codPaid: user && Math.round(displayedParcels.filter(p => p.receiverInfo && (p.receiverInfo.name === user.name)).reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
   };
 
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <h1 className="text-4xl font-bold text-primary mb-8">
+    <div className="p-8 pt-32 max-w-7xl mx-auto">
+      <h1 className="text-4xl font-bold text-primary mb-8 flex flex-wrap items-center gap-2">
         Hello, <span className="text-secondary">{user.name}</span>{" "}
         <span className="text-lg font-normal text-gray-500">({user.role})</span>
         {user.role === "regular" && (
