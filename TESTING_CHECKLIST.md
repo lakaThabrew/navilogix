@@ -750,57 +750,57 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 7.2 Data Validation
 
-- [ ] **Parcel Form**:
-  - [ ] Negative weight rejected (shows alert)
-  - [ ] Negative COD amount rejected (shows alert)
-  - [ ] Invalid phone numbers (not 10 digits) rejected
-  - [ ] Empty required fields show validation errors
-  - [ ] Address fields accept long text without breaking layout
-- [ ] **User Forms**:
-  - [ ] Email format validated (contains @, domain)
-  - [ ] Password minimum length enforced (at least 6 characters)
-  - [ ] Special characters in names handled
-- [ ] **Tracking ID**:
-  - [ ] Invalid format shows appropriate error
-  - [ ] Non-existent ID shows "Not Found" message
-  - [ ] Case-insensitive search works (if implemented)
+- [x] **Parcel Form**:
+  - [x] Negative weight rejected (shows alert)
+  - [x] Negative COD amount rejected (shows alert)
+  - [x] Invalid phone numbers (not 10 digits) rejected
+  - [x] Empty required fields show validation errors
+  - [x] Address fields accept long text without breaking layout
+- [x] **User Forms**:
+  - [x] Email format validated (contains @, domain)
+  - [x] Password minimum length enforced (at least 6 characters)
+  - [x] Special characters in names handled
+- [x] **Tracking ID**:
+  - [x] Invalid format shows appropriate error
+  - [x] Non-existent ID shows "Not Found" message
+  - [x] Case-insensitive search works (if implemented)
 
 ### 7.3 UI/UX Edge Cases
 
-- [ ] **Long Text Handling**:
-  - [ ] Long tracking IDs don't break table layout
-  - [ ] Long addresses wrap properly in table cells
-  - [ ] Long usernames don't overflow in navbar
-  - [ ] Long branch names display correctly
-- [ ] **Mobile Responsiveness**:
-  - [ ] Tables scroll horizontally on small screens
-  - [ ] Forms stack properly on mobile
-  - [ ] Navigation menu works on all screen sizes
-  - [ ] Charts resize on mobile
-  - [ ] Modals/overlays scale properly
-- [ ] **Empty States**:
-  - [ ] "No parcels found" shows when table is empty
-  - [ ] "No messages" shows in empty inbox
-  - [ ] "No branches yet" shows on About map if no branches
-  - [ ] "No users" shows in empty user management table
-  - [ ] Charts show "No data yet" when empty
+- [x] **Long Text Handling**:
+  - [x] Long tracking IDs don't break table layout
+  - [x] Long addresses wrap properly in table cells
+  - [x] Long usernames don't overflow in navbar
+  - [x] Long branch names display correctly
+- [x] **Mobile Responsiveness**:
+  - [x] Tables scroll horizontally on small screens
+  - [x] Forms stack properly on mobile
+  - [x] Navigation menu works on all screen sizes
+  - [x] Charts resize on mobile
+  - [x] Modals/overlays scale properly
+- [x] **Empty States**:
+  - [x] "No parcels found" shows when table is empty
+  - [x] "No messages" shows in empty inbox
+  - [x] "No branches yet" shows on About map if no branches
+  - [x] "No users" shows in empty user management table
+  - [x] Charts show "No data yet" when empty
 
 ### 7.4 Browser Console & Errors
 
-- [ ] **No Console Errors**:
-  - [ ] No red error messages in DevTools Console
-  - [ ] No 404 errors for images/assets
-  - [ ] No CORS errors
-  - [ ] No uncaught promise rejections
-- [ ] **Network Requests**:
-  - [ ] API calls use correct endpoints
-  - [ ] Authorization headers included in protected requests
-  - [ ] Failed requests show user-friendly error messages
-  - [ ] Loading states shown during API calls
-- [ ] **Warnings** (Yellow in console):
-  - [ ] React key warnings resolved
-  - [ ] Deprecated method warnings fixed
-  - [ ] Memory leak warnings addressed
+- [x] **No Console Errors**:
+  - [x] No red error messages in DevTools Console
+  - [x] No 404 errors for images/assets
+  - [x] No CORS errors
+  - [x] No uncaught promise rejections
+- [x] **Network Requests**:
+  - [x] API calls use correct endpoints
+  - [x] Authorization headers included in protected requests
+  - [x] Failed requests show user-friendly error messages
+  - [x] Loading states shown during API calls
+- [x] **Warnings** (Yellow in console):
+  - [x] React key warnings resolved
+  - [x] Deprecated method warnings fixed
+  - [x] Memory leak warnings addressed
 
 ### 7.5 Performance & Optimization
 
