@@ -186,12 +186,30 @@ export const createParcel = async (req, res) => {
 };
 
 export const getParcels = async (req, res) => {
-    logger.info(`📋 [GET PARCELS] Fetching all parcels...`);
+    logger.info(`📋 [GET PARCELS] Fetching parcels for role: ${req.user.role}`);
     try {
-        // Filter based on user role (assumed processed by middleware)
-        // For now, return all for admin
-        const parcels = await Parcel.find().populate('branchId').populate('riderId');
-        logger.info(`✅ [GET PARCELS] Found ${parcels.length} parcels`);
+        let query = {};
+
+        if (req.user.role === 'main_admin') {
+            query = {}; // All parcels
+        } else if (req.user.role === 'branch_head') {
+            query = { branchId: req.user.branchId };
+        } else if (req.user.role === 'delivery_person') {
+            query = { riderId: req.user._id };
+        } else {
+            // Regular User
+            query = {
+                $or: [
+                    { 'senderInfo.contact': req.user.email },
+                    { 'receiverInfo.contact': req.user.email },
+                    { 'senderInfo.name': req.user.name },
+                    { 'receiverInfo.name': req.user.name }
+                ]
+            };
+        }
+
+        const parcels = await Parcel.find(query).populate('branchId').populate('riderId');
+        logger.info(`✅ [GET PARCELS] Found ${parcels.length} authorized parcels`);
         res.json(parcels);
     } catch (error) {
         logger.error(`❌ [GET PARCELS] Error: ${error.message}`);
