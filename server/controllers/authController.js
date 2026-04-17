@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import logger from '../utils/logger.js';
 
 const generateToken = (id) => {
-    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '30d' });
+    return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '15m' });
 };
 
 export const registerUser = async (req, res) => {
@@ -49,7 +49,6 @@ export const registerUser = async (req, res) => {
             res.status(201).json({
                 _id: user._id,
                 name: user.name,
-                email: user.email,
                 role: user.role,
                 token: generateToken(user._id)
             });
@@ -102,7 +101,6 @@ export const reservePackage = async (req, res) => {
             res.json({
                 _id: user._id,
                 name: user.name,
-                email: user.email,
                 role: user.role,
                 paymentStatus: user.paymentStatus,
                 selectedPlan: user.selectedPlan,
@@ -123,13 +121,12 @@ export const processPayment = async (req, res) => {
         if (user) {
             logger.info(`💳 [PAYMENT] Attempting payment processing for: ${user.email}`);
             user.paymentStatus = 'paid';
-            user.isPlanReserved = false; 
+            user.isPlanReserved = false;
             await user.save();
             logger.info(`✅ [PAYMENT] Payment successful and plan activated for: ${user.email}`);
             res.json({
                 _id: user._id,
                 name: user.name,
-                email: user.email,
                 role: user.role,
                 paymentStatus: user.paymentStatus,
                 selectedPlan: user.selectedPlan,
@@ -162,11 +159,10 @@ export const loginUser = async (req, res) => {
             res.json({
                 _id: user._id,
                 name: user.name,
-                email: user.email,
                 role: user.role,
-                branchId: user.branchId?._id || user.branchId,
-                branchName: user.branchId?.branchName || 'N/A',
                 paymentStatus: user.paymentStatus || 'unpaid',
+                selectedPlan: user.selectedPlan,
+                isPlanReserved: user.isPlanReserved,
                 token: generateToken(user._id)
             });
         } else {
@@ -279,7 +275,7 @@ export const updateUserProfile = async (req, res) => {
         if (user) {
             logger.info(`🔄 [PROFILE] Update request received for: ${user.email}`);
             user.name = req.body.name || user.name;
-            user.email = req.body.email || user.email; 
+            user.email = req.body.email || user.email;
 
             if (req.body.password) {
                 logger.info(`🔑 [PROFILE] Password change requested for: ${user.email}`);
@@ -295,12 +291,9 @@ export const updateUserProfile = async (req, res) => {
             res.json({
                 _id: updatedUser._id,
                 name: updatedUser.name,
-                email: updatedUser.email,
                 role: updatedUser.role,
-                branchId: updatedUser.branchId?._id || updatedUser.branchId,
-                branchName: updatedUser.branchId?.branchName || 'N/A',
                 paymentStatus: updatedUser.paymentStatus,
-                token: generateToken(updatedUser._id) // Refreshing token could be optional
+                token: generateToken(updatedUser._id)
             });
         } else {
             res.status(404).json({ message: 'User not found' });
