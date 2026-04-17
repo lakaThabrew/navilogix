@@ -38,6 +38,9 @@ const Dashboard = () => {
   const [newBranchAreas, setNewBranchAreas] = useState("");
   const [addingBranch, setAddingBranch] = useState(false);
   const [staffUsers, setStaffUsers] = useState([]);
+  const [isSubmittingStaff, setIsSubmittingStaff] = useState(false);
+  const [isAddingParcel, setIsAddingParcel] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   async function fetchStaffUsers() {
     try {
@@ -149,11 +152,16 @@ const Dashboard = () => {
       alert("Password must be at least 6 characters long!");
       return;
     }
-    if ((branchForm.role === "branch_head" || branchForm.role === "delivery_person") && !branchForm.branchId) {
+    if (
+      (branchForm.role === "branch_head" ||
+        branchForm.role === "delivery_person") &&
+      !branchForm.branchId
+    ) {
       alert("Please assign a branch for this staff role!");
       return;
     }
 
+    setIsSubmittingStaff(true);
     try {
       const config = {
         headers: { Authorization: `Bearer ${user.token}` },
@@ -173,8 +181,11 @@ const Dashboard = () => {
         role: "branch_head",
         branchId: "",
       });
+      fetchStaffUsers(); // Refresh the list
     } catch (error) {
       alert("Failed: " + (error.response?.data?.message || error.message));
+    } finally {
+      setIsSubmittingStaff(false);
     }
   };
 
@@ -236,7 +247,10 @@ const Dashboard = () => {
     );
 
     // Validation Logic
-    if (form.senderContact.length !== 10 || form.receiverContact.length !== 10) {
+    if (
+      form.senderContact.length !== 10 ||
+      form.receiverContact.length !== 10
+    ) {
       alert("Contact numbers must be exactly 10 digits!");
       return;
     }
@@ -251,6 +265,7 @@ const Dashboard = () => {
       return;
     }
 
+    setIsAddingParcel(true);
     try {
       const parcelData = {
         senderInfo: {
@@ -308,7 +323,12 @@ const Dashboard = () => {
       logger.error(
         "❌ [CLIENT DASHBOARD] Error adding parcel: " + error.message,
       );
-      alert("Failed to add parcel");
+      alert(
+        "Failed to add parcel: " +
+          (error.response?.data?.message || error.message),
+      );
+    } finally {
+      setIsAddingParcel(false);
     }
   };
 
@@ -419,13 +439,39 @@ const Dashboard = () => {
     total: displayedParcels.length,
     delivered: displayedParcels.filter((p) => p.status === "Delivered").length,
     returned: displayedParcels.filter((p) => p.status === "Returned").length,
-    cod: Math.round(displayedParcels.reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
-    
+    cod:
+      Math.round(
+        displayedParcels.reduce(
+          (acc, p) => acc + (Number(p.codAmount) || 0),
+          0,
+        ) * 100,
+      ) / 100,
+
     // Regular user specifics - using name as the fallback identifier
-    totalSent: user && displayedParcels.filter(p => p.senderInfo && (p.senderInfo.name === user.name)).length,
-    totalReceived: user && displayedParcels.filter(p => p.receiverInfo && (p.receiverInfo.name === user.name)).length,
-    codToReceive: user && Math.round(displayedParcels.filter(p => p.senderInfo && (p.senderInfo.name === user.name)).reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
-    codPaid: user && Math.round(displayedParcels.filter(p => p.receiverInfo && (p.receiverInfo.name === user.name)).reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100) / 100,
+    totalSent:
+      user &&
+      displayedParcels.filter(
+        (p) => p.senderInfo && p.senderInfo.name === user.name,
+      ).length,
+    totalReceived:
+      user &&
+      displayedParcels.filter(
+        (p) => p.receiverInfo && p.receiverInfo.name === user.name,
+      ).length,
+    codToReceive:
+      user &&
+      Math.round(
+        displayedParcels
+          .filter((p) => p.senderInfo && p.senderInfo.name === user.name)
+          .reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100,
+      ) / 100,
+    codPaid:
+      user &&
+      Math.round(
+        displayedParcels
+          .filter((p) => p.receiverInfo && p.receiverInfo.name === user.name)
+          .reduce((acc, p) => acc + (Number(p.codAmount) || 0), 0) * 100,
+      ) / 100,
   };
 
   return (
@@ -439,15 +485,15 @@ const Dashboard = () => {
               user.paymentStatus === "paid"
                 ? "bg-green-100 text-green-800"
                 : user.isPlanReserved
-                ? "bg-amber-100 text-amber-800"
-                : "bg-red-100 text-red-800"
+                  ? "bg-amber-100 text-amber-800"
+                  : "bg-red-100 text-red-800"
             }`}
           >
             {user.paymentStatus === "paid"
               ? "Premium Unlocked"
               : user.isPlanReserved
-              ? "Plan Reserved"
-              : "Free Tier"}
+                ? "Plan Reserved"
+                : "Free Tier"}
           </span>
         )}
       </h1>
@@ -462,7 +508,8 @@ const Dashboard = () => {
               ✨ Unlock Premium Features
             </h2>
             <p className="text-gray-600 mb-8 max-w-md mx-auto text-xs">
-              Choose the package that fits your logistics needs and experience the next level of tracking.
+              Choose the package that fits your logistics needs and experience
+              the next level of tracking.
             </p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
@@ -472,17 +519,36 @@ const Dashboard = () => {
                 className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50/50 transition-all cursor-pointer text-left relative overflow-hidden"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl">🚀</div>
-                  <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">Plus</span>
+                  <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl">
+                    🚀
+                  </div>
+                  <span className="text-xs font-bold text-blue-600 uppercase tracking-wider">
+                    Plus
+                  </span>
                 </div>
-                <h3 className="font-bold text-slate-900 text-lg mb-1">Plus Plan</h3>
-                <p className="text-2xl font-black text-slate-900">$9.99<span className="text-sm font-normal text-slate-400">/mo</span></p>
+                <h3 className="font-bold text-slate-900 text-lg mb-1">
+                  Plus Plan
+                </h3>
+                <p className="text-2xl font-black text-slate-900">
+                  $9.99
+                  <span className="text-sm font-normal text-slate-400">
+                    /mo
+                  </span>
+                </p>
                 <ul className="mt-4 space-y-2 text-xs text-slate-500">
-                  <li className="flex items-center gap-2">✓ Real-time Live Tracking</li>
-                  <li className="flex items-center gap-2">✓ Automated Reports</li>
-                  <li className="flex items-center gap-2">✓ Priority Customer Support</li>
+                  <li className="flex items-center gap-2">
+                    ✓ Real-time Live Tracking
+                  </li>
+                  <li className="flex items-center gap-2">
+                    ✓ Automated Reports
+                  </li>
+                  <li className="flex items-center gap-2">
+                    ✓ Priority Customer Support
+                  </li>
                 </ul>
-                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600">→</div>
+                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600">
+                  →
+                </div>
               </div>
 
               {/* Pro Option */}
@@ -491,18 +557,36 @@ const Dashboard = () => {
                 className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer text-left relative overflow-hidden"
               >
                 <div className="flex justify-between items-start mb-4">
-                  <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl">💎</div>
-                  <span className="text-xs font-bold text-purple-600 uppercase tracking-wider">Pro</span>
+                  <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl">
+                    💎
+                  </div>
+                  <span className="text-xs font-bold text-purple-600 uppercase tracking-wider">
+                    Pro
+                  </span>
                 </div>
-                <h3 className="font-bold text-slate-900 text-lg mb-1">Pro Plan</h3>
-                <p className="text-2xl font-black text-slate-900">$29.99<span className="text-sm font-normal text-slate-400">/mo</span></p>
+                <h3 className="font-bold text-slate-900 text-lg mb-1">
+                  Pro Plan
+                </h3>
+                <p className="text-2xl font-black text-slate-900">
+                  $29.99
+                  <span className="text-sm font-normal text-slate-400">
+                    /mo
+                  </span>
+                </p>
                 <ul className="mt-4 space-y-2 text-xs text-slate-500">
-                  <li className="flex items-center gap-2">✓ AI Route Optimization</li>
-                  <li className="flex items-center gap-2">✓ Custom Logistics API</li>
-                  <li className="flex items-center gap-2">✓ Discount on Services</li>
-
+                  <li className="flex items-center gap-2">
+                    ✓ AI Route Optimization
+                  </li>
+                  <li className="flex items-center gap-2">
+                    ✓ Custom Logistics API
+                  </li>
+                  <li className="flex items-center gap-2">
+                    ✓ Discount on Services
+                  </li>
                 </ul>
-                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-purple-600">→</div>
+                <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-purple-600">
+                  →
+                </div>
               </div>
             </div>
 
@@ -527,9 +611,9 @@ const Dashboard = () => {
       {user.role === "main_admin" && messages.length > 0 && (
         <div className="mb-8 p-6 bg-yellow-50 border border-yellow-200 rounded-xl relative overflow-hidden">
           {/* Unread Count Badge */}
-          {messages.filter(m => !m.isRead).length > 0 && (
+          {messages.filter((m) => !m.isRead).length > 0 && (
             <div className="absolute top-4 right-4 bg-red-500 text-white text-xs font-bold px-2 py-1 rounded-full animate-pulse shadow-lg">
-              {messages.filter(m => !m.isRead).length} New
+              {messages.filter((m) => !m.isRead).length} New
             </div>
           )}
 
@@ -541,11 +625,16 @@ const Dashboard = () => {
               <div
                 key={msg._id}
                 onClick={() => markAsRead(msg._id)}
-                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-all ${msg.isRead ? "border-gray-300 opacity-60" : "border-blue-500 ring-1 ring-blue-100"
-                  }`}
+                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-all ${
+                  msg.isRead
+                    ? "border-gray-300 opacity-60"
+                    : "border-blue-500 ring-1 ring-blue-100"
+                }`}
               >
                 <div className="flex justify-between items-start">
-                  <p className={`font-medium ${msg.isRead ? "text-gray-500" : "text-gray-800"}`}>
+                  <p
+                    className={`font-medium ${msg.isRead ? "text-gray-500" : "text-gray-800"}`}
+                  >
                     {msg.content}
                   </p>
                   {!msg.isRead && (
@@ -563,34 +652,65 @@ const Dashboard = () => {
 
       {user.role === "regular" ? (
         <div
-          className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12 ${user.paymentStatus !== "paid"
+          className={`grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 mb-12 ${
+            user.paymentStatus !== "paid"
               ? "opacity-20 pointer-events-none select-none filter blur-sm"
               : ""
-            }`}
+          }`}
         >
           <div className="floating-card text-center p-4">
-            <div className="text-2xl font-bold text-primary mb-2">{currentStats.totalSent}</div>
-            <div className="text-xs text-gray-500 font-bold uppercase truncate">Total Sent</div>
+            <div className="text-2xl font-bold text-primary mb-2">
+              {currentStats.totalSent}
+            </div>
+            <div className="text-xs text-gray-500 font-bold uppercase truncate">
+              Total Sent
+            </div>
           </div>
           <div className="floating-card text-center p-4">
-            <div className="text-2xl font-bold text-indigo-600 mb-2">{currentStats.totalReceived}</div>
-            <div className="text-xs text-gray-500 font-bold uppercase truncate">Total Received</div>
+            <div className="text-2xl font-bold text-indigo-600 mb-2">
+              {currentStats.totalReceived}
+            </div>
+            <div className="text-xs text-gray-500 font-bold uppercase truncate">
+              Total Received
+            </div>
           </div>
           <div className="floating-card text-center p-4 bg-green-50">
-            <div className="text-2xl font-bold text-green-600 mb-2">{currentStats.delivered}</div>
-            <div className="text-xs text-green-700 font-bold uppercase truncate">Delivered</div>
+            <div className="text-2xl font-bold text-green-600 mb-2">
+              {currentStats.delivered}
+            </div>
+            <div className="text-xs text-green-700 font-bold uppercase truncate">
+              Delivered
+            </div>
           </div>
           <div className="floating-card text-center p-4 bg-red-50">
-            <div className="text-2xl font-bold text-red-600 mb-2">{currentStats.returned}</div>
-            <div className="text-xs text-red-700 font-bold uppercase truncate">Returned</div>
+            <div className="text-2xl font-bold text-red-600 mb-2">
+              {currentStats.returned}
+            </div>
+            <div className="text-xs text-red-700 font-bold uppercase truncate">
+              Returned
+            </div>
           </div>
           <div className="floating-card text-center p-4 bg-rose-50 border-rose-100 overflow-hidden">
-            <div className="text-lg font-bold text-rose-600 mb-2 truncate" title={`Rs. ${currentStats.codPaid}`}>Rs. {currentStats.codPaid}</div>
-            <div className="text-[10px] text-rose-700 font-bold uppercase truncate">COD Paid</div>
+            <div
+              className="text-lg font-bold text-rose-600 mb-2 truncate"
+              title={`Rs. ${currentStats.codPaid}`}
+            >
+              Rs. {currentStats.codPaid}
+            </div>
+            <div className="text-[10px] text-rose-700 font-bold uppercase truncate">
+              COD Paid
+            </div>
           </div>
           <div className="floating-card text-center p-4 bg-emerald-50 border-emerald-100 overflow-hidden">
-            <div className="text-lg font-bold text-emerald-600 mb-2 truncate" title={`Rs. ${currentStats.codToReceive}`}>Rs. {currentStats.codToReceive}</div>
-            <div className="text-[10px] text-emerald-700 font-bold uppercase truncate">COD To Rcv</div>
+            <div
+              className="text-lg font-bold text-emerald-600 mb-2 truncate"
+              title={`Rs. ${currentStats.codToReceive}`}
+            >
+              Rs. {currentStats.codToReceive}
+            </div>
+            <div className="text-[10px] text-emerald-700 font-bold uppercase truncate">
+              COD To Rcv
+            </div>
           </div>
         </div>
       ) : (
@@ -614,13 +734,17 @@ const Dashboard = () => {
             <div className="text-gray-500">Returned</div>
           </div>
           <div className="floating-card text-center p-6 bg-blue-50 border border-blue-100 flex flex-col justify-center items-center overflow-hidden">
-            <div className="w-full" style={{ containerType: 'inline-size' }}>
-              <div 
+            <div className="w-full" style={{ containerType: "inline-size" }}>
+              <div
                 className="font-bold text-blue-600 mb-2 whitespace-nowrap text-ellipsis overflow-hidden truncate"
-                style={{ fontSize: 'clamp(1rem, 12cqw, 2.25rem)' }}
+                style={{ fontSize: "clamp(1rem, 12cqw, 2.25rem)" }}
                 title={`Rs. ${Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
               >
-                Rs. {Number(currentStats.cod).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                Rs.{" "}
+                {Number(currentStats.cod).toLocaleString(undefined, {
+                  minimumFractionDigits: 2,
+                  maximumFractionDigits: 2,
+                })}
               </div>
             </div>
             <div className="text-gray-500">COD Volume</div>
@@ -628,7 +752,7 @@ const Dashboard = () => {
         </div>
       )}
 
-      {reportData && user.role === "regular" && (
+      {user.role === "regular" && (
         <div className="mb-12">
           <h3 className="text-2xl font-bold text-primary mb-6">
             📊 Your Performance Reports
@@ -639,32 +763,39 @@ const Dashboard = () => {
                 📦 Parcel Volume
               </h4>
               <div className="flex justify-between items-center mb-2">
+                <span>Total Items:</span>
+                <span className="font-bold text-primary">
+                  {currentStats.total}
+                </span>
+              </div>
+              <div className="flex justify-between items-center mb-2">
                 <span>Sent:</span>
                 <span className="font-bold text-primary">
-                  {reportData.totalSent}
+                  {currentStats.totalSent}
                 </span>
               </div>
               <div className="flex justify-between items-center">
                 <span>Received:</span>
                 <span className="font-bold text-primary">
-                  {reportData.totalReceived}
+                  {currentStats.totalReceived}
                 </span>
               </div>
             </div>
+
             <div className="floating-card bg-white p-6">
               <h4 className="font-bold text-gray-700 mb-4 border-b pb-2">
-                💰 COD Financials
+                💰 Financial Summary
               </h4>
               <div className="flex justify-between items-center mb-2">
-                <span>Total Paid:</span>
-                <span className="font-bold text-red-500">
-                  Rs. {Number(reportData.codPaid).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 10 }).split('.')[0] + (reportData.codPaid % 1 !== 0 ? '.' + reportData.codPaid.toString().split('.')[1].substring(0, 2) : '')}
+                <span>COD to Receive:</span>
+                <span className="font-bold text-green-600">
+                  Rs. {currentStats.codToReceive?.toLocaleString()}
                 </span>
               </div>
               <div className="flex justify-between items-center">
-                <span>Total to Receive:</span>
-                <span className="font-bold text-green-500">
-                  Rs. {Number(reportData.codToReceive).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                <span>COD Paid:</span>
+                <span className="font-bold text-blue-600">
+                  Rs. {currentStats.codPaid?.toLocaleString()}
                 </span>
               </div>
             </div>
@@ -754,34 +885,38 @@ const Dashboard = () => {
                   </div>
                   {(branchForm.role === "branch_head" ||
                     branchForm.role === "delivery_person") && (
-                      <div className="md:col-span-2">
-                        <label className="block text-sm font-medium text-gray-700 mb-1">
-                          Branch *
-                        </label>
-                        <select
-                          className="input-field"
-                          value={branchForm.branchId}
-                          onChange={(e) =>
-                            setBranchForm({
-                              ...branchForm,
-                              branchId: e.target.value,
-                            })
-                          }
-                          required
-                        >
-                          <option value="">Select a Branch</option>
-                          {branches.map((b) => (
-                            <option key={b._id} value={b._id}>
-                              {b.branchName}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    )}
+                    <div className="md:col-span-2">
+                      <label className="block text-sm font-medium text-gray-700 mb-1">
+                        Branch *
+                      </label>
+                      <select
+                        className="input-field"
+                        value={branchForm.branchId}
+                        onChange={(e) =>
+                          setBranchForm({
+                            ...branchForm,
+                            branchId: e.target.value,
+                          })
+                        }
+                        required
+                      >
+                        <option value="">Select a Branch</option>
+                        {branches.map((b) => (
+                          <option key={b._id} value={b._id}>
+                            {b.branchName}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 </div>
                 <div className="flex justify-end pt-4">
-                  <button type="submit" className="btn-primary font-bold px-8">
-                    + Register User
+                  <button
+                    type="submit"
+                    disabled={isSubmittingStaff}
+                    className="btn-primary font-bold px-8 disabled:opacity-50"
+                  >
+                    {isSubmittingStaff ? "Registering..." : "+ Register User"}
                   </button>
                 </div>
               </form>
@@ -968,7 +1103,7 @@ const Dashboard = () => {
             <div className="space-y-4 md:col-span-2 grid md:grid-cols-2 gap-6">
               <div>
                 <h4 className="font-bold text-gray-600 mb-2">Parcel Details</h4>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-2">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 mb-2">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Weight (kg) *
@@ -1017,11 +1152,14 @@ const Dashboard = () => {
             <div className="flex justify-end pt-0 md:col-span-2 w-full">
               <button
                 type="submit"
-                className="btn-primary px-8 text-lg font-bold"
+                disabled={isAddingParcel}
+                className="btn-primary px-8 text-lg font-bold disabled:opacity-50"
               >
-                {user.role === "branch_head"
-                  ? "Send Request to Main Admin"
-                  : "Add Parcel to System"}
+                {isAddingParcel
+                  ? "Processing..."
+                  : user.role === "branch_head"
+                    ? "Send Request to Main Admin"
+                    : "Add Parcel to System"}
               </button>
             </div>
           </form>
@@ -1032,185 +1170,252 @@ const Dashboard = () => {
       <div
         className={`floating-card overflow-hidden ${user.role === "regular" && user.paymentStatus !== "paid" ? "opacity-20 pointer-events-none filter blur-sm" : ""}`}
       >
-        <h3 className="text-2xl font-bold text-primary mb-6">
-          Parcels Overview
+        <h3 className="text-2xl font-bold text-primary mb-6 flex items-center gap-2">
+          📦 {user.role === "regular" ? "My Shipments" : "Parcels Overview"}
         </h3>
         {displayedParcels.length === 0 ? (
-          <p className="text-gray-500 text-center py-8">No parcels found.</p>
+          <p className="text-gray-500 text-center py-12 bg-slate-50 rounded-2xl border-2 border-dashed border-slate-200">
+            No parcels found.
+          </p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead className="bg-slate-50/80 backdrop-blur-sm sticky top-0 z-10 border-b border-slate-100">
-                <tr>
-                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider rounded-tl-2xl">
-                    Tracking ID
-                  </th>
-                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Receiver & Address</th>
-                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Branch</th>
-                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Date</th>
-                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Status</th>
-                  <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">Rider</th>
-                  {user.role !== "regular" && (
-                    <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider rounded-tr-2xl text-right">
-                      Actions
-                    </th>
-                  )}
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {displayedParcels.map((p) => (
-                  <tr
-                    key={p._id}
-                    className="group border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-all duration-200"
-                  >
-                    <td className="p-4">
-                      <span 
-                        className="font-mono text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-100 px-2 py-1 rounded-lg cursor-pointer transition-all hover:underline"
-                        onClick={() => navigate(`/track?id=${p.trackingId}`)}
-                        title="Click to track parcel"
-                      >
-                        {p.trackingId}
-                      </span>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex flex-col">
-                        <span className="text-sm font-bold text-slate-700">{p.receiverInfo.name}</span>
-                        <span className="text-[11px] text-slate-400 truncate max-w-[150px]" title={p.receiverInfo.address}>
-                          {p.receiverInfo.address}
-                        </span>
-                      </div>
-                    </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
-                         <div className="w-1.5 h-1.5 rounded-full bg-indigo-400"></div>
-                         <span className="text-xs font-semibold text-slate-600">
-                            {p.branchId?.branchName || "Unassigned"}
-                         </span>
-                      </div>
-                    </td>
-                    <td className="p-4 text-xs font-medium text-slate-500 whitespace-nowrap">
-                      {new Date(p.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                    </td>
-                    <td className="p-4">
+          <>
+            {/* Mobile Cards View */}
+            <div className="grid grid-cols-1 gap-4 md:hidden">
+              {displayedParcels.map((p) => (
+                <div
+                  key={p._id}
+                  className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4"
+                >
+                  <div className="flex justify-between items-start">
+                    <span
+                      className="font-mono text-sm font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-lg cursor-pointer ring-1 ring-blue-100"
+                      onClick={() => navigate(`/track?id=${p.trackingId}`)}
+                    >
+                      {p.trackingId}
+                    </span>
+                    <div className="flex flex-col items-end gap-1">
                       {user.role === "main_admin" ||
-                        user.role === "branch_head" ? (
+                      user.role === "branch_head" ? (
                         <select
                           value={p.status}
                           onChange={(e) => updateStatus(p._id, e.target.value)}
-                          className={`appearance-none px-3 py-1.5 rounded-full text-[10px] font-black uppercase tracking-tight shadow-sm outline-none cursor-pointer border-0 w-full text-center transition-all hover:scale-105 active:scale-95
-                            ${p.status === "Delivered"
-                               ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
-                               : p.status === "Returned"
-                                 ? "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
-                                 : p.status === "Out for Delivery"
-                                   ? "bg-amber-100 text-amber-800 ring-1 ring-amber-200"
-                                   : "bg-blue-100 text-blue-800 ring-1 ring-blue-200"
-                             }`}
+                          className={`appearance-none px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tight shadow-sm outline-none border-0 text-center
+                            ${p.status === "Delivered" ? "bg-emerald-100 text-emerald-800" : p.status === "Returned" ? "bg-rose-100 text-rose-800" : "bg-blue-100 text-blue-800"}`}
                         >
                           <option value="Pending">Pending</option>
                           <option value="In Main Branch">In Main Branch</option>
                           <option value="Transmitting">Transmitting</option>
                           <option value="In Sub Branch">In Sub Branch</option>
-
-                          {user.role !== "main_admin" && (
-                            <option value="Out for Delivery">
-                              Out for Delivery
-                            </option>
-                          )}
-
-                          <option value="Delivered" disabled>
-                            Delivered
+                          <option value="Out for Delivery">
+                            Out for Delivery
                           </option>
-
+                          <option value="Delivered">Delivered</option>
                           <option value="Returned">Returned</option>
                         </select>
                       ) : (
                         <span
-                          className={`inline-block px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-tight shadow-sm
-                            ${p.status === "Delivered"
-                               ? "bg-emerald-100 text-emerald-800 ring-1 ring-emerald-200"
-                               : p.status === "Returned"
-                                 ? "bg-rose-100 text-rose-800 ring-1 ring-rose-200"
-                                 : "bg-slate-100 text-slate-800 ring-1 ring-slate-200"
-                             }`}
+                          className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-tight ${p.status === "Delivered" ? "bg-emerald-100 text-emerald-800" : "bg-amber-100 text-amber-800"}`}
                         >
                           {p.status}
                         </span>
                       )}
-                    </td>
-                    <td className="p-4">
-                      {(user.role === "main_admin" || user.role === "branch_head") ? (
-                        p.status === "In Sub Branch" ? (
-                          <select
-                            value={p.riderId?._id || ""}
-                            onChange={(e) => handleAssignRider(p._id, e.target.value)}
-                            className="appearance-none text-[10px] font-bold border border-slate-200 rounded-lg p-1.5 bg-white w-full focus:ring-2 focus:ring-blue-100 outline-none transition-all"
+                      <span className="text-[10px] text-slate-400 font-medium">
+                        {new Date(p.createdAt).toLocaleDateString()}
+                      </span>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4 pt-2 border-t border-slate-50">
+                    <div>
+                      <p className="text-[9px] uppercase font-bold text-slate-400 mb-1">
+                        Receiver
+                      </p>
+                      <p className="text-sm font-bold text-slate-700 truncate">
+                        {p.receiverInfo.name}
+                      </p>
+                      <p className="text-[10px] text-slate-400 truncate">
+                        {p.receiverInfo.address}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-[9px] uppercase font-bold text-slate-400 mb-1">
+                        Branch
+                      </p>
+                      <p className="text-sm font-bold text-slate-600 truncate">
+                        {p.branchId?.branchName || "Main Office"}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-50 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {p.riderId ? (
+                        <>
+                          <div className="w-6 h-6 bg-indigo-50 text-indigo-500 rounded-full flex items-center justify-center text-[10px] font-bold">
+                            {p.riderId.name.charAt(0)}
+                          </div>
+                          <span className="text-xs font-semibold text-slate-600">
+                            {p.riderId.name}
+                          </span>
+                        </>
+                      ) : (
+                        <span className="text-[10px] text-slate-300 italic">
+                          No Rider
+                        </span>
+                      )}
+                    </div>
+
+                    {user.role === "delivery_person" && (
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => updateStatus(p._id, "Delivered")}
+                          className="bg-emerald-500 text-white p-2 rounded-lg text-xs font-bold"
+                        >
+                          ✅
+                        </button>
+                        <button
+                          onClick={() => updateStatus(p._id, "Returned")}
+                          className="bg-rose-500 text-white p-2 rounded-lg text-xs font-bold"
+                        >
+                          ❌
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left">
+                <thead className="bg-slate-50/80 backdrop-blur-sm sticky top-0 z-10 border-b border-slate-100">
+                  <tr>
+                    <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider rounded-tl-2xl">
+                      Tracking ID
+                    </th>
+                    <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Receiver & Address
+                    </th>
+                    <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Branch
+                    </th>
+                    <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Date
+                    </th>
+                    <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Status
+                    </th>
+                    <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      Rider
+                    </th>
+                    {user.role !== "regular" && (
+                      <th className="p-4 text-[11px] font-bold text-slate-400 uppercase tracking-wider rounded-tr-2xl text-right">
+                        Actions
+                      </th>
+                    )}
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {displayedParcels.map((p) => (
+                    <tr
+                      key={p._id}
+                      className="group border-b border-slate-50 last:border-0 hover:bg-slate-50/50 transition-all duration-200"
+                    >
+                      <td className="p-4">
+                        <span
+                          className="font-mono text-sm font-bold text-blue-600 bg-blue-50 hover:bg-blue-100 border border-blue-100 px-2 py-1 rounded-lg cursor-pointer transition-all hover:underline"
+                          onClick={() => navigate(`/track?id=${p.trackingId}`)}
+                        >
+                          {p.trackingId}
+                        </span>
+                      </td>
+                      <td className="p-4">
+                        <div className="flex flex-col">
+                          <span className="text-sm font-bold text-slate-700">
+                            {p.receiverInfo.name}
+                          </span>
+                          <span
+                            className="text-[11px] text-slate-400 truncate max-w-[150px]"
+                            title={p.receiverInfo.address}
                           >
-                            <option value="">
-                              {p.riderId ? `⚡ ${p.riderId.name}` : "Assign Rider..."}
+                            {p.receiverInfo.address}
+                          </span>
+                        </div>
+                      </td>
+                      <td className="p-4 text-xs font-semibold text-slate-600">
+                        {p.branchId?.branchName || "Main Office"}
+                      </td>
+                      <td className="p-4 text-xs text-slate-500">
+                        {new Date(p.createdAt).toLocaleDateString()}
+                      </td>
+                      <td className="p-4">
+                        {user.role === "main_admin" ||
+                        user.role === "branch_head" ? (
+                          <select
+                            value={p.status}
+                            onChange={(e) =>
+                              updateStatus(p._id, e.target.value)
+                            }
+                            className="bg-slate-50 border border-slate-100 rounded-lg p-1 text-[10px] font-bold"
+                          >
+                            <option value="Pending">Pending</option>
+                            <option value="In Main Branch">
+                              In Main Branch
                             </option>
-                            {staffUsers
-                              .filter(s => s.branchId?._id === p.branchId?._id || s.branchId === p.branchId?._id)
-                              .map((rider) => (
-                                <option key={rider._id} value={rider._id}>
-                                  {rider.name}
-                                </option>
-                              ))}
+                            <option value="Transmitting">Transmitting</option>
+                            <option value="In Sub Branch">In Sub Branch</option>
+                            <option value="Out for Delivery">
+                              Out for Delivery
+                            </option>
+                            <option value="Delivered">Delivered</option>
+                            <option value="Returned">Returned</option>
                           </select>
                         ) : (
-                          <div className="flex items-center gap-1.5">
-                             {p.riderId ? (
-                               <>
-                                 <div className="w-5 h-5 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-[8px] font-bold uppercase ring-1 ring-blue-100">
-                                   {p.riderId.name.charAt(0)}
-                                 </div>
-                                 <span className="text-[11px] text-slate-600 font-bold">
-                                   {p.riderId.name}
-                                 </span>
-                               </>
-                             ) : (
-                               <span className="text-[10px] text-slate-300 italic">Unassigned</span>
-                             )}
-                          </div>
-                        )
-                      ) : (
+                          <span
+                            className={`px-2 py-1 rounded-full text-[10px] uppercase font-black ${p.status === "Delivered" ? "bg-emerald-100 text-emerald-800" : "bg-blue-100 text-blue-800"}`}
+                          >
+                            {p.status}
+                          </span>
+                        )}
+                      </td>
+                      <td className="p-4">
                         <div className="flex items-center gap-1.5">
                           {p.riderId ? (
-                             <>
-                               <div className="w-5 h-5 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-[10px] font-bold uppercase ring-1 ring-blue-100">
-                                 {p.riderId.name.charAt(0)}
-                               </div>
-                               <span className="text-[11px] text-slate-600 font-bold">
-                                 {p.riderId.name}
-                               </span>
-                             </>
-                           ) : (
-                             <span className="text-[10px] text-slate-300 italic">Unassigned</span>
-                           )}
-                        </div>
-                      )}
-                    </td>
-                    {user.role !== "regular" && (
-                      <td className="p-4 text-right whitespace-nowrap">
-                         <div className="flex justify-end gap-2 pr-2">
-                          {user.role === "delivery_person" && (
                             <>
+                              <div className="w-5 h-5 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center text-[10px] font-bold">
+                                {p.riderId.name.charAt(0)}
+                              </div>
+                              <span className="text-[11px] text-slate-600 font-bold">
+                                {p.riderId.name}
+                              </span>
+                            </>
+                          ) : (
+                            <span className="text-[10px] text-slate-300 italic">
+                              Unassigned
+                            </span>
+                          )}
+                        </div>
+                      </td>
+                      {user.role !== "regular" && (
+                        <td className="p-4 text-right">
+                          {user.role === "delivery_person" && (
+                            <div className="flex justify-end gap-2">
                               <button
                                 onClick={() => updateStatus(p._id, "Delivered")}
-                                className="bg-emerald-500 text-white p-1.5 rounded-lg hover:bg-emerald-600 shadow-sm transition-all"
-                                disabled={p.status === "Delivered"}
                                 title="Mark Delivered"
+                                className="p-1.5 bg-emerald-100 text-emerald-600 rounded-lg hover:bg-emerald-200 transition-colors"
                               >
                                 ✅
                               </button>
                               <button
                                 onClick={() => updateStatus(p._id, "Returned")}
-                                className="bg-rose-500 text-white p-1.5 rounded-lg hover:bg-rose-600 shadow-sm transition-all"
                                 title="Mark Returned"
+                                className="p-1.5 bg-rose-100 text-rose-600 rounded-lg hover:bg-rose-200 transition-colors"
                               >
-                                🔄
+                                ❌
                               </button>
-                            </>
+                            </div>
                           )}
                           {user.role === "branch_head" &&
                             p.status === "Transmitting" && (
@@ -1236,23 +1441,25 @@ const Dashboard = () => {
                                 Dispatch
                               </button>
                             )}
-                         </div>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </>
         )}
       </div>
 
       {/* Mock Map for Delivery Person */}
       {user.role === "delivery_person" && (
         <div className="floating-card mt-12 bg-gray-50 p-6">
-          <DeliveryMap 
-            parcels={displayedParcels.filter(p => p.status !== 'Delivered' && p.status !== 'Returned')} 
-            isDashboard={true} 
+          <DeliveryMap
+            parcels={displayedParcels.filter(
+              (p) => p.status !== "Delivered" && p.status !== "Returned",
+            )}
+            isDashboard={true}
           />
         </div>
       )}
