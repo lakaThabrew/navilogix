@@ -73,7 +73,7 @@ const Contact = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden pt-12 pb-20">
+    <div className="min-h-screen bg-background relative overflow-hidden pt-32 pb-20">
       <div className="absolute top-[-10%] right-[-5%] w-[500px] h-[500px] bg-primary/5 rounded-full blur-3xl opacity-60 animate-pulse"></div>
       <div className="absolute bottom-[-10%] left-[-5%] w-[400px] h-[400px] bg-secondary/5 rounded-full blur-3xl opacity-50"></div>
 
