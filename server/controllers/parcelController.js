@@ -314,7 +314,9 @@ export const getParcelReports = async (req, res) => {
             query = {
                 $or: [
                     { 'senderInfo.contact': req.user.email },
-                    { 'receiverInfo.contact': req.user.email }
+                    { 'receiverInfo.contact': req.user.email },
+                    { 'senderInfo.name': req.user.name },
+                    { 'receiverInfo.name': req.user.name }
                 ]
             };
             if (startDate && endDate) {
@@ -375,12 +377,12 @@ export const getParcelReports = async (req, res) => {
         } else {
             // Regular User Stats
             stats = {
-                totalSent: parcels.filter(p => p.senderInfo.contact === req.user.email).length,
-                totalReceived: parcels.filter(p => p.receiverInfo.contact === req.user.email).length,
+                totalSent: parcels.filter(p => p.senderInfo.contact === req.user.email || p.senderInfo.name === req.user.name).length,
+                totalReceived: parcels.filter(p => p.receiverInfo.contact === req.user.email || p.receiverInfo.name === req.user.name).length,
                 delivered: parcels.filter(p => p.status === 'Delivered').length,
                 returned: parcels.filter(p => p.status === 'Returned').length,
-                codPaid: parcels.filter(p => p.receiverInfo.contact === req.user.email && p.status === 'Delivered').reduce((acc, p) => acc + (p.codAmount || 0), 0),
-                codToReceive: parcels.filter(p => p.senderInfo.contact === req.user.email && p.status === 'Delivered').reduce((acc, p) => acc + (p.codAmount || 0), 0),
+                codPaid: parcels.filter(p => (p.receiverInfo.contact === req.user.email || p.receiverInfo.name === req.user.name)).reduce((acc, p) => acc + (p.codAmount || 0), 0),
+                codToReceive: parcels.filter(p => (p.senderInfo.contact === req.user.email || p.senderInfo.name === req.user.name)).reduce((acc, p) => acc + (p.codAmount || 0), 0),
             };
         }
 
