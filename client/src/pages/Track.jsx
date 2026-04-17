@@ -78,7 +78,7 @@ const Track = () => {
     );
 
   return (
-    <div className="min-h-screen bg-background py-8 px-4 md:py-16 md:px-8">
+    <div className="min-h-screen bg-background pt-32 pb-8 px-4 md:pt-32 md:pb-16 md:px-8">
       <motion.div
         initial={{ opacity: 0, y: 30 }}
         animate={{ opacity: 1, y: 0 }}
