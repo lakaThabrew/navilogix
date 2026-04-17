@@ -77,7 +77,7 @@ const Checkout = () => {
     };
 
     return (
-        <div className="min-h-screen bg-[#f8fafc] py-20 px-4">
+        <div className="min-h-screen bg-[#f8fafc] pt-32 pb-20 px-4">
             <div className="max-w-4xl mx-auto">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}

@@ -120,8 +120,8 @@ export const createParcel = async (req, res) => {
         const receiverBranchId = await determineBranch(receiverInfo.address);
 
         const trackingId =
-            "NV-" +
-            Date.now().toString(36).toUpperCase() + "-" +
+            "NL" +
+            Date.now().toString(36).toUpperCase() +
             Math.random().toString(36).slice(3, 4).toUpperCase();
 
         logger.info(`🔖 [CREATE PARCEL] Generated tracking ID: ${trackingId}`);
@@ -186,12 +186,30 @@ export const createParcel = async (req, res) => {
 };
 
 export const getParcels = async (req, res) => {
-    logger.info(`📋 [GET PARCELS] Fetching all parcels...`);
+    logger.info(`📋 [GET PARCELS] Fetching parcels for role: ${req.user.role}`);
     try {
-        // Filter based on user role (assumed processed by middleware)
-        // For now, return all for admin
-        const parcels = await Parcel.find().populate('branchId').populate('riderId');
-        logger.info(`✅ [GET PARCELS] Found ${parcels.length} parcels`);
+        let query = {};
+
+        if (req.user.role === 'main_admin') {
+            query = {}; // All parcels
+        } else if (req.user.role === 'branch_head') {
+            query = { branchId: req.user.branchId };
+        } else if (req.user.role === 'delivery_person') {
+            query = { riderId: req.user._id };
+        } else {
+            // Regular User
+            query = {
+                $or: [
+                    { 'senderInfo.contact': req.user.email },
+                    { 'receiverInfo.contact': req.user.email },
+                    { 'senderInfo.name': req.user.name },
+                    { 'receiverInfo.name': req.user.name }
+                ]
+            };
+        }
+
+        const parcels = await Parcel.find(query).populate('branchId').populate('riderId');
+        logger.info(`✅ [GET PARCELS] Found ${parcels.length} authorized parcels`);
         res.json(parcels);
     } catch (error) {
         logger.error(`❌ [GET PARCELS] Error: ${error.message}`);
@@ -240,24 +258,24 @@ export const updateParcelStatus = async (req, res) => {
         }
 
         const previousStatus = parcel.status;
-        
+
         // Update branchId based on status progression
         if (status === 'Transmitting') {
-             if (previousStatus === 'In Sub Branch') {
-                 // From Sender branch -> Main Office
-                 const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
-                 if (mainOffice) parcel.branchId = mainOffice._id;
-             } else if (previousStatus === 'In Main Branch') {
-                 // From Main Office -> Receiver branch
-                 parcel.branchId = await determineBranch(parcel.receiverInfo.address);
-             }
+            if (previousStatus === 'In Sub Branch') {
+                // From Sender branch -> Main Office
+                const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
+                if (mainOffice) parcel.branchId = mainOffice._id;
+            } else if (previousStatus === 'In Main Branch') {
+                // From Main Office -> Receiver branch
+                parcel.branchId = await determineBranch(parcel.receiverInfo.address);
+            }
         } else if (status === 'In Main Branch') {
-             const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
-             if (mainOffice) parcel.branchId = mainOffice._id;
+            const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
+            if (mainOffice) parcel.branchId = mainOffice._id;
         } else if (status === 'In Sub Branch') {
-             if (previousStatus === 'Transmitting' || previousStatus === 'In Main Branch') {
-                 parcel.branchId = await determineBranch(parcel.receiverInfo.address);
-             }
+            if (previousStatus === 'Transmitting' || previousStatus === 'In Main Branch') {
+                parcel.branchId = await determineBranch(parcel.receiverInfo.address);
+            }
         }
 
         parcel.status = status;
