@@ -24,7 +24,7 @@ const startIcon = createIcon('green');
 const endIcon = createIcon('red');
 const defaultIcon = createIcon('blue');
 
-const DeliveryMap = ({ parcels }) => {
+const DeliveryMap = ({ parcels, isDashboard = false }) => {
     const [route, setRoute] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -34,12 +34,15 @@ const geocodeCache = {};
     useEffect(() => {
         let isMounted = true;
         const fetchCoordinates = async () => {
-            if (!parcels || parcels.length === 0) return;
+            if (!parcels || parcels.length === 0) {
+                if (isMounted) setRoute([]);
+                return;
+            }
             setLoading(true);
 
             let locationsToGeocode = [];
 
-            if (parcels.length === 1) {
+            if (parcels.length === 1 && !isDashboard) {
                 // Show route for a single parcel: Origin -> History intermediate locations
                 const p = parcels[0];
                 const origin = p.senderInfo?.address || "Colombo";
@@ -68,7 +71,7 @@ const geocodeCache = {};
                     });
                 }
             } else {
-                // Dashboard mode: Multiple parcels Destinations only
+                // Dashboard mode: Destinations only
                 locationsToGeocode = parcels.map(p => ({
                     id: p._id || p.trackingId || Math.random().toString(),
                     label: `Receiver: ${p.receiverInfo?.name || "Unknown"}`,
@@ -91,11 +94,18 @@ const geocodeCache = {};
                 // If city is empty for some reason, fallback to full string
                 const searchQ = city || fullAddress;
                 
+                // Create a deterministic but pseudo-random offset based on item index/id to spread out markers in the same city
+                const jitterLat = (Math.random() - 0.5) * 0.006;
+                const jitterLng = (Math.random() - 0.5) * 0.006;
+
                 // If we already geocoded this city/town, use the cached coordinates
                 if (geocodeCache[searchQ]) {
                     results.push({
                         ...item,
-                        coords: geocodeCache[searchQ]
+                        coords: [
+                            geocodeCache[searchQ][0] + jitterLat,
+                            geocodeCache[searchQ][1] + jitterLng
+                        ]
                     });
                     continue;
                 }
@@ -121,26 +131,26 @@ const geocodeCache = {};
                             geocodeCache[searchQ] = coords; // Save to cache
                             results.push({
                                 ...item,
-                                coords
+                                coords: [coords[0] + jitterLat, coords[1] + jitterLng]
                             });
                         } else {
                             logger.warn(`City not found: ${searchQ}`);
-                            const fallbackCoords = [6.9271 + (Math.random() - 0.5) * 0.01, 79.8612 + (Math.random() - 0.5) * 0.01];
-                            geocodeCache[searchQ] = fallbackCoords; // Cache the fallback to prevent retries
+                            const fallbackCoords = [6.9271, 79.8612];
+                            geocodeCache[searchQ] = fallbackCoords; // Cache the fallback
                             results.push({
                                 ...item,
-                                coords: fallbackCoords
+                                coords: [fallbackCoords[0] + jitterLat, fallbackCoords[1] + jitterLng]
                             });
                         }
                     }
                 } catch (error) {
                     if (isMounted) {
                         logger.error("Geocoding error: " + error.message, { error });
-                        const fallbackCoords = [6.9271 + (Math.random() - 0.5) * 0.01, 79.8612 + (Math.random() - 0.5) * 0.01];
+                        const fallbackCoords = [6.9271, 79.8612];
                         geocodeCache[searchQ] = fallbackCoords;
                         results.push({
                             ...item,
-                            coords: fallbackCoords
+                            coords: [fallbackCoords[0] + jitterLat, fallbackCoords[1] + jitterLng]
                         });
                     }
                 }
