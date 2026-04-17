@@ -171,7 +171,7 @@ const BranchReports = () => {
                 </h1>
 
                 {/* Filters */}
-                <div className="floating-card p-6 bg-white mb-8 flex flex-col md:flex-row gap-4 items-end">
+                <div className="floating-card p-6 bg-white mb-8 flex flex-col md:flex-row gap-4 items-stretch md:items-end">
                     <div className="flex-1">
                         <label className="block text-sm font-medium text-gray-700 mb-1">
                             Start Date
@@ -180,7 +180,7 @@ const BranchReports = () => {
                             type="date"
                             value={startDate}
                             onChange={(e) => setStartDate(e.target.value)}
-                            className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+                            className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none text-sm"
                         />
                     </div>
                     <div className="flex-1">
@@ -191,12 +191,12 @@ const BranchReports = () => {
                             type="date"
                             value={endDate}
                             onChange={(e) => setEndDate(e.target.value)}
-                            className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+                            className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none text-sm"
                         />
                     </div>
                     <button
                         onClick={() => fetchStats()}
-                        className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all active:scale-95 text-xs"
+                        className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all active:scale-95 w-full md:w-auto"
                     >
                         Apply Filter
                     </button>
@@ -206,7 +206,7 @@ const BranchReports = () => {
                             setEndDate("");
                             fetchStats("", "");
                         }}
-                        className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all text-xs"
+                        className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all text-xs w-full md:w-auto"
                     >
                         Clear
                     </button>
@@ -218,7 +218,7 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Total Parcels
                         </h3>
-                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">
+                        <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600 truncate">
                             {stats.totalParcels}
                         </p>
                     </div>
@@ -226,7 +226,10 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Total Revenue (COD)
                         </h3>
-                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 break-words">
+                        <p 
+                            className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 whitespace-nowrap truncate"
+                            title={`Rs. ${Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+                        >
                             Rs. {Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
                         </p>
                     </div>
@@ -234,7 +237,7 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Pending Delivery
                         </h3>
-                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-yellow-500">
+                        <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-500 truncate">
                             {stats.totalPending}
                         </p>
                     </div>
@@ -242,7 +245,7 @@ const BranchReports = () => {
                         <h3 className="text-lg text-gray-500 font-semibold mb-2">
                             Returns
                         </h3>
-                        <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-red-500">
+                        <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-500 truncate">
                             {stats.totalReturned}
                         </p>
                     </div>
