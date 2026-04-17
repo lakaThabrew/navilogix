@@ -42,33 +42,36 @@ function App() {
     );
 
     // 2. Client-side Expiry Check (Auto-logout while idle)
-    const userInfo = JSON.parse(localStorage.getItem("userInfo"));
-    if (userInfo && userInfo.token) {
+    let logoutTimer = null;
+    const info = localStorage.getItem("userInfo");
+    if (info) {
       try {
-        const payloadBase64 = userInfo.token.split(".")[1];
-        const decodedPayload = JSON.parse(atob(payloadBase64));
-        const expiryTime = decodedPayload.exp * 1000; // to ms
-        const currentTime = Date.now();
+        const userInfo = JSON.parse(info);
+        if (userInfo && userInfo.token) {
+          const payloadBase64 = userInfo.token.split(".")[1];
+          const decodedPayload = JSON.parse(atob(payloadBase64));
+          const expiryTime = decodedPayload.exp * 1000;
+          const currentTime = Date.now();
 
-        if (currentTime >= expiryTime) {
-          logout();
-        } else {
-          const timeout = expiryTime - currentTime;
-          const logoutTimer = setTimeout(() => {
-            logger.info("⏱️ [AUTH] Token timer reached. Auto-logging out...");
+          if (currentTime >= expiryTime) {
             logout();
-          }, timeout);
-          return () => {
-            clearTimeout(logoutTimer);
-            axios.interceptors.response.eject(interceptor);
-          };
+          } else {
+            const timeout = expiryTime - currentTime;
+            logoutTimer = setTimeout(() => {
+              logger.info("⏱️ [AUTH] Token timer reached. Auto-logging out...");
+              logout();
+            }, timeout);
+          }
         }
       } catch (e) {
         logger.error("Error checking token expiry: " + e.message);
       }
     }
 
-    return () => axios.interceptors.response.eject(interceptor);
+    return () => {
+      if (logoutTimer) clearTimeout(logoutTimer);
+      axios.interceptors.response.eject(interceptor);
+    };
   }, []);
 
   return (
