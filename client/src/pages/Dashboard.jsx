@@ -1210,7 +1210,10 @@ const Dashboard = () => {
       {/* Mock Map for Delivery Person */}
       {user.role === "delivery_person" && (
         <div className="floating-card mt-12 bg-gray-50 p-6">
-          <DeliveryMap parcels={displayedParcels} />
+          <DeliveryMap 
+            parcels={displayedParcels.filter(p => p.status !== 'Delivered' && p.status !== 'Returned')} 
+            isDashboard={true} 
+          />
         </div>
       )}
     </div>
