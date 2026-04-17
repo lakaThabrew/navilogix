@@ -36,7 +36,7 @@ const About = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background pt-24 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+    <div className="min-h-screen bg-background pt-32 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
       {/* Background Elements */}
       <div
         className="absolute top-[-20%] right-[-30%] w-[1000px] h-[1000px] 
