@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Bar, Doughnut, Pie } from "react-chartjs-2";
 import {
     Chart as ChartJS,
@@ -49,10 +50,19 @@ const BranchReports = () => {
         }
     };
 
+    const navigate = useNavigate();
+
     useEffect(() => {
-        fetchStats();
+        const user = JSON.parse(localStorage.getItem("userInfo"));
+        if (!user) {
+            navigate("/login");
+        } else if (user.role !== "branch_head") {
+            navigate("/dashboard");
+        } else {
+            fetchStats();
+        }
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [navigate]);
 
     if (loading)
         return <div className="text-center p-8">🔃 Loading Analytics...</div>;
