@@ -658,76 +658,75 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 6.1 Navigation Access
 
-- [ ] Can access: Home, About, Services, Contact, Dashboard, Profile
-- [ ] Cannot see: Inbox, Reports
-- [ ] Full marketing pages visible
+- [x] Can access: Home, About, Services, Contact, Dashboard, Profile
+- [x] Cannot see: Inbox, Reports
+- [x] Full marketing pages visible
 
 ### 6.2 Dashboard (`/dashboard`)
 
 #### **Payment Gate (if `paymentStatus` is "unpaid")**
 
 - [ ] **Blur Effect**:
-  - [ ] All dashboard content is blurred
-  - [ ] Content has reduced opacity
-  - [ ] Interactions disabled (pointer-events-none)
-- [ ] **Payment Modal/Overlay**:
-  - [ ] Modal appears prominently
-  - [ ] Heading: "Unlock Premium Features"
-  - [ ] Description about premium benefits
-  - [ ] "Pay Now" button:
-    - [ ] Clicking simulates payment
-    - [ ] Updates `paymentStatus` to "paid"
-    - [ ] Modal disappears
-    - [ ] Dashboard unblurs
-    - [ ] Content becomes interactive
-  - [ ] "Cancel" or close option
-- [ ] Payment confirmation message shows after unlock
+  - [x] All dashboard content is blurred
+  - [x] Content has reduced opacity
+  - [x] Interactions disabled (pointer-events-none)
+- [x] **Payment Modal/Overlay**:
+  - [x] Modal appears prominently
+  - [x] Heading: "Unlock Premium Features"
+  - [x] Description about premium benefits
+  - [x] "Pay Now" button:
+    - [x] Clicking simulates payment
+    - [x] Updates `paymentStatus` to "paid"
+    - [x] Modal disappears
+    - [x] Dashboard unblurs
+    - [x] Content becomes interactive
+  - [x] "Cancel" or close option
+- [x] Payment confirmation message shows after unlock
 
 #### **Dashboard (after payment or if `paymentStatus` is "paid")**
 
 #### **Statistics Cards**
 
-- [ ] Shows "Premium Unlocked" or similar indicator
-- [ ] Stats filtered for this user only:
-  - [ ] Parcels sent BY this user (senderInfo.contact or name matches)
-  - [ ] Parcels received BY this user (receiverInfo.contact or name matches)
-- [ ] Cards show:
-  - [ ] Total Sent
-  - [ ] Total Received
-  - [ ] Delivered to/from them
-  - [ ] Returned
-  - [ ] COD Paid (as receiver)
-  - [ ] COD To Receive (as sender)
+- [x] Shows "Premium Unlocked" or similar indicator
+- [x] Stats filtered for this user only:
+  - [x] Parcels sent BY this user (senderInfo.contact or name matches)
+  - [x] Parcels received BY this user (receiverInfo.contact or name matches)
+- [x] Cards show:
+  - [x] Total Sent
+  - [x] Total Received
+  - [x] Delivered to/from them
+  - [x] Returned
+  - [x] COD Paid (as receiver)
+  - [x] COD To Receive (as sender)
 
 #### **Performance Reports Section**
 
-- [ ] Section visible after payment
-- [ ] **Parcel Volume Card**:
-  - [ ] Shows number of parcels sent
-  - [ ] Shows number of parcels received
-  - [ ] Visual chart/graph (if implemented)
-- [ ] **COD Financials Card**:
-  - [ ] Shows total COD paid (as receiver)
-  - [ ] Shows total COD to receive (as sender)
-  - [ ] Color-coded (red for paid, green for receive)
+- [x] Section visible after payment
+- [x] **Parcel Volume Card**:
+  - [x] Shows number of parcels sent
+  - [x] Shows number of parcels received
+- [x] **COD Financials Card**:
+  - [x] Shows total COD paid (as receiver)
+  - [x] Shows total COD to receive (as sender)
+  - [x] Color-coded (red for paid, green for receive)
 
 #### **Parcels Overview Table**
 
-- [ ] Shows ONLY parcels where:
-  - [ ] User is sender (senderInfo.contact or name matches)
-  - [ ] OR user is receiver (receiverInfo.contact or name matches)
-- [ ] **Columns**: Tracking ID, Receiver, Branch, Status
-- [ ] **Status Display**: Badge only (NOT editable)
+- [x] Shows ONLY parcels where:
+  - [x] User is sender (senderInfo.contact or name matches)
+  - [x] OR user is receiver (receiverInfo.contact or name matches)
+- [x] **Columns**: Tracking ID, Receiver, Branch, Status, Rider
+- [x] **Status Display**: Badge only (NOT editable)
 - [ ] **No Actions Column**: Regular users cannot change status
 - [ ] Clicking tracking ID could navigate to track page
 
 #### **Restrictions**
 
-- [ ] Cannot add parcels
-- [ ] Cannot update statuses
-- [ ] Cannot assign riders
-- [ ] Cannot access admin/management features
-- [ ] Cannot see other users' parcels
+- [x] Cannot add parcels
+- [x] Cannot update statuses
+- [x] Cannot assign riders
+- [x] Cannot access admin/management features
+- [x] Cannot see other users' parcels
 
 ---
 
