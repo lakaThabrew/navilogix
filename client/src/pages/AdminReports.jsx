@@ -32,6 +32,7 @@ const AdminReports = () => {
   const [activeTab, setActiveTab] = useState("all"); // 'all', 'staff', 'customers'
   const [users, setUsers] = useState([]);
   const [branches, setBranches] = useState([]);
+  const [isUpdating, setIsUpdating] = useState(false);
 
   const fetchBranches = async () => {
     try {
@@ -96,6 +97,7 @@ const AdminReports = () => {
   }, [navigate]);
 
   const handleUpdateRole = async (userId, newRole, branchId = null) => {
+    setIsUpdating(true);
     try {
       const user = JSON.parse(localStorage.getItem("userInfo"));
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
@@ -109,7 +111,9 @@ const AdminReports = () => {
       alert("User role updated successfully!");
     } catch (error) {
       logger.error("Error updating user role: " + error.message);
-      alert("Failed to update user role");
+      alert("Failed to update user role: " + (error.response?.data?.message || error.message));
+    } finally {
+      setIsUpdating(false);
     }
   };
 
@@ -251,7 +255,7 @@ const AdminReports = () => {
         </h1>
 
         {/* Filters */}
-        <div className="floating-card p-6 bg-white mb-8 flex flex-col md:flex-row gap-4 items-end">
+        <div className="floating-card p-6 bg-white mb-8 flex flex-col md:flex-row gap-4 items-stretch md:items-end">
           <div className="flex-1">
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Start Date
@@ -260,7 +264,7 @@ const AdminReports = () => {
               type="date"
               value={startDate}
               onChange={(e) => setStartDate(e.target.value)}
-              className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+              className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none text-sm"
             />
           </div>
           <div className="flex-1">
@@ -271,12 +275,12 @@ const AdminReports = () => {
               type="date"
               value={endDate}
               onChange={(e) => setEndDate(e.target.value)}
-              className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none"
+              className="w-full p-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-primary/20 outline-none text-sm"
             />
           </div>
           <button
             onClick={() => fetchStats()}
-            className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all active:scale-95"
+            className="bg-primary text-white px-8 py-3 rounded-xl font-bold hover:shadow-lg transition-all active:scale-95 w-full md:w-auto"
           >
             Apply Filter
           </button>
@@ -286,7 +290,7 @@ const AdminReports = () => {
               setEndDate("");
               fetchStats("", "");
             }}
-            className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all text-xs"
+            className="bg-gray-100 text-gray-700 px-6 py-3 rounded-xl font-bold hover:bg-gray-200 transition-all text-xs w-full md:w-auto"
           >
             Clear
           </button>
@@ -298,7 +302,7 @@ const AdminReports = () => {
             <h3 className="text-lg text-gray-500 font-semibold mb-2">
               Total Parcels
             </h3>
-            <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-blue-600">
+            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-blue-600 truncate">
               {stats.totalParcels}
             </p>
           </div>
@@ -306,7 +310,10 @@ const AdminReports = () => {
             <h3 className="text-lg text-gray-500 font-semibold mb-2">
               Total Revenue (COD)
             </h3>
-            <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-green-600 break-words">
+            <p 
+              className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 whitespace-nowrap truncate"
+              title={`Rs. ${Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
+            >
               Rs. {Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </p>
           </div>
@@ -314,7 +321,7 @@ const AdminReports = () => {
             <h3 className="text-lg text-gray-500 font-semibold mb-2">
               Pending Delivery
             </h3>
-            <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-yellow-500">
+            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-yellow-500 truncate">
               {stats.totalPending}
             </p>
           </div>
@@ -322,7 +329,7 @@ const AdminReports = () => {
             <h3 className="text-lg text-gray-500 font-semibold mb-2">
               Returns
             </h3>
-            <p className="text-2xl sm:text-3xl lg:text-4xl font-bold text-red-500">
+            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-red-500 truncate">
               {stats.totalReturned}
             </p>
           </div>
@@ -409,33 +416,33 @@ const AdminReports = () => {
       {JSON.parse(localStorage.getItem("userInfo"))?.role === "main_admin" && (
         <div className="space-y-6">
           {/* Tab Switcher */}
-          <div className="flex p-1 bg-slate-100 rounded-2xl w-fit mb-8 shadow-inner border border-slate-200/50">
+          <div className="flex flex-col sm:flex-row p-1 bg-slate-100 rounded-2xl w-full sm:w-fit mb-8 shadow-inner border border-slate-200/50 gap-1 sm:gap-0">
             <button
               onClick={() => setActiveTab("all")}
-              className={`px-8 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 flex items-center gap-2 ${
+              className={`px-8 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center sm:justify-start gap-2 w-full sm:w-auto ${
                 activeTab === "all"
-                  ? "bg-white text-slate-800 shadow-md scale-100"
-                  : "text-slate-500 hover:text-slate-700 hover:bg-white/50 scale-95 opacity-70"
+                  ? "bg-white text-slate-800 shadow-md"
+                  : "text-slate-500 hover:text-slate-700 hover:bg-white/50 opacity-70"
               }`}
             >
               🌐 All <span className="text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-md">{users.length}</span>
             </button>
             <button
               onClick={() => setActiveTab("staff")}
-              className={`px-8 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 flex items-center gap-2 ${
+              className={`px-8 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center sm:justify-start gap-2 w-full sm:w-auto ${
                 activeTab === "staff"
-                  ? "bg-white text-primary shadow-md scale-100"
-                  : "text-slate-500 hover:text-slate-700 hover:bg-white/50 scale-95 opacity-70"
+                  ? "bg-white text-primary shadow-md"
+                  : "text-slate-500 hover:text-slate-700 hover:bg-white/50 opacity-70"
               }`}
             >
               💼 Staff <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-md">{users.filter(u => u.role !== 'regular').length}</span>
             </button>
             <button
               onClick={() => setActiveTab("customers")}
-              className={`px-8 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 flex items-center gap-2 ${
+              className={`px-8 py-2.5 rounded-xl font-bold text-sm transition-all duration-300 flex items-center justify-center sm:justify-start gap-2 w-full sm:w-auto ${
                 activeTab === "customers"
-                  ? "bg-white text-secondary shadow-md scale-100"
-                  : "text-slate-500 hover:text-slate-700 hover:bg-white/50 scale-95 opacity-70"
+                  ? "bg-white text-secondary shadow-md"
+                  : "text-slate-500 hover:text-slate-700 hover:bg-white/50 opacity-70"
               }`}
             >
               👥 Customers <span className="text-[10px] bg-secondary/10 text-secondary px-1.5 py-0.5 rounded-md">{users.filter(u => u.role === 'regular').length}</span>
@@ -457,8 +464,35 @@ const AdminReports = () => {
                 </h2>
               </div>
               
-              <div className="floating-card bg-white p-0 overflow-hidden border border-slate-100 shadow-xl shadow-slate-200/40">
-                <div className="overflow-x-auto">
+              <div className="floating-card bg-transparent md:bg-white p-0 overflow-hidden border-none md:border md:border-slate-100 shadow-none md:shadow-xl md:shadow-slate-200/40">
+                {/* Mobile Grid View */}
+                <div className="grid grid-cols-1 gap-4 md:hidden">
+                  {users.map((u) => (
+                    <div key={u._id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border ${u.role === 'regular' ? 'bg-orange-50 text-orange-400 border-orange-100' : 'bg-blue-50 text-blue-400 border-blue-100'}`}>
+                            {u.name.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-800">{u.name}</p>
+                            <p className="text-[11px] text-slate-400">{u.email}</p>
+                          </div>
+                        </div>
+                        <button onClick={() => handleDeleteUser(u._id)} className="p-2 text-rose-500 bg-rose-50 rounded-lg">🗑️</button>
+                      </div>
+                      <div className="flex justify-between items-center pt-2 border-t border-slate-50">
+                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Access Level</span>
+                        <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${u.role === 'regular' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}`}>
+                          {u.role.replace('_', ' ')}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50/80 text-slate-400 border-b border-slate-100">
                       <tr>
@@ -515,8 +549,57 @@ const AdminReports = () => {
                 </a>
               </div>
               
-              <div className="floating-card bg-white p-0 overflow-hidden border border-slate-100 shadow-xl shadow-slate-200/40">
-                <div className="overflow-x-auto">
+              <div className="floating-card bg-transparent md:bg-white p-0 overflow-hidden border-none md:border md:border-slate-100 shadow-none md:shadow-xl md:shadow-slate-200/40">
+                {/* Mobile Card Grid */}
+                <div className="grid grid-cols-1 gap-4 md:hidden">
+                  {users.filter(u => u.role !== 'regular').map((u) => (
+                    <div key={u._id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-xs font-bold text-slate-400 border border-slate-100">
+                            {u.name.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-800">{u.name}</p>
+                            <p className="text-[10px] text-slate-400">{u.email}</p>
+                          </div>
+                        </div>
+                        <button onClick={() => handleDeleteUser(u._id)} className="text-rose-500 p-2 bg-rose-50 rounded-lg">🗑️</button>
+                      </div>
+                      
+                      <div className="grid grid-cols-2 gap-3">
+                        <div className="space-y-1">
+                          <label className="text-[9px] uppercase font-bold text-slate-400 ml-1">Role</label>
+                          <select
+                            value={u.role}
+                            onChange={(e) => handleUpdateRole(u._id, e.target.value, u.branchId?._id)}
+                            className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[10px] font-bold w-full outline-none"
+                          >
+                            <option value="delivery_person">Delivery Person</option>
+                            <option value="branch_head">Branch Head</option>
+                            <option value="main_admin">Main Admin</option>
+                          </select>
+                        </div>
+                        <div className="space-y-1">
+                          <label className="text-[9px] uppercase font-bold text-slate-400 ml-1">Branch</label>
+                          <select
+                            value={u.branchId?._id || ""}
+                            onChange={(e) => handleUpdateRole(u._id, u.role, e.target.value)}
+                            className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[10px] font-bold w-full outline-none"
+                          >
+                            <option value="">None</option>
+                            {branches.map((b) => (
+                              <option key={b._id} value={b._id}>{b.branchName}</option>
+                            ))}
+                          </select>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50/80 text-slate-400 border-b border-slate-100">
                       <tr>
@@ -592,8 +675,40 @@ const AdminReports = () => {
                 </h2>
               </div>
               
-              <div className="floating-card bg-white p-0 overflow-hidden border border-slate-100 shadow-xl shadow-slate-200/40">
-                <div className="overflow-x-auto">
+              <div className="floating-card bg-transparent md:bg-white p-0 overflow-hidden border-none md:border md:border-slate-100 shadow-none md:shadow-xl md:shadow-slate-200/40">
+                {/* Mobile Card Grid */}
+                <div className="grid grid-cols-1 gap-4 md:hidden">
+                  {users.filter(u => u.role === 'regular').map((u) => (
+                    <div key={u._id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-xs font-bold text-slate-400 border border-slate-100">
+                            {u.name.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="font-bold text-slate-800">{u.name}</p>
+                            <p className="text-[10px] text-slate-400">{u.email}</p>
+                          </div>
+                        </div>
+                        <button onClick={() => handleDeleteUser(u._id)} className="text-rose-500 p-2 bg-rose-50 rounded-lg">🗑️</button>
+                      </div>
+                      <div className="space-y-1">
+                        <label className="text-[9px] uppercase font-bold text-slate-400 ml-1">Account Role</label>
+                        <select
+                          value={u.role}
+                          onChange={(e) => handleUpdateRole(u._id, e.target.value, u.branchId?._id)}
+                          className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[11px] font-bold outline-none w-full shadow-sm"
+                        >
+                          <option value="regular">Regular Account</option>
+                          <option value="delivery_person">Upgrade to Staff</option>
+                        </select>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                   <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50/80 text-slate-400 border-b border-slate-100">
                       <tr>
