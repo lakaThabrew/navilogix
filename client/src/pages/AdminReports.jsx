@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import { Bar, Doughnut, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -78,12 +79,21 @@ const AdminReports = () => {
     }
   };
 
+  const navigate = useNavigate();
+
   useEffect(() => {
-    fetchStats();
-    fetchUsers();
-    fetchBranches();
+    const user = JSON.parse(localStorage.getItem("userInfo"));
+    if (!user) {
+      navigate("/login");
+    } else if (user.role !== "main_admin") {
+      navigate("/dashboard");
+    } else {
+      fetchStats();
+      fetchUsers();
+      fetchBranches();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [navigate]);
 
   const handleUpdateRole = async (userId, newRole, branchId = null) => {
     try {
