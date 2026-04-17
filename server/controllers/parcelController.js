@@ -120,8 +120,8 @@ export const createParcel = async (req, res) => {
         const receiverBranchId = await determineBranch(receiverInfo.address);
 
         const trackingId =
-            "NV-" +
-            Date.now().toString(36).toUpperCase() + "-" +
+            "NL" +
+            Date.now().toString(36).toUpperCase() +
             Math.random().toString(36).slice(3, 4).toUpperCase();
 
         logger.info(`🔖 [CREATE PARCEL] Generated tracking ID: ${trackingId}`);
@@ -258,24 +258,24 @@ export const updateParcelStatus = async (req, res) => {
         }
 
         const previousStatus = parcel.status;
-        
+
         // Update branchId based on status progression
         if (status === 'Transmitting') {
-             if (previousStatus === 'In Sub Branch') {
-                 // From Sender branch -> Main Office
-                 const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
-                 if (mainOffice) parcel.branchId = mainOffice._id;
-             } else if (previousStatus === 'In Main Branch') {
-                 // From Main Office -> Receiver branch
-                 parcel.branchId = await determineBranch(parcel.receiverInfo.address);
-             }
+            if (previousStatus === 'In Sub Branch') {
+                // From Sender branch -> Main Office
+                const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
+                if (mainOffice) parcel.branchId = mainOffice._id;
+            } else if (previousStatus === 'In Main Branch') {
+                // From Main Office -> Receiver branch
+                parcel.branchId = await determineBranch(parcel.receiverInfo.address);
+            }
         } else if (status === 'In Main Branch') {
-             const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
-             if (mainOffice) parcel.branchId = mainOffice._id;
+            const mainOffice = await Branch.findOne({ branchName: 'Main Office' });
+            if (mainOffice) parcel.branchId = mainOffice._id;
         } else if (status === 'In Sub Branch') {
-             if (previousStatus === 'Transmitting' || previousStatus === 'In Main Branch') {
-                 parcel.branchId = await determineBranch(parcel.receiverInfo.address);
-             }
+            if (previousStatus === 'Transmitting' || previousStatus === 'In Main Branch') {
+                parcel.branchId = await determineBranch(parcel.receiverInfo.address);
+            }
         }
 
         parcel.status = status;
