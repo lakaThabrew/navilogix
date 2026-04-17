@@ -734,19 +734,19 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 7.1 Authentication & Authorization
 
-- [ ] **Protected Routes**:
-  - [ ] Accessing `/dashboard` without login redirects to `/login`
-  - [ ] Accessing `/profile` without login redirects to `/login`
-  - [ ] Accessing `/inbox` without login redirects to `/login`
-  - [ ] Accessing `/reports` without login redirects to `/login`
-- [ ] **Role-Based Access Control**:
-  - [ ] Regular users trying to access `/inbox` or `/reports` should be blocked or redirected
-  - [ ] Branch heads trying to access `/reports` should be blocked
-  - [ ] Delivery persons trying to access admin features blocked
-- [ ] **Token Expiration**:
-  - [ ] Expired token forces re-login
-  - [ ] Invalid token clears localStorage
-  - [ ] Error message shown for invalid/expired sessions
+- [x] **Protected Routes**:
+  - [x] Accessing `/dashboard` without login redirects to `/login`
+  - [x] Accessing `/profile` without login redirects to `/login`
+  - [x] Accessing `/inbox` without login redirects to `/login`
+  - [x] Accessing `/reports` without login redirects to `/login`
+- [x] **Role-Based Access Control**:
+  - [x] Regular users trying to access `/inbox` or `/reports` should be blocked or redirected
+  - [x] Branch heads trying to access `/reports` should be blocked
+  - [x] Delivery persons trying to access admin features blocked
+- [x] **Token Expiration**:
+  - [x] Expired token forces re-login
+  - [x] Invalid token clears localStorage
+  - [x] Error message shown for invalid/expired sessions
 
 ### 7.2 Data Validation
 
