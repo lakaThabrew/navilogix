@@ -154,6 +154,7 @@ This checklist contains all the features, functions, and buttons you need to tes
 - [x] Mobile responsive columns
 
 ---
+
 ---
 
 ## 2. Authentication & Profile
@@ -210,14 +211,14 @@ This checklist contains all the features, functions, and buttons you need to tes
   - [x] Clicking "No" stops registration
   - [x] store the reversation in database
   - [x] Canceling stops registration
-  - [x] Check the reservation staus in profile
-   -[x] check the button on remainder is working.
+  - [x] Check the reservation staus in profile -[x] check the button on remainder is working.
 - [x] **Create Account Button**:
   - [x] Shows "Creating..." when loading
   - [x] Creates user account successfully
   - [x] Stores token in localStorage
   - [x] Redirects to `/dashboard`
   - [x] Shows error alert if registration failsx
+
 #### **Mode: Forgot Password (`/forgot-password`)**
 
 - [x] **Visual Panel**:
@@ -642,7 +643,7 @@ This checklist contains all the features, functions, and buttons you need to tes
   - [x] Popup on click shows parcel details
 - [x] Map centers on delivery locations
 - [x] Zoom controls work
-- [x] Route lines shown between locations 
+- [x] Route lines shown between locations
 - [x] Mobile responsive map size
 
 #### **Restrictions**
@@ -804,48 +805,48 @@ This checklist contains all the features, functions, and buttons you need to tes
 
 ### 7.5 Performance & Optimization
 
-- [ ] **Page Load Times**:
-  - [ ] Home page loads in < 3 seconds
-  - [ ] Dashboard loads reasonably fast
-  - [ ] Images optimized (proper formats and sizes)
-  - [ ] No unnecessary re-renders
-- [ ] **Animations**:
-  - [ ] Smooth 60fps animations
-  - [ ] No janky scrolling
-  - [ ] Framer Motion transitions work smoothly
-- [ ] **Memory**:
-  - [ ] No memory leaks from event listeners
-  - [ ] Components unmount properly
-  - [ ] Intervals/timeouts cleaned up
+- [x] **Page Load Times**:
+  - [x] Home page loads in < 3 seconds
+  - [x] Dashboard loads reasonably fast
+  - [x] Images optimized (proper formats and sizes)
+  - [x] No unnecessary re-renders
+- [x] **Animations**:
+  - [x] Smooth 60fps animations
+  - [x] No janky scrolling
+  - [x] Framer Motion transitions work smoothly
+- [x] **Memory**:
+  - [x] No memory leaks from event listeners
+  - [x] Components unmount properly
+  - [x] Intervals/timeouts cleaned up
 
 ### 7.6 Cross-Browser Compatibility
 
-- [ ] Works on Chrome/Edge (Chromium)
-- [ ] Works on Firefox
-- [ ] Works on Safari (if Mac available)
-- [ ] Mobile browsers (Chrome Mobile, Safari iOS)
+- [x] Works on Chrome/Edge (Chromium)
+- [x] Works on Firefox
+- [x] Works on Safari (if Mac available)
+- [x] Mobile browsers (Chrome Mobile, Safari iOS)
 
 ### 7.7 Accessibility
 
-- [ ] Form labels associated with inputs
-- [ ] Buttons have proper aria-labels
-- [ ] Alt text on images
-- [ ] Focus states visible on interactive elements
-- [ ] Keyboard navigation works (Tab, Enter, Esc)
-- [ ] Color contrast meets WCAG standards
+- [x] Form labels associated with inputs
+- [x] Buttons have proper aria-labels
+- [x] Alt text on images
+- [x] Focus states visible on interactive elements
+- [x] Keyboard navigation works (Tab, Enter, Esc)
+- [x] Color contrast meets WCAG standards
 
 ### 7.8 Logging & Observability (Winston Integration)
 
-- [ ] **Frontend Logs** (Check Developer Console):
-  - [ ] Auth: Login/Register/Forgot/Reset actions log correctly
-  - [ ] Profile: Name/Email/Password update attempts log correctly
-  - [ ] Checkout: Plan selection and Reservation success/fail log correctly
-  - [ ] Logs include timestamps and contextual data
-- [ ] **Backend Logs** (Check `/logs/app.log` or server console):
-  - [ ] Database connection success/error logs
-  - [ ] Parcel creation and status update logs
-  - [ ] Auth controller: Detailed security action logs (Password reset, Payment, etc.)
-  - [ ] Error objects include stack traces and request IDs
+- [x] **Frontend Logs** (Check Developer Console):
+  - [x] Auth: Login/Register/Forgot/Reset actions log correctly
+  - [x] Profile: Name/Email/Password update attempts log correctly
+  - [x] Checkout: Plan selection and Reservation success/fail log correctly
+  - [x] Logs include timestamps and contextual data
+- [x] **Backend Logs** (Check `/logs/app.log` or server console):
+  - [x] Database connection success/error logs
+  - [x] Parcel creation and status update logs
+  - [x] Auth controller: Detailed security action logs (Password reset, Payment, etc.)
+  - [x] Error objects include stack traces and request IDs
 
 ---
 
