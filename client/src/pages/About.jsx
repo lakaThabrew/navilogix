@@ -22,17 +22,34 @@ const About = () => {
   const [isLoadingBranches, setIsLoadingBranches] = useState(true);
 
   useEffect(() => {
+    const controller = new AbortController();
+    let isMounted = true;
+
     const fetchBranches = async () => {
       try {
-        const response = await axios.get("http://localhost:5000/api/branches");
-        setBranches(response.data);
+        const response = await axios.get("http://localhost:5000/api/branches", {
+          signal: controller.signal,
+        });
+        if (isMounted) {
+          setBranches(response.data);
+        }
       } catch (error) {
-        logger.error("Error fetching branches:", { error: error.message });
+        if (error.code !== "ERR_CANCELED") {
+          logger.error("Error fetching branches:", { error: error.message });
+        }
       } finally {
-        setIsLoadingBranches(false);
+        if (isMounted) {
+          setIsLoadingBranches(false);
+        }
       }
     };
+
     fetchBranches();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    };
   }, []);
 
   return (
