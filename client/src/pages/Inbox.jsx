@@ -47,6 +47,7 @@ const Inbox = () => {
 
     const handleApprove = async (e, msg) => {
         e.stopPropagation(); 
+        if (msg.isApproved) return;
         const confirm = window.confirm("Create this parcel in the system?");
         if (!confirm) return;
 
@@ -56,6 +57,10 @@ const Inbox = () => {
             };
             // Create the parcel
             await axios.post("http://localhost:5000/api/parcels", msg.parcelData, config);
+            
+            // Mark message as approved
+            await axios.put(`http://localhost:5000/api/messages/${msg._id}/approve`, {}, config);
+
             alert("Parcel Created Successfully!");
 
             // Mark message as read
@@ -124,9 +129,10 @@ const Inbox = () => {
                                             </div>
                                             <button
                                                 onClick={(e) => handleApprove(e, msg)}
-                                                className="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold shadow-md hover:bg-green-700 transition-colors flex items-center gap-2"
+                                                disabled={msg.isApproved}
+                                                className={`px-4 py-2 rounded-lg text-sm font-bold shadow-md transition-colors flex items-center gap-2 ${msg.isApproved ? 'bg-gray-400 text-gray-200 cursor-not-allowed' : 'bg-green-600 text-white hover:bg-green-700'}`}
                                             >
-                                                ✅ Approve & Create Parcel
+                                                {msg.isApproved ? '✅ Approved & Created' : '✅ Approve & Create Parcel'}
                                             </button>
                                         </div>
                                     )}

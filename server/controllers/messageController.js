@@ -54,3 +54,19 @@ export const markAsRead = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+export const approveMessage = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const message = await Message.findById(id);
+        if (message) {
+            message.isApproved = true;
+            await message.save();
+            res.json(message);
+        } else {
+            res.status(404).json({ message: 'Message not found' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
