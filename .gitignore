@@ -15,6 +15,7 @@ pnpm-lock.yaml
 server/.env
 client/.env
 *.env
+server\.env
 
 # Logs
 logs

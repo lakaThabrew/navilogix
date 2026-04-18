@@ -134,7 +134,7 @@ const Services = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden pt-32">
+    <div className="min-h-screen bg-background relative overflow-hidden pt-2">
       {/* Background Gradients */}
       <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-100 rounded-full blur-[100px] opacity-40 mix-blend-multiply"></div>
       <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-red-100 rounded-full blur-[100px] opacity-40 mix-blend-multiply"></div>

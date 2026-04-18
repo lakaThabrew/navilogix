@@ -402,6 +402,21 @@ const Dashboard = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (!showPaymentModal) return;
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        navigate("/");
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [showPaymentModal, navigate]);
+
   const handlePayment = async () => {
     try {
       const config = { headers: { Authorization: `Bearer ${user.token}` } };
@@ -514,9 +529,11 @@ const Dashboard = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               {/* Plus Option */}
-              <div
+              <button
+                type="button"
                 onClick={() => navigate("/checkout?plan=plus")}
-                className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50/50 transition-all cursor-pointer text-left relative overflow-hidden"
+                aria-label="Choose Plus plan"
+                className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-blue-500 hover:bg-blue-50/50 transition-all cursor-pointer text-left relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="w-10 h-10 bg-blue-100 text-blue-600 rounded-lg flex items-center justify-center text-xl">
@@ -531,7 +548,7 @@ const Dashboard = () => {
                 </h3>
                 <p className="text-2xl font-black text-slate-900">
                   $9.99
-                  <span className="text-sm font-normal text-slate-400">
+                  <span className="text-sm font-normal text-slate-600">
                     /mo
                   </span>
                 </p>
@@ -549,12 +566,14 @@ const Dashboard = () => {
                 <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-blue-600">
                   →
                 </div>
-              </div>
+              </button>
 
               {/* Pro Option */}
-              <div
+              <button
+                type="button"
                 onClick={() => navigate("/checkout?plan=pro")}
-                className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer text-left relative overflow-hidden"
+                aria-label="Choose Pro plan"
+                className="group p-6 rounded-2xl border-2 border-slate-100 hover:border-purple-500 hover:bg-purple-50/50 transition-all cursor-pointer text-left relative overflow-hidden focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
               >
                 <div className="flex justify-between items-start mb-4">
                   <div className="w-10 h-10 bg-purple-100 text-purple-600 rounded-lg flex items-center justify-center text-xl">
@@ -569,7 +588,7 @@ const Dashboard = () => {
                 </h3>
                 <p className="text-2xl font-black text-slate-900">
                   $29.99
-                  <span className="text-sm font-normal text-slate-400">
+                  <span className="text-sm font-normal text-slate-600">
                     /mo
                   </span>
                 </p>
@@ -587,7 +606,7 @@ const Dashboard = () => {
                 <div className="absolute bottom-4 right-4 opacity-0 group-hover:opacity-100 transition-opacity text-purple-600">
                   →
                 </div>
-              </div>
+              </button>
             </div>
 
             <div className="flex flex-col gap-3 mt-6">
@@ -599,7 +618,7 @@ const Dashboard = () => {
               </button>
               <button
                 onClick={() => navigate("/")}
-                className="text-slate-400 hover:text-slate-600 text-sm font-medium transition-colors uppercase tracking-wider"
+                className="text-slate-600 hover:text-slate-800 text-sm font-medium transition-colors uppercase tracking-wider"
               >
                 Cancel
               </button>
@@ -622,10 +641,11 @@ const Dashboard = () => {
           </h3>
           <div className="space-y-3">
             {messages.map((msg) => (
-              <div
+              <button
+                type="button"
                 key={msg._id}
                 onClick={() => markAsRead(msg._id)}
-                className={`p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-all ${
+                className={`w-full text-left p-4 rounded-lg bg-white shadow-sm border-l-4 cursor-pointer hover:bg-gray-50 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 ${
                   msg.isRead
                     ? "border-gray-300 opacity-60"
                     : "border-blue-500 ring-1 ring-blue-100"
@@ -644,7 +664,7 @@ const Dashboard = () => {
                 <p className="text-xs text-gray-500 mt-1">
                   {new Date(msg.createdAt).toLocaleString()}
                 </p>
-              </div>
+              </button>
             ))}
           </div>
         </div>

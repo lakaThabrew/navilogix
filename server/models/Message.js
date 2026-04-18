@@ -6,6 +6,7 @@ const messageSchema = new mongoose.Schema({
     parcelData: { type: Object }, // Optional: specific data for system actions
     receiverRole: { type: String, enum: ['main_admin', 'branch_head', 'delivery_person', 'regular'], required: true },
     isRead: { type: Boolean, default: false },
+    isApproved: { type: Boolean, default: false },
 }, { timestamps: true });
 
 export default mongoose.model('Message', messageSchema);

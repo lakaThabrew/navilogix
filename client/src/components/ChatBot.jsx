@@ -16,6 +16,21 @@ const ChatBot = () => {
       window.removeEventListener("openChatBot", handleOpenChatBot);
     };
   }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+      }
+    };
+
+    window.addEventListener("keydown", handleEscape);
+    return () => {
+      window.removeEventListener("keydown", handleEscape);
+    };
+  }, [open]);
   const [messages, setMessages] = useState([
     {
       sender: "bot",
@@ -93,15 +108,24 @@ const ChatBot = () => {
                       : "bg-blue-500 text-white rounded-bl-none"
                   }`}
                 >
-                  <p 
+                  <p
                     className="whitespace-pre-wrap leading-relaxed"
-                    dangerouslySetInnerHTML={{ 
+                    dangerouslySetInnerHTML={{
                       __html: m.text
-                        .replace(/^### (.*$)/gm, '<h3 class="font-bold text-lg mt-2">$1</h3>')
-                        .replace(/^## (.*$)/gm, '<h2 class="font-bold text-xl mt-3">$2</h2>')
-                        .replace(/^# (.*$)/gm, '<h1 class="font-bold text-2xl mt-4">$1</h1>')
-                        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-                        .replace(/^\*\s/gm, '• ')
+                        .replace(
+                          /^### (.*$)/gm,
+                          '<h3 class="font-bold text-lg mt-2">$1</h3>',
+                        )
+                        .replace(
+                          /^## (.*$)/gm,
+                          '<h2 class="font-bold text-xl mt-3">$2</h2>',
+                        )
+                        .replace(
+                          /^# (.*$)/gm,
+                          '<h1 class="font-bold text-2xl mt-4">$1</h1>',
+                        )
+                        .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                        .replace(/^\*\s/gm, "• "),
                     }}
                   />
                 </div>
@@ -116,7 +140,12 @@ const ChatBot = () => {
               placeholder="Type a message..."
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && send()}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  send();
+                }
+              }}
             />
             <button
               className="bg-secondary text-white px-4 py-2 rounded-r-xl font-bold hover:bg-red-600 transition-colors"

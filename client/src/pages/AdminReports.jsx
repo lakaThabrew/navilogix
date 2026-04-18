@@ -111,7 +111,10 @@ const AdminReports = () => {
       alert("User role updated successfully!");
     } catch (error) {
       logger.error("Error updating user role: " + error.message);
-      alert("Failed to update user role: " + (error.response?.data?.message || error.message));
+      alert(
+        "Failed to update user role: " +
+          (error.response?.data?.message || error.message),
+      );
     } finally {
       setIsUpdating(false);
     }
@@ -215,8 +218,12 @@ const AdminReports = () => {
   // Standardize labels to Title Case if they are 'parcel' vs 'Parcel'
   const standardizedMap = {};
   typeLabelsRaw.forEach((label, index) => {
-    const stdLabel = label.charAt(0) != label.charAt(0).toUpperCase() ? label.charAt(0).toUpperCase() + label.slice(1) : label;
-    standardizedMap[stdLabel] = (standardizedMap[stdLabel] || 0) + typeData[index];
+    const stdLabel =
+      label.charAt(0) != label.charAt(0).toUpperCase()
+        ? label.charAt(0).toUpperCase() + label.slice(1)
+        : label;
+    standardizedMap[stdLabel] =
+      (standardizedMap[stdLabel] || 0) + typeData[index];
   });
 
   const finalTypeLabels = Object.keys(standardizedMap);
@@ -310,11 +317,15 @@ const AdminReports = () => {
             <h3 className="text-lg text-gray-500 font-semibold mb-2">
               Total Revenue (COD)
             </h3>
-            <p 
+            <p
               className="text-xl sm:text-2xl lg:text-3xl font-bold text-green-600 whitespace-nowrap truncate"
               title={`Rs. ${Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`}
             >
-              Rs. {Number(stats.totalRevenue).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+              Rs.{" "}
+              {Number(stats.totalRevenue).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2,
+              })}
             </p>
           </div>
           <div className="floating-card p-6 !bg-white border-l-4 border-yellow-500">
@@ -425,7 +436,10 @@ const AdminReports = () => {
                   : "text-slate-500 hover:text-slate-700 hover:bg-white/50 opacity-70"
               }`}
             >
-              🌐 All <span className="text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-md">{users.length}</span>
+              🌐 All{" "}
+              <span className="text-[10px] bg-slate-200 text-slate-600 px-1.5 py-0.5 rounded-md">
+                {users.length}
+              </span>
             </button>
             <button
               onClick={() => setActiveTab("staff")}
@@ -435,7 +449,10 @@ const AdminReports = () => {
                   : "text-slate-500 hover:text-slate-700 hover:bg-white/50 opacity-70"
               }`}
             >
-              💼 Staff <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-md">{users.filter(u => u.role !== 'regular').length}</span>
+              💼 Staff{" "}
+              <span className="text-[10px] bg-primary/10 text-primary px-1.5 py-0.5 rounded-md">
+                {users.filter((u) => u.role !== "regular").length}
+              </span>
             </button>
             <button
               onClick={() => setActiveTab("customers")}
@@ -445,16 +462,19 @@ const AdminReports = () => {
                   : "text-slate-500 hover:text-slate-700 hover:bg-white/50 opacity-70"
               }`}
             >
-              👥 Customers <span className="text-[10px] bg-secondary/10 text-secondary px-1.5 py-0.5 rounded-md">{users.filter(u => u.role === 'regular').length}</span>
+              👥 Customers{" "}
+              <span className="text-[10px] bg-secondary/10 text-secondary px-1.5 py-0.5 rounded-md">
+                {users.filter((u) => u.role === "regular").length}
+              </span>
             </button>
           </div>
 
           <div className="grid grid-cols-1 grid-rows-1 overflow-hidden">
-             {/* All Users Panel */}
-             <div 
+            {/* All Users Panel */}
+            <div
               className={`transition-all duration-500 col-start-1 row-start-1 ${
-                activeTab === "all" 
-                  ? "opacity-100 translate-x-0 pointer-events-auto z-10" 
+                activeTab === "all"
+                  ? "opacity-100 translate-x-0 pointer-events-auto z-10"
                   : "opacity-0 -translate-x-full pointer-events-none z-0"
               }`}
             >
@@ -463,28 +483,45 @@ const AdminReports = () => {
                   Master <span className="text-slate-400">Registry</span>
                 </h2>
               </div>
-              
+
               <div className="floating-card bg-transparent md:bg-white p-0 overflow-hidden border-none md:border md:border-slate-100 shadow-none md:shadow-xl md:shadow-slate-200/40">
                 {/* Mobile Grid View */}
                 <div className="grid grid-cols-1 gap-4 md:hidden">
                   {users.map((u) => (
-                    <div key={u._id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3">
+                    <div
+                      key={u._id}
+                      className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-3"
+                    >
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border ${u.role === 'regular' ? 'bg-orange-50 text-orange-400 border-orange-100' : 'bg-blue-50 text-blue-400 border-blue-100'}`}>
+                          <div
+                            className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold border ${u.role === "regular" ? "bg-orange-50 text-orange-400 border-orange-100" : "bg-blue-50 text-blue-400 border-blue-100"}`}
+                          >
                             {u.name.charAt(0)}
                           </div>
                           <div>
                             <p className="font-bold text-slate-800">{u.name}</p>
-                            <p className="text-[11px] text-slate-400">{u.email}</p>
+                            <p className="text-[11px] text-slate-400">
+                              {u.email}
+                            </p>
                           </div>
                         </div>
-                        <button onClick={() => handleDeleteUser(u._id)} className="p-2 text-rose-500 bg-rose-50 rounded-lg">🗑️</button>
+                        <button
+                          onClick={() => handleDeleteUser(u._id)}
+                          aria-label={`Delete ${u.name}`}
+                          className="p-2 text-rose-500 bg-rose-50 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
+                        >
+                          🗑️
+                        </button>
                       </div>
                       <div className="flex justify-between items-center pt-2 border-t border-slate-50">
-                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">Access Level</span>
-                        <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${u.role === 'regular' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}`}>
-                          {u.role.replace('_', ' ')}
+                        <span className="text-[10px] text-slate-400 uppercase font-bold tracking-wider">
+                          Access Level
+                        </span>
+                        <span
+                          className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${u.role === "regular" ? "bg-orange-100 text-orange-600" : "bg-blue-100 text-blue-600"}`}
+                        >
+                          {u.role.replace("_", " ")}
                         </span>
                       </div>
                     </div>
@@ -496,31 +533,54 @@ const AdminReports = () => {
                   <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50/80 text-slate-400 border-b border-slate-100">
                       <tr>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">User</th>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">Contact</th>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">Role</th>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider text-right">Delete</th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">
+                          User
+                        </th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">
+                          Contact
+                        </th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">
+                          Role
+                        </th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider text-right">
+                          Delete
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
                       {users.map((u) => (
-                        <tr key={u._id} className="hover:bg-slate-50/50 transition-colors">
+                        <tr
+                          key={u._id}
+                          className="hover:bg-slate-50/50 transition-colors"
+                        >
                           <td className="p-4">
                             <div className="flex items-center gap-3">
-                              <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border ${u.role === 'regular' ? 'bg-orange-50 text-orange-400 border-orange-100' : 'bg-blue-50 text-blue-400 border-blue-100'}`}>
+                              <div
+                                className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold border ${u.role === "regular" ? "bg-orange-50 text-orange-400 border-orange-100" : "bg-blue-50 text-blue-400 border-blue-100"}`}
+                              >
                                 {u.name.charAt(0)}
                               </div>
-                              <span className="font-bold text-slate-700">{u.name}</span>
+                              <span className="font-bold text-slate-700">
+                                {u.name}
+                              </span>
                             </div>
                           </td>
                           <td className="p-4 text-slate-500">{u.email}</td>
                           <td className="p-4">
-                            <span className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${u.role === 'regular' ? 'bg-orange-100 text-orange-600' : 'bg-blue-100 text-blue-600'}`}>
-                              {u.role.replace('_', ' ')}
+                            <span
+                              className={`px-2 py-1 rounded-md text-[10px] font-bold uppercase tracking-wider ${u.role === "regular" ? "bg-orange-100 text-orange-600" : "bg-blue-100 text-blue-600"}`}
+                            >
+                              {u.role.replace("_", " ")}
                             </span>
                           </td>
                           <td className="p-4 text-right">
-                             <button onClick={() => handleDeleteUser(u._id)} className="text-slate-300 hover:text-rose-500 transition-all">🗑️</button>
+                            <button
+                              onClick={() => handleDeleteUser(u._id)}
+                              aria-label={`Delete ${u.name}`}
+                              className="text-slate-300 hover:text-rose-500 transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
+                            >
+                              🗑️
+                            </button>
                           </td>
                         </tr>
                       ))}
@@ -530,16 +590,19 @@ const AdminReports = () => {
               </div>
             </div>
 
-            <div 
+            <div
               className={`transition-all duration-500 col-start-1 row-start-1 ${
-                activeTab === "staff" 
-                  ? "opacity-100 translate-x-0 pointer-events-auto z-10" 
-                  : (activeTab === "all" ? "opacity-0 translate-x-full pointer-events-none z-0" : "opacity-0 -translate-x-full pointer-events-none z-0")
+                activeTab === "staff"
+                  ? "opacity-100 translate-x-0 pointer-events-auto z-10"
+                  : activeTab === "all"
+                    ? "opacity-0 translate-x-full pointer-events-none z-0"
+                    : "opacity-0 -translate-x-full pointer-events-none z-0"
               }`}
             >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                  Staff <span className="text-primary opacity-60">Directory</span>
+                  Staff{" "}
+                  <span className="text-primary opacity-60">Directory</span>
                 </h2>
                 <a
                   href="/dashboard"
@@ -548,54 +611,85 @@ const AdminReports = () => {
                   <span>+</span> New Staff Member
                 </a>
               </div>
-              
+
               <div className="floating-card bg-transparent md:bg-white p-0 overflow-hidden border-none md:border md:border-slate-100 shadow-none md:shadow-xl md:shadow-slate-200/40">
                 {/* Mobile Card Grid */}
                 <div className="grid grid-cols-1 gap-4 md:hidden">
-                  {users.filter(u => u.role !== 'regular').map((u) => (
-                    <div key={u._id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-xs font-bold text-slate-400 border border-slate-100">
-                            {u.name.charAt(0)}
+                  {users
+                    .filter((u) => u.role !== "regular")
+                    .map((u) => (
+                      <div
+                        key={u._id}
+                        className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-xs font-bold text-slate-400 border border-slate-100">
+                              {u.name.charAt(0)}
+                            </div>
+                            <div>
+                              <p className="font-bold text-slate-800">
+                                {u.name}
+                              </p>
+                              <p className="text-[10px] text-slate-400">
+                                {u.email}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-bold text-slate-800">{u.name}</p>
-                            <p className="text-[10px] text-slate-400">{u.email}</p>
+                          <button
+                            onClick={() => handleDeleteUser(u._id)}
+                            aria-label={`Delete ${u.name}`}
+                            className="text-rose-500 p-2 bg-rose-50 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
+                          >
+                            🗑️
+                          </button>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-3">
+                          <div className="space-y-1">
+                            <label className="text-[9px] uppercase font-bold text-slate-400 ml-1">
+                              Role
+                            </label>
+                            <select
+                              value={u.role}
+                              onChange={(e) =>
+                                handleUpdateRole(
+                                  u._id,
+                                  e.target.value,
+                                  u.branchId?._id,
+                                )
+                              }
+                              className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[10px] font-bold w-full outline-none"
+                            >
+                              <option value="delivery_person">
+                                Delivery Person
+                              </option>
+                              <option value="branch_head">Branch Head</option>
+                              <option value="main_admin">Main Admin</option>
+                            </select>
+                          </div>
+                          <div className="space-y-1">
+                            <label className="text-[9px] uppercase font-bold text-slate-400 ml-1">
+                              Branch
+                            </label>
+                            <select
+                              value={u.branchId?._id || ""}
+                              onChange={(e) =>
+                                handleUpdateRole(u._id, u.role, e.target.value)
+                              }
+                              className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[10px] font-bold w-full outline-none"
+                            >
+                              <option value="">None</option>
+                              {branches.map((b) => (
+                                <option key={b._id} value={b._id}>
+                                  {b.branchName}
+                                </option>
+                              ))}
+                            </select>
                           </div>
                         </div>
-                        <button onClick={() => handleDeleteUser(u._id)} className="text-rose-500 p-2 bg-rose-50 rounded-lg">🗑️</button>
                       </div>
-                      
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="space-y-1">
-                          <label className="text-[9px] uppercase font-bold text-slate-400 ml-1">Role</label>
-                          <select
-                            value={u.role}
-                            onChange={(e) => handleUpdateRole(u._id, e.target.value, u.branchId?._id)}
-                            className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[10px] font-bold w-full outline-none"
-                          >
-                            <option value="delivery_person">Delivery Person</option>
-                            <option value="branch_head">Branch Head</option>
-                            <option value="main_admin">Main Admin</option>
-                          </select>
-                        </div>
-                        <div className="space-y-1">
-                          <label className="text-[9px] uppercase font-bold text-slate-400 ml-1">Branch</label>
-                          <select
-                            value={u.branchId?._id || ""}
-                            onChange={(e) => handleUpdateRole(u._id, u.role, e.target.value)}
-                            className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[10px] font-bold w-full outline-none"
-                          >
-                            <option value="">None</option>
-                            {branches.map((b) => (
-                              <option key={b._id} value={b._id}>{b.branchName}</option>
-                            ))}
-                          </select>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
 
                 {/* Desktop Table View */}
@@ -603,108 +697,170 @@ const AdminReports = () => {
                   <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50/80 text-slate-400 border-b border-slate-100">
                       <tr>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">Identity</th>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">Authentication</th>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">Access Level</th>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">Assigned Branch</th>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider text-right">Control</th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">
+                          Identity
+                        </th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">
+                          Authentication
+                        </th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">
+                          Access Level
+                        </th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">
+                          Assigned Branch
+                        </th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider text-right">
+                          Control
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
-                      {users.filter(u => u.role !== 'regular').map((u) => (
-                        <tr key={u._id} className="hover:bg-slate-50/50 transition-colors group">
-                          <td className="p-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400 border border-slate-200">
-                                {u.name.charAt(0)}
+                      {users
+                        .filter((u) => u.role !== "regular")
+                        .map((u) => (
+                          <tr
+                            key={u._id}
+                            className="hover:bg-slate-50/50 transition-colors group"
+                          >
+                            <td className="p-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400 border border-slate-200">
+                                  {u.name.charAt(0)}
+                                </div>
+                                <span className="font-bold text-slate-700">
+                                  {u.name}
+                                </span>
                               </div>
-                              <span className="font-bold text-slate-700">{u.name}</span>
-                            </div>
-                          </td>
-                          <td className="p-4 text-slate-500 font-medium">{u.email}</td>
-                          <td className="p-4">
-                            <select
-                              value={u.role}
-                              onChange={(e) => handleUpdateRole(u._id, e.target.value, u.branchId?._id)}
-                              className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[11px] font-bold outline-none w-36 focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer hover:bg-white"
-                            >
-                              <option value="delivery_person">Delivery Person</option>
-                              <option value="branch_head">Branch Head</option>
-                              <option value="main_admin">Main Admin</option>
-                            </select>
-                          </td>
-                          <td className="p-4">
-                            <select
-                              value={u.branchId?._id || ""}
-                              onChange={(e) => handleUpdateRole(u._id, u.role, e.target.value)}
-                              className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[11px] font-bold outline-none shadow-sm focus:ring-2 focus:ring-primary/20 transition-all hover:bg-white cursor-pointer"
-                            >
-                              <option value="">No Branch Assigned</option>
-                              {branches.map((b) => (
-                                <option key={b._id} value={b._id}>{b.branchName}</option>
-                              ))}
-                            </select>
-                          </td>
-                          <td className="p-4 text-right">
-                            <button
-                              onClick={() => handleDeleteUser(u._id)}
-                              className="text-slate-300 hover:text-rose-500 font-bold p-2 rounded-lg transition-all text-[14px] hover:bg-rose-50"
-                              title="Remove Staff"
-                            >
-                              🗑️
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td className="p-4 text-slate-500 font-medium">
+                              {u.email}
+                            </td>
+                            <td className="p-4">
+                              <select
+                                value={u.role}
+                                onChange={(e) =>
+                                  handleUpdateRole(
+                                    u._id,
+                                    e.target.value,
+                                    u.branchId?._id,
+                                  )
+                                }
+                                className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[11px] font-bold outline-none w-36 focus:ring-2 focus:ring-primary/20 transition-all cursor-pointer hover:bg-white"
+                              >
+                                <option value="delivery_person">
+                                  Delivery Person
+                                </option>
+                                <option value="branch_head">Branch Head</option>
+                                <option value="main_admin">Main Admin</option>
+                              </select>
+                            </td>
+                            <td className="p-4">
+                              <select
+                                value={u.branchId?._id || ""}
+                                onChange={(e) =>
+                                  handleUpdateRole(
+                                    u._id,
+                                    u.role,
+                                    e.target.value,
+                                  )
+                                }
+                                className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[11px] font-bold outline-none shadow-sm focus:ring-2 focus:ring-primary/20 transition-all hover:bg-white cursor-pointer"
+                              >
+                                <option value="">No Branch Assigned</option>
+                                {branches.map((b) => (
+                                  <option key={b._id} value={b._id}>
+                                    {b.branchName}
+                                  </option>
+                                ))}
+                              </select>
+                            </td>
+                            <td className="p-4 text-right">
+                              <button
+                                onClick={() => handleDeleteUser(u._id)}
+                                aria-label={`Delete ${u.name}`}
+                                className="text-slate-300 hover:text-rose-500 font-bold p-2 rounded-lg transition-all text-[14px] hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
+                                title="Remove Staff"
+                              >
+                                🗑️
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
 
-            <div 
+            <div
               className={`transition-all duration-500 col-start-1 row-start-1 ${
-                activeTab === "customers" 
-                  ? "opacity-100 translate-x-0 pointer-events-auto z-10" 
+                activeTab === "customers"
+                  ? "opacity-100 translate-x-0 pointer-events-auto z-10"
                   : "opacity-0 translate-x-full pointer-events-none z-0"
               }`}
             >
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-black text-slate-800 tracking-tight">
-                  Customer <span className="text-secondary opacity-60">Directory</span>
+                  Customer{" "}
+                  <span className="text-secondary opacity-60">Directory</span>
                 </h2>
               </div>
-              
+
               <div className="floating-card bg-transparent md:bg-white p-0 overflow-hidden border-none md:border md:border-slate-100 shadow-none md:shadow-xl md:shadow-slate-200/40">
                 {/* Mobile Card Grid */}
                 <div className="grid grid-cols-1 gap-4 md:hidden">
-                  {users.filter(u => u.role === 'regular').map((u) => (
-                    <div key={u._id} className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4">
-                      <div className="flex items-center justify-between">
-                        <div className="flex items-center gap-3">
-                          <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-xs font-bold text-slate-400 border border-slate-100">
-                            {u.name.charAt(0)}
+                  {users
+                    .filter((u) => u.role === "regular")
+                    .map((u) => (
+                      <div
+                        key={u._id}
+                        className="bg-white p-5 rounded-2xl shadow-sm border border-slate-100 space-y-4"
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3">
+                            <div className="w-10 h-10 rounded-full bg-slate-50 flex items-center justify-center text-xs font-bold text-slate-400 border border-slate-100">
+                              {u.name.charAt(0)}
+                            </div>
+                            <div>
+                              <p className="font-bold text-slate-800">
+                                {u.name}
+                              </p>
+                              <p className="text-[10px] text-slate-400">
+                                {u.email}
+                              </p>
+                            </div>
                           </div>
-                          <div>
-                            <p className="font-bold text-slate-800">{u.name}</p>
-                            <p className="text-[10px] text-slate-400">{u.email}</p>
-                          </div>
+                          <button
+                            onClick={() => handleDeleteUser(u._id)}
+                            aria-label={`Delete ${u.name}`}
+                            className="text-rose-500 p-2 bg-rose-50 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
+                          >
+                            🗑️
+                          </button>
                         </div>
-                        <button onClick={() => handleDeleteUser(u._id)} className="text-rose-500 p-2 bg-rose-50 rounded-lg">🗑️</button>
+                        <div className="space-y-1">
+                          <label className="text-[9px] uppercase font-bold text-slate-400 ml-1">
+                            Account Role
+                          </label>
+                          <select
+                            value={u.role}
+                            onChange={(e) =>
+                              handleUpdateRole(
+                                u._id,
+                                e.target.value,
+                                u.branchId?._id,
+                              )
+                            }
+                            className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[11px] font-bold outline-none w-full shadow-sm"
+                          >
+                            <option value="regular">Regular Account</option>
+                            <option value="delivery_person">
+                              Upgrade to Staff
+                            </option>
+                          </select>
+                        </div>
                       </div>
-                      <div className="space-y-1">
-                        <label className="text-[9px] uppercase font-bold text-slate-400 ml-1">Account Role</label>
-                        <select
-                          value={u.role}
-                          onChange={(e) => handleUpdateRole(u._id, e.target.value, u.branchId?._id)}
-                          className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[11px] font-bold outline-none w-full shadow-sm"
-                        >
-                          <option value="regular">Regular Account</option>
-                          <option value="delivery_person">Upgrade to Staff</option>
-                        </select>
-                      </div>
-                    </div>
-                  ))}
+                    ))}
                 </div>
 
                 {/* Desktop Table View */}
@@ -712,45 +868,71 @@ const AdminReports = () => {
                   <table className="w-full text-left text-sm">
                     <thead className="bg-slate-50/80 text-slate-400 border-b border-slate-100">
                       <tr>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">Customer Name</th>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">Contact Email</th>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">Account Role</th>
-                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider text-right">Control</th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">
+                          Customer Name
+                        </th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">
+                          Contact Email
+                        </th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider">
+                          Account Role
+                        </th>
+                        <th className="p-4 font-bold uppercase text-[10px] tracking-wider text-right">
+                          Control
+                        </th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-50">
-                      {users.filter(u => u.role === 'regular').map((u) => (
-                        <tr key={u._id} className="hover:bg-slate-50/50 transition-colors group">
-                          <td className="p-4">
-                            <div className="flex items-center gap-3">
-                              <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400 border border-slate-200">
-                                {u.name.charAt(0)}
+                      {users
+                        .filter((u) => u.role === "regular")
+                        .map((u) => (
+                          <tr
+                            key={u._id}
+                            className="hover:bg-slate-50/50 transition-colors group"
+                          >
+                            <td className="p-4">
+                              <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-xs font-bold text-slate-400 border border-slate-200">
+                                  {u.name.charAt(0)}
+                                </div>
+                                <span className="font-bold text-slate-700">
+                                  {u.name}
+                                </span>
                               </div>
-                              <span className="font-bold text-slate-700">{u.name}</span>
-                            </div>
-                          </td>
-                          <td className="p-4 text-slate-500 font-medium">{u.email}</td>
-                          <td className="p-4">
-                            <select
-                              value={u.role}
-                              onChange={(e) => handleUpdateRole(u._id, e.target.value, u.branchId?._id)}
-                              className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[11px] font-bold outline-none w-36 shadow-sm focus:ring-2 focus:ring-primary/20 transition-all hover:bg-white cursor-pointer"
-                            >
-                              <option value="regular">Regular Account</option>
-                              <option value="delivery_person">Upgrade to Staff</option>
-                            </select>
-                          </td>
-                          <td className="p-4 text-right">
-                            <button
-                              onClick={() => handleDeleteUser(u._id)}
-                              className="text-slate-300 hover:text-rose-500 font-bold p-2 rounded-lg transition-all text-[14px] hover:bg-rose-50"
-                              title="Deactivate Account"
-                            >
-                              🗑️
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
+                            </td>
+                            <td className="p-4 text-slate-500 font-medium">
+                              {u.email}
+                            </td>
+                            <td className="p-4">
+                              <select
+                                value={u.role}
+                                onChange={(e) =>
+                                  handleUpdateRole(
+                                    u._id,
+                                    e.target.value,
+                                    u.branchId?._id,
+                                  )
+                                }
+                                className="bg-slate-50 border border-slate-100 rounded-lg p-2 text-[11px] font-bold outline-none w-36 shadow-sm focus:ring-2 focus:ring-primary/20 transition-all hover:bg-white cursor-pointer"
+                              >
+                                <option value="regular">Regular Account</option>
+                                <option value="delivery_person">
+                                  Upgrade to Staff
+                                </option>
+                              </select>
+                            </td>
+                            <td className="p-4 text-right">
+                              <button
+                                onClick={() => handleDeleteUser(u._id)}
+                                aria-label={`Delete ${u.name}`}
+                                className="text-slate-300 hover:text-rose-500 font-bold p-2 rounded-lg transition-all text-[14px] hover:bg-rose-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 focus-visible:ring-offset-2"
+                                title="Deactivate Account"
+                              >
+                                🗑️
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
                     </tbody>
                   </table>
                 </div>
